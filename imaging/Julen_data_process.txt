@@ -1,0 +1,499 @@
+###################################
+# These are all the libraries I used.
+# I'm sure some of them are of no use if you 
+# just want to extract the data, but just in case
+# you encounter an error because of a library missing,
+# try one of these:
+###################################
+
+from astropy.io import fits
+from astropy.wcs import WCS
+from astropy import units as u
+from astropy.coordinates import SkyCoord
+
+import os
+import sep
+import numpy as np
+import pandas as pd
+from scipy.spatial import KDTree
+from scipy.interpolate import interp1d
+
+from matplotlib import rcParams
+import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
+from matplotlib.patches import Ellipse
+
+
+###################################
+# Substitute with your own directory
+###################################
+
+fits_file_g = fits.open('YOUR_PATH/GTC73-23A_0001_Sloan_g_20230708_NOSKY_BBI.fits')
+fits_file_r = fits.open('YOUR_PATH/GTC73-23A_0001_Sloan_r_20230708_NOSKY_BBI.fits')
+fits_file_i = fits.open('YOUR_PATH/GTC73-23A_0001_Sloan_i_20230708_NOSKY_BBI.fits')
+
+###################################
+# Extract data
+###################################
+
+image_data_g = fits_file_g[0].data
+header_g = fits_file_g[0].header
+
+image_data_r = fits_file_r[0].data
+header_r = fits_file_r[0].header
+
+image_data_i = fits_file_i[0].data
+header_i = fits_file_i[0].header
+
+
+###################################
+# I got an error sometimes when 
+# trying to display the data.
+# This should solve it
+###################################
+
+if image_data_g.dtype.byteorder not in ('=', '|'):
+    image_data_g = image_data_g.byteswap().newbyteorder()
+    
+if image_data_r.dtype.byteorder not in ('=', '|'):
+    image_data_r = image_data_r.byteswap().newbyteorder()
+    
+if image_data_i.dtype.byteorder not in ('=', '|'):
+    image_data_i = image_data_i.byteswap().newbyteorder()
+
+
+#######################################
+# Here I subtract the background noise
+#######################################
+
+image_data_contiguous_g = np.ascontiguousarray(image_data_g)
+image_data_contiguous_r = np.ascontiguousarray(image_data_r)
+image_data_contiguous_i = np.ascontiguousarray(image_data_i)
+
+bkg_g = sep.Background(image_data_contiguous_g)
+bkg_r = sep.Background(image_data_contiguous_r)
+bkg_i = sep.Background(image_data_contiguous_i)
+
+image_data_bkg_subtracted_g = image_data_contiguous_g - bkg_g
+image_data_bkg_subtracted_r = image_data_contiguous_r - bkg_r
+image_data_bkg_subtracted_i = image_data_contiguous_i - bkg_i
+
+
+###################################
+# This is where it starts to get complicated.
+# The second value in the sep.extract function
+# is set to "6" in this example. Depending on how
+# we define this thresh, we get more or less
+# detected sources from the same image. 
+# As the number gets lower, you detect
+# fainter and fainter stars, but at a
+# certain point, the code starts 
+# detecting false positives. And not
+# only that, the magnitude value assigned
+# to bright sources can be significantly 
+# different depending if I were to write here
+# 6 or 3 or 1.5. For the paper, I would start varying
+# this number again and again, seeing how the detected
+# sources around our coordinate of interest start giggling
+# in the CMD plots. This is one of the steps where I'm unsure
+# if I did it correctly, I hope you might know how to proceed here.
+###################################
+
+objects_g = sep.extract(image_data_bkg_subtracted_g, 6, err = bkg_g.globalrms)
+objects_r = sep.extract(image_data_bkg_subtracted_r, 6, err = bkg_r.globalrms)
+objects_i = sep.extract(image_data_bkg_subtracted_i, 6, err = bkg_i.globalrms)
+
+df_g = pd.DataFrame(objects_g)
+df_r = pd.DataFrame(objects_r)
+df_i = pd.DataFrame(objects_i)
+
+
+###################################
+# The aperture was also a point of uncertainty.
+# I asked other researchers performing photometric
+# data extraction and was told that defining the aperture
+# in function of each source's FWHM was the way to go,
+# and that a typical value of 1.7 multiplied by FWHM
+# gives good results usually. Again, it was my first time
+# doing all this, and there was really scarce information to be found.
+# As per the ellipticity, I though it would be a good way for later
+# to distinguishing point-source stellar objects from extended galactic objects.
+# In this case, "a" represents the semi-major axis and "b" the semi-minor axis. 
+# Then I apply the FWHM formula for an elliptical Gaussian
+###################################
+
+df_g['fwhm'] = 2.0 * np.sqrt(2.0 * np.log(2.0)) * np.sqrt((df_g['a']**2 + df_g['b']**2) / 2.0)
+df_r['fwhm'] = 2.0 * np.sqrt(2.0 * np.log(2.0)) * np.sqrt((df_r['a']**2 + df_r['b']**2) / 2.0)
+df_i['fwhm'] = 2.0 * np.sqrt(2.0 * np.log(2.0)) * np.sqrt((df_i['a']**2 + df_i['b']**2) / 2.0)
+
+df_g['ellipticity'] = 1 - (df_g['b'] / df_g['a'])
+df_r['ellipticity'] = 1 - (df_r['b'] / df_r['a'])
+df_i['ellipticity'] = 1 - (df_i['b'] / df_i['a'])
+
+flux_g, fluxerr_g, flag_g = sep.sum_circle(image_data_bkg_subtracted_g, objects_g['x'], objects_g['y'], 
+                                           1.7*df_g['fwhm'], err = bkg_g.globalrms, gain = 1.0)
+
+flux_r, fluxerr_r, flag_r = sep.sum_circle(image_data_bkg_subtracted_r, objects_r['x'], objects_r['y'], 
+                                           1.7*df_r['fwhm'], err = bkg_r.globalrms, gain = 1.0)
+
+flux_i, fluxerr_i, flag_i = sep.sum_circle(image_data_bkg_subtracted_i, objects_i['x'], objects_i['y'], 
+                                           1.7*df_i['fwhm'], err = bkg_i.globalrms, gain = 1.0)
+
+
+###################################
+# Here I was told by Fabricio the folowing extinction coefficient values,
+# and their associated errors. As per the airmass arrays, 
+# I'm just doing a mean of all the airmass values that 
+# are recorded in the original files ReadME along each observation and band.
+# For candidate 2, I used:
+# airmass_array_g = [1.109, 1.105, 1.102, 1.098, 1.096]
+# airmass_array_r = [1.093, 1.090, 1.088, 1.086, 1.085]
+# airmass_array_i = [1.084, 1.083, 1.082, 1.082, 1.081]
+# For candidate 3, I used:
+# airmass_array_g = [1.748, 1.748, 1.748, 1.750, 1.751]
+# airmass_array_r = [1.754, 1.757, 1.760, 1.765, 1.770]
+# airmass_array_i = [1.776, 1.782, 1.790, 1.798, 1.806]
+###################################
+
+extinction_coefficient_g = 0.15 
+extinction_coefficient_r = 0.07 
+extinction_coefficient_i = 0.04 
+
+extinction_coefficient_error_g = 0.02
+extinction_coefficient_error_r = 0.01
+extinction_coefficient_error_i = 0.01
+
+airmass_array_g = [1.095, 1.090, 1.085, 1.080, 1.075]
+airmass_array_r = [1.071, 1.067, 1.063, 1.060, 1.057]
+airmass_array_i = [1.054, 1.051, 1.049, 1.046, 1.045]
+
+airmass_g = np.mean(airmass_array_g)
+airmass_r = np.mean(airmass_array_r)
+airmass_i = np.mean(airmass_array_i)
+
+airmass_error_g = np.std(airmass_array_g)
+airmass_error_r = np.std(airmass_array_r)
+airmass_error_i = np.std(airmass_array_i)
+
+
+###################################
+# Here I was told by Fabricio to compute zeropoint values. 
+# Since in the metadata of the .fits I only found the zeropoint
+# for one of the bands, I had to compute it by comparing the obtained
+# flux from the brightest stars in each Yasone with the flux 
+# that appears in PanSTARRS.
+# So, let "matched_sources_ps_gr" and "matched_sources_ps_ri" be
+# two dataframes extracted from GTC data that contain the brightest 
+# sources from Yasone-1 (which  also appear in PanSTARRS):
+# Again, maybe there are more direct ways of doing this
+###################################
+
+matched_sources_ps_gr['zero_point_g'] = matched_sources_ps_gr['ps_g'] - matched_sources_ps_gr['mag_g'] + (extinction_coefficient_g * airmass_g) 
+matched_sources_ps_gr['zero_point_r'] = matched_sources_ps_gr['ps_r'] - matched_sources_ps_gr['mag_r'] + (extinction_coefficient_r * airmass_r) 
+
+matched_sources_ps_ri['zero_point_r'] = matched_sources_ps_ri['ps_r'] - matched_sources_ps_ri['mag_r'] + (extinction_coefficient_r * airmass_r) 
+matched_sources_ps_ri['zero_point_i'] = matched_sources_ps_ri['ps_i'] - matched_sources_ps_ri['mag_i'] + (extinction_coefficient_i * airmass_i) 
+
+
+# Calculate the propagated error for each zero_point_g
+
+matched_sources_ps_gr['zero_point_g_err'] = np.sqrt(
+    matched_sources_ps_gr['ps_g_err']**2 + 
+    matched_sources_ps_gr['mag_g_err']**2 + 
+    (airmass_g * extinction_coefficient_error_g)**2 + 
+    (extinction_coefficient_g * airmass_error_g)**2
+)
+
+# Calculate the propagated error for each zero_point_r 
+# The 'r' band zeropoint calculated from the "_gr" and "_ri" dataframe give the same result, so we can just pick "matched_sources_ps_gr"
+
+matched_sources_ps_gr['zero_point_r_err'] = np.sqrt(
+    matched_sources_ps_gr['ps_r_err']**2 + 
+    matched_sources_ps_gr['mag_r_err']**2 + 
+    (airmass_r * extinction_coefficient_error_r)**2 + 
+    (extinction_coefficient_r * airmass_error_r)**2
+)
+
+# Calculate the propagated error for each zero_point_i
+matched_sources_ps_ri['zero_point_i_err'] = np.sqrt(
+    matched_sources_ps_ri['ps_i_err']**2 + 
+    matched_sources_ps_ri['mag_i_err']**2 + 
+    (airmass_i * extinction_coefficient_error_i)**2 + 
+    (extinction_coefficient_i * airmass_error_i)**2
+)
+
+
+zero_point_value_g = np.mean(matched_sources_ps_gr['zero_point_g'])
+zero_point_value_r_1 = np.mean(matched_sources_ps_gr['zero_point_r'])
+zero_point_value_r_2 = np.mean(matched_sources_ps_ri['zero_point_r']) #This gives the same value as _r_1
+zero_point_value_i = np.mean(matched_sources_ps_ri['zero_point_i'])
+
+zero_point_value_g_err = np.sqrt(np.sum(matched_sources_ps_gr['zero_point_g_err']**2)) / len(matched_sources_ps_gr['zero_point_g_err'])
+zero_point_value_r_err = np.sqrt(np.sum(matched_sources_ps_gr['zero_point_r_err']**2)) / len(matched_sources_ps_gr['zero_point_r_err'])
+zero_point_value_i_err = np.sqrt(np.sum(matched_sources_ps_ri['zero_point_i_err']**2)) / len(matched_sources_ps_ri['zero_point_i_err'])
+
+# With this, we obtain the following zeropoint estimation for each band:
+
+zero_point_estimation_g = 28.15227
+zero_point_estimation_error_g = 0.01692 
+
+zero_point_estimation_r = 28.24766 
+zero_point_estimation_error_r = 0.01008
+
+zero_point_estimation_i = 27.81407
+zero_point_estimation_error_i = 0.01047
+
+# Which for Yasone-2, I obtained:
+
+# zero_point_estimation_g = 28.12761 
+# zero_point_estimation_error_g = 0.01931
+
+# zero_point_estimation_r = 28.13342
+# zero_point_estimation_error_r = 0.00882
+
+# zero_point_estimation_i = 27.61163
+# zero_point_estimation_error_i = 0.01528
+
+# And for Yasone-3:
+
+# zero_point_estimation_g = 27.93537
+# zero_point_estimation_error_g = 0.01880
+
+# zero_point_estimation_r = 28.06096 
+# zero_point_estimation_error_r = 0.01128
+
+# zero_point_estimation_i = 27.49029
+# zero_point_estimation_error_i = 0.01095
+
+
+
+###################################
+# Here is where we finally obtain flux 
+# and magnitude values
+###################################
+
+df_g['mag_inst'] = -2.5 * np.log10(flux_g)
+df_r['mag_inst'] = -2.5 * np.log10(flux_r)
+df_i['mag_inst'] = -2.5 * np.log10(flux_i)
+
+df_g['mag_inst_err'] = (2.5 / np.log(10)) * (fluxerr_g / flux_g)
+df_r['mag_inst_err'] = (2.5 / np.log(10)) * (fluxerr_r / flux_r)
+df_i['mag_inst_err'] = (2.5 / np.log(10)) * (fluxerr_i / flux_i)
+
+df_g['mag_apparent'] = zero_point_estimation_g + df_g['mag_inst'] - (extinction_coefficient_g * airmass_g)
+df_r['mag_apparent'] = zero_point_estimation_r + df_r['mag_inst'] - (extinction_coefficient_r * airmass_r)
+df_i['mag_apparent'] = zero_point_estimation_i + df_i['mag_inst'] - (extinction_coefficient_i * airmass_i)
+
+df_g['mag_apparent_error'] = np.sqrt(zero_point_estimation_error_g**2 + df_g['mag_inst_err']**2 +
+                                    (airmass_g * extinction_coefficient_error_g)**2 + 
+                                    (extinction_coefficient_g * airmass_error_g)**2)
+
+df_r['mag_apparent_error'] = np.sqrt(zero_point_estimation_error_r**2 + df_r['mag_inst_err']**2 +
+                                    (airmass_r * extinction_coefficient_error_r)**2 + 
+                                    (extinction_coefficient_r * airmass_error_r)**2)
+
+df_i['mag_apparent_error'] = np.sqrt(zero_point_estimation_error_i**2 + df_i['mag_inst_err']**2 +
+                                    (airmass_i * extinction_coefficient_error_i)**2 + 
+                                    (extinction_coefficient_i * airmass_error_i)**2)
+
+###################################
+# Here we convert a spatial notation 
+# based on pixels to the RADEC system
+###################################
+
+# Get the World Coordinate System information
+
+wcs_g = WCS(header_g)
+wcs_r = WCS(header_r)
+wcs_i = WCS(header_i)
+
+# Convert pixel coordinates to world coordinates (RA, DEC)
+# The second argument is the origin (1 for FITS convention)
+
+ra_dec_g = wcs_g.wcs_pix2world(np.column_stack((df_g['x'], df_g['y'])), 1)
+df_g['ra'] = ra_dec_g[:, 0]
+df_g['dec'] = ra_dec_g[:, 1]
+
+ra_dec_r = wcs_r.wcs_pix2world(np.column_stack((df_r['x'], df_r['y'])), 1)
+df_r['ra'] = ra_dec_r[:, 0]
+df_r['dec'] = ra_dec_r[:, 1]
+
+ra_dec_i = wcs_i.wcs_pix2world(np.column_stack((df_i['x'], df_i['y'])), 1)
+df_i['ra'] = ra_dec_i[:, 0]
+df_i['dec'] = ra_dec_i[:, 1]
+
+###################################
+# Here I just did a little zoom to focus 
+# on the region around our candidate's centroid. 
+# This step can of course take place much 
+# earlier or later, to your liking.
+# For Yasone 2 and 3, their centroids are in the paper.
+# These centroids were determined when I was searching for overdensities
+# in Pan-STARRS, and they just happened to be the coordinates of the stellar
+# member with the highest number of stellar neighbours, but of course
+# this centroid can be adjusted. I leave it to your criteria. 
+###################################
+
+df_cut_g = df_g[(df_g['ra'] >= 265.52019 - 0.5) & (df_g['ra'] <= 265.52019 + 0.5) &
+                (df_g['dec'] >= 13.171462 - 0.5) & (df_g['dec'] <= 13.171462 + 0.5)].copy()
+
+df_cut_r = df_r[(df_r['ra'] >= 265.52019 - 0.5) & (df_r['ra'] <= 265.52019 + 0.5) &
+                (df_r['dec'] >= 13.171462 - 0.5) & (df_r['dec'] <= 13.171462 + 0.5)].copy()
+
+df_cut_i = df_i[(df_i['ra'] >= 265.52019 - 0.5) & (df_i['ra'] <= 265.52019 + 0.5) &
+                (df_i['dec'] >= 13.171462 - 0.5) & (df_i['dec'] <= 13.171462 + 0.5)].copy()
+
+
+p1_cut = p1_cut.reset_index(drop = True)
+df_cut_g = df_cut_g.reset_index(drop = True)
+df_cut_r = df_cut_r.reset_index(drop = True)
+df_cut_i = df_cut_i.reset_index(drop = True)
+
+
+###################################
+# Now that we have 3 different dataframes with 
+# a varying number of sources 
+# (depending on the threshold value, the definition of the aperture etc.)
+# this is how I would typically "join them" so that we can evaluate all 
+# the bands information for each source. Since I was especially interested
+# in recreating g vs r-g and r vs r-i plots, I created 2 dataframes, one containing
+# the information from the g and r bands, and another one with r and i.
+###################################
+
+observed_coords_g = df_cut_g[['ra', 'dec']].to_numpy()
+observed_coords_r = df_cut_r[['ra', 'dec']].to_numpy()
+observed_coords_i = df_cut_i[['ra', 'dec']].to_numpy()
+
+# Create KDTree for the bottleneck (the array with least amount of sources). In g-r that's g. In r-i that's r.
+tree_g = KDTree(observed_coords_g)
+tree_r = KDTree(observed_coords_r)
+
+# Query the KDTree for the nearest neighbor of each observed coordinate. Here is where you specify the secoundary array (r, i)
+distances_gr, indices_gr = tree_g.query(observed_coords_r, distance_upper_bound = 1/3600)  # 1 arcsecond = 1/3600 degree
+distances_ri, indices_ri = tree_r.query(observed_coords_i, distance_upper_bound = 1/3600)
+
+# Filter out matches within 1 arcsecond
+valid_matches_gr = distances_gr < np.inf
+valid_indices_gr = indices_gr[valid_matches_gr]
+valid_distances_gr = distances_gr[valid_matches_gr]
+
+valid_matches_ri = distances_ri < np.inf
+valid_indices_ri = indices_ri[valid_matches_ri]
+valid_distances_ri = distances_ri[valid_matches_ri]
+
+# Build the dataframe of matched sources for g-r and r-i
+# ¡¡¡IMPORTANT!!!
+# WHEN EXTRACTING THE ROWS OF INTEREST FROM THE ORIGINAL BOTTLENECK DATAFRAME ==> USE valid_indices
+# WHEN EXTRACTING THE ROWS OF INTEREST FROM THE ORIGINAL LARGER DATAFRAME ==> USE valid_matches
+matched_sources_gr = pd.DataFrame({
+    'ra_g': df_cut_g.iloc[valid_indices_gr]['ra'].values,
+    'dec_g': df_cut_g.iloc[valid_indices_gr]['dec'].values,
+    'mag_g': df_cut_g.iloc[valid_indices_gr]['mag_apparent'].values,
+    'mag_g_err': df_cut_g.iloc[valid_indices_gr]['mag_apparent_error'].values,
+    'ellipticity_g': df_cut_g.iloc[valid_indices_gr]['ellipticity'].values,
+    'ra_r': df_cut_r.iloc[valid_matches_gr]['ra'].values,
+    'dec_r': df_cut_r.iloc[valid_matches_gr]['dec'].values,
+    'mag_r': df_cut_r.iloc[valid_matches_gr]['mag_apparent'].values,
+    'mag_r_err': df_cut_r.iloc[valid_matches_gr]['mag_apparent_error'].values,
+    'ellipticity_r': df_cut_r.iloc[valid_matches_gr]['ellipticity'].values,
+    'distance_gr': valid_distances_gr
+})
+
+matched_sources_gr['mag_gr'] = matched_sources_gr['mag_g'] - matched_sources_gr['mag_r']
+matched_sources_gr['mag_gr_err'] = np.sqrt(matched_sources_gr['mag_g_err']**2 + matched_sources_gr['mag_r_err']**2)
+
+matched_sources_ri = pd.DataFrame({
+    'ra_r': df_cut_r.iloc[valid_indices_ri]['ra'].values,
+    'dec_r': df_cut_r.iloc[valid_indices_ri]['dec'].values,
+    'mag_r': df_cut_r.iloc[valid_indices_ri]['mag_apparent'].values,
+    'mag_r_err': df_cut_r.iloc[valid_indices_ri]['mag_apparent_error'].values,
+    'ellipticity_r': df_cut_r.iloc[valid_indices_ri]['ellipticity'].values,
+    'ra_i': df_cut_i.iloc[valid_matches_ri]['ra'].values,
+    'dec_i': df_cut_i.iloc[valid_matches_ri]['dec'].values,
+    'mag_i': df_cut_i.iloc[valid_matches_ri]['mag_apparent'].values,
+    'mag_i_err': df_cut_i.iloc[valid_matches_ri]['mag_apparent_error'].values,
+    'ellipticity_i': df_cut_i.iloc[valid_matches_ri]['ellipticity'].values,
+    'distance_ri': valid_distances_ri
+})
+
+matched_sources_ri['mag_ri'] = matched_sources_ri['mag_r'] - matched_sources_ri['mag_i']
+matched_sources_ri['mag_ri_err'] = np.sqrt(matched_sources_ri['mag_r_err']**2 + matched_sources_ri['mag_i_err']**2)
+
+
+###################################
+# And with that, you have 2 catalogues of sources
+# for each Yasone; 
+# one containing "g-r" info -> "matched_sources_gr"
+# and containing "r-i" info -> "matched_sources_ri"
+###################################
+
+
+###################################
+# Now, a few extra addendums:
+# To select stars around the centroid
+# Here we define the _cut versions of matched_sources_gr (same for _ri)
+###################################
+
+# Selecting sources from the candidate g-r
+radius_g = np.sqrt((matched_sources_gr['ra_g'] - 265.52019)**2 + (matched_sources_gr['dec_g'] - 13.17146)**2)
+radius_r = np.sqrt((matched_sources_gr['ra_r'] - 265.52019)**2 + (matched_sources_gr['dec_r'] - 13.17146)**2)
+radius_gr = (radius_g + radius_r)/2
+
+matched_sources_gr['radius'] = radius_gr
+matched_sources_gr_cut = matched_sources_gr[matched_sources_gr['radius'] <= 40/3600].copy()
+
+
+###################################
+# Here I apply the Tonry corrections
+# to be able to plot in the same CMD
+# stars from Pan-STARRS and GTC, Which use 
+# slightly different filters
+###################################
+
+
+# transforming my G,R bands from GTC to the PanSTARRS notation of filters
+
+matched_sources_gr_cut['mag_g_good'] = (matched_sources_gr_cut['mag_g'] - 0.011 - 0.125*(matched_sources_gr_cut['mag_gr']) 
+                                       - 0.015 * (matched_sources_gr_cut['mag_gr']** 2))
+
+matched_sources_gr_cut['mag_r_good'] = (matched_sources_gr_cut['mag_r'] + 0.001 - 0.006*(matched_sources_gr_cut['mag_gr'])
+                                       - 0.002 * (matched_sources_gr_cut['mag_gr'] ** 2))
+
+# Error propagation for mag_g_good
+
+matched_sources_gr_cut['mag_g_good_err'] = np.sqrt(
+    ((0.875 - 0.03 * matched_sources_gr_cut['mag_gr']) * matched_sources_gr_cut['mag_g_err']) ** 2 +
+    ((-0.125 + 0.03 * matched_sources_gr_cut['mag_gr']) * matched_sources_gr_cut['mag_r_err']) ** 2 +
+    (0.006**2) #Associated error of the conversion, Table 6 THE Pan-STARRS1 PHOTOMETRIC SYSTEM Tonry et al. 2012
+)
+
+# Error propagation for mag_r_good
+
+matched_sources_gr_cut['mag_r_good_err'] = np.sqrt(
+    ((-0.006 - 0.004 * matched_sources_gr_cut['mag_gr']) * matched_sources_gr_cut['mag_g_err']) ** 2 +
+    ((1.006 - 0.004 * matched_sources_gr_cut['mag_gr']) * matched_sources_gr_cut['mag_r_err']) ** 2 +
+    (0.002**2) #Associated error of the conversion, Table 6 THE Pan-STARRS1 PHOTOMETRIC SYSTEM Tonry et al. 2012
+)
+
+# Error propagation for mag_gr_good
+
+matched_sources_gr_cut['mag_gr_good'] = matched_sources_gr_cut['mag_g_good'] - matched_sources_gr_cut['mag_r_good']
+
+matched_sources_gr_cut['mag_gr_good_err'] = np.sqrt(
+    matched_sources_gr_cut['mag_g_good_err']**2 + matched_sources_gr_cut['mag_r_good_err']**2)
+
+
+###################################
+# I can't find the code I used
+# to distinguish stars from galaxies,
+# but basically I made a crossmatch between
+# the GTC data and the Pan-STARRS sources.
+# Since Pan-STARRS already has them classified as stars or galaxies,
+# I made a selection of sources in GTC that corresponded to well classified stars in Pan-STARRS.
+# Then I made a distribution of the ellipticity values of those stars as detected by GTC.
+# If a source in GTC had an ellipticity value that was too elliptical compared to that distribution of ellipticities
+# (sorry, I can't remember the exact formula I used), then that source was considered a Galaxy and removed. 
+# Hope this helps.
+###################################
+
+
