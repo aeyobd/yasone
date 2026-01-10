@@ -37,7 +37,8 @@ def show_image_residual(image, image2, perc=99, clim=None, **kwargs):
 
 def show_image(image,
                percl=99, percu=None, is_mask=False,
-               figsize=(3, 3),
+               figsize=(10, 10),
+               dpi = None,
                cmap='viridis', log=False, clip=True,
                clabel=None,
                clim=None,
@@ -61,6 +62,9 @@ def show_image(image,
         percu = percl
         percl = 100 - percl
 
+    if dpi is None:
+        dpi = image.shape[0] / figsize[0]
+
     if (fig is None and ax is not None) or (fig is not None and ax is None):
         raise ValueError('Must provide both "fig" and "ax" '
                          'if you provide one of them')
@@ -70,7 +74,7 @@ def show_image(image,
             image_aspect_ratio = image.shape[0] / image.shape[1]
             figsize = (max(figsize) * image_aspect_ratio, max(figsize))
 
-        fig, ax = plt.subplots(1, 1, figsize=figsize)
+        fig, ax = plt.subplots(1, 1, figsize=figsize, dpi=dpi)
 
 
     # To preserve details we should *really* downsample correctly and
@@ -80,6 +84,7 @@ def show_image(image,
     # roughly that,and display the block reduced image.
 
     # Thanks, https://stackoverflow.com/questions/29702424/how-to-get-matplotlib-figure-size
+
     fig_size_pix = fig.get_size_inches() * fig.dpi
 
     ratio = (image.shape // fig_size_pix).max()

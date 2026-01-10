@@ -1,0 +1,9 @@
+[yasone_1.g]
+stacked = "stacked"
+semi_stacked = ["OB0001/reduced/stacked_g.fits"]
+frames = ["OB0001/reduced/object/", "OB0001/reduced/object/"]
+julen = ["stacked_0_9/"]
+sausero = []
+
+[yasone_1.r]
+stacked = "stacked_r"
