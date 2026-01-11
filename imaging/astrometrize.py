@@ -107,7 +107,7 @@ def modify_WCS(best_wcs, PATH_TO_FILE):
         CCDData: Science frame with its WCS updated.
     """
     frame = CCDData.read(PATH_TO_FILE, unit='adu')
-    new_path = PATH_TO_FILE.parent / PATH_TO_FILE.stem + "-astrom.fits"
+    new_path = PATH_TO_FILE.parent / (PATH_TO_FILE.stem + "-astrom.fits")
     
     if best_wcs is None:
         logger.warning(f"{bcl.WARNING}The original WCS has been kept{bcl.ENDC}")
@@ -116,6 +116,7 @@ def modify_WCS(best_wcs, PATH_TO_FILE):
         best_wcs = WCS(best_wcs)
         new_frame =  CCDData(data=frame.data, header=frame.header, wcs=best_wcs,
                             unit='adu')
+        print("saving to ", new_path)
         new_frame.write(new_path)
         logger.info(f"{bcl.OKGREEN}The WCS for {os.path.basename(PATH_TO_FILE)} has been updated{bcl.ENDC}")
         return new_frame

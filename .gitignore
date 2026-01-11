@@ -1,6 +1,7 @@
 .DS_Store
 .virtual_documents
 *.gz
+*.csv
 
 *.fits
 *.pdf

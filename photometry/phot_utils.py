@@ -7,7 +7,9 @@ import numpy as np
 from astropy import coordinates
 from astropy import units as u
 
+plate_scale = 0.254 # arcmin / pixel
 
+# From documentation (OSIRIS/GTC Broad Band Imaging calibration)
 extinction_dict = {
     'Sloan_u': [0.45, 0.02],
     'Sloan_g': [0.15, 0.02],
@@ -15,6 +17,13 @@ extinction_dict = {
     'Sloan_i': [0.04, 0.01],
     'Sloan_z': [0.03, 0.01]
 }
+
+# There are also colour corrections
+#u’ – u’0 = -25.807(±0.053) - 0.071 (±0.023) (u’0 – g’0)
+#g’ – g’0 = -28.823 (±0.040) - 0.078 (±0.013) (g’0 – r’0)
+#r’ – r’0 = -29.291 (±0.017) - 0.114 (±0.028) (r’0 – i’0)
+#i’ – i’0 = -28.857 (±0.015) - 0.079 (±0.041) (i’0 – z’0)
+#z’ – z’0 = -28.231(±0.031) - 0.072 (±0.052) (i’0 – z’0)
 
 
 def plot_sources(objects, img, scale=6):
