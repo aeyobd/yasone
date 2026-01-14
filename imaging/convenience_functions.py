@@ -1,8 +1,11 @@
 from astropy import visualization as aviz
 from astropy.nddata.blocks import block_reduce
 from astropy.nddata.utils import Cutout2D
+from astropy.stats import mad_std
+
 from matplotlib import pyplot as plt
 import numpy as np
+import ccdproc
 
 
 
@@ -34,6 +37,7 @@ def show_image_residual(image, image2, perc=99, clim=None, **kwargs):
         clim = (-val, val)
 
     return show_image(diff, clim=clim, cmap="RdBu")
+
 
 def show_image(image,
                percl=99, percu=None, is_mask=False,
@@ -277,3 +281,21 @@ def display_cosmic_rays(cosmic_rays, images, titles=None,
     # This choice results in the images close to each other but with
     # a small gap.
     plt.subplots_adjust(wspace=0.1, hspace=0.05)
+
+
+
+
+"""
+    combine_images(filenames, **kwargs)
+
+Combines images using ccdproc. Expects CCDData and uses
+median combination with MAD_STD sigma clipping at 5 sigma.
+"""
+def combine_images(filenames, method="median", **kwargs):
+    return ccdproc.combine(filenames, 
+                           method=method,
+                           sigma_clip=True, sigma_clip_low_thresh=5, sigma_clip_high_thresh=5, 
+                           sigma_clip_func=np.ma.median, sigma_clip_dev_func=mad_std, 
+                           mem_limit=1e9,
+                           **kwargs
+                            )
