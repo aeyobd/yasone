@@ -2,6 +2,7 @@
 .virtual_documents
 *.gz
 *.csv
+*.cat
 
 *.fits
 *.pdf

@@ -3,7 +3,7 @@
 #
 #----------------------------------- Output -----------------------------------
 IMAGEOUT_NAME          coadd.fits      # Output filename
-WEIGHTOUT_NAME       coadd.weight.fits # Output weight-map filename
+WEIGHTOUT_NAME         coadd.weight.fits # Output weight-map filename
  
 HEADER_ONLY            N               # Only a header as an output file (Y/N)?
 HEADER_SUFFIX          .head           # Filename extension for additional headers
@@ -19,23 +19,25 @@ WEIGHT_IMAGE                           # Weightmap filename if suffix not used
 #------------------------------- Co-addition ----------------------------------
  
 COMBINE                Y               # Combine resampled images (Y/N)?
-COMBINE_TYPE           MEDIAN          # MEDIAN,AVERAGE,MIN,MAX,WEIGHTED,CLIPPED
+COMBINE_TYPE           AVERAGE          # MEDIAN,AVERAGE,MIN,MAX,WEIGHTED,CLIPPED
                                        # CHI-OLD,CHI-MODE,CHI-MEAN,SUM,
                                        # WEIGHTED_WEIGHT,MEDIAN_WEIGHT,
                                        # AND,NAND,OR or NOR
  
 #-------------------------------- Astrometry ----------------------------------
  
-CELESTIAL_TYPE         PIXEL          # NATIVE, PIXEL, EQUATORIAL,
+CELESTIAL_TYPE         NATIVE          # NATIVE, PIXEL, EQUATORIAL,
                                        # GALACTIC,ECLIPTIC, or SUPERGALACTIC
+                                       # DB: Do not use pixel if you want distortion correction!
 PROJECTION_TYPE        TAN             # Any WCS projection code or NONE
-PROJECTION_ERR         0.001           # Maximum projection error (in output
+PROJECTION_ERR         0           # Maximum projection error (in output
                                        # pixels), or 0 for no approximation
+                                       # DB: Our setup requires this to be not approximated
 CENTER_TYPE            ALL             # MANUAL, ALL or MOST
 CENTER                 0               # Coordinates of the image center
 PIXELSCALE_TYPE        MEDIAN          # MANUAL,FIT,MIN,MAX or MEDIAN
-PIXEL_SCALE            0.0254             # Pixel scale
-IMAGE_SIZE             2003, 1797               # Image size (0 = AUTOMATIC)
+PIXEL_SCALE            0               # Pixel scale
+IMAGE_SIZE             0.0               # Image size (0 = AUTOMATIC)
  
 #-------------------------------- Resampling ----------------------------------
  

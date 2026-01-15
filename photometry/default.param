@@ -70,16 +70,16 @@ Y_IMAGE                  #Object position along y                               
 #Y_MAMA                   #Barycenter position along MAMA y axis                     [m**(-6)]
 #ALPHA_SKY                #Right ascension of barycenter (native)                    [deg]
 #DELTA_SKY                #Declination of barycenter (native)                        [deg]
-ALPHA_J2000              #Right ascension of barycenter (J2000)                     [deg]
-DELTA_J2000              #Declination of barycenter (J2000)                         [deg]
+#ALPHA_J2000              #Right ascension of barycenter (J2000)                     [deg]
+#DELTA_J2000              #Declination of barycenter (J2000)                         [deg]
 #ALPHA_B1950              #Right ascension of barycenter (B1950)                     [deg]
 #DELTA_B1950              #Declination of barycenter (B1950)                         [deg]
 X2_IMAGE                 #Variance along x                                          [pixel**2]
 Y2_IMAGE                 #Variance along y                                          [pixel**2]
 XY_IMAGE                 #Covariance between x and y                                [pixel**2]
-X2_WORLD                 #Variance along X-WORLD (alpha)                            [deg**2]
-Y2_WORLD                 #Variance along Y-WORLD (delta)                            [deg**2]
-XY_WORLD                 #Covariance between X-WORLD and Y-WORLD                    [deg**2]
+#X2_WORLD                 #Variance along X-WORLD (alpha)                            [deg**2]
+#Y2_WORLD                 #Variance along Y-WORLD (delta)                            [deg**2]
+#XY_WORLD                 #Covariance between X-WORLD and Y-WORLD                    [deg**2]
 #CXX_IMAGE                #Cxx object ellipse parameter                              [pixel**(-2)]
 #CYY_IMAGE                #Cyy object ellipse parameter                              [pixel**(-2)]
 #CXY_IMAGE                #Cxy object ellipse parameter                              [pixel**(-2)]
@@ -116,8 +116,8 @@ THETA_J2000              #Position angle (east of north) (J2000)                
 #ERRTHETA_SKY             #Native error ellipse pos. angle (east of north)           [deg]
 #ERRTHETA_J2000           #J2000 error ellipse pos. angle (east of north)            [deg]
 #ERRTHETA_B1950           #B1950 error ellipse pos. angle (east of north)            [deg]
-#XWIN_IMAGE               #Windowed position estimate along x                        [pixel]
-#YWIN_IMAGE               #Windowed position estimate along y                        [pixel]
+XWIN_IMAGE               #Windowed position estimate along x                        [pixel]
+YWIN_IMAGE               #Windowed position estimate along y                        [pixel]
 #XWIN_FOCAL               #Windowed position along focal-plane x axis               
 #YWIN_FOCAL               #Windowed position along focal-plane y axis               
 #XWIN_WORLD               #Windowed position along world x axis                      [deg]
@@ -161,9 +161,9 @@ THETA_J2000              #Position angle (east of north) (J2000)                
 #ERRCXXWIN_WORLD          #Cxx windowed error ellipse parameter (WORLD units)        [deg**(-2)]
 #ERRCYYWIN_WORLD          #Cyy windowed error ellipse parameter (WORLD units)        [deg**(-2)]
 #ERRCXYWIN_WORLD          #Cxy windowed error ellipse parameter (WORLD units)        [deg**(-2)]
-#ERRAWIN_IMAGE            #RMS windowed pos error along major axis                   [pixel]
-#ERRBWIN_IMAGE            #RMS windowed pos error along minor axis                   [pixel]
-#ERRTHETAWIN_IMAGE        #Windowed error ellipse pos angle (CCW/x)                  [deg]
+ERRAWIN_IMAGE            #RMS windowed pos error along major axis                   [pixel]
+ERRBWIN_IMAGE            #RMS windowed pos error along minor axis                   [pixel]
+ERRTHETAWIN_IMAGE        #Windowed error ellipse pos angle (CCW/x)                  [deg]
 #ERRAWIN_WORLD            #World RMS windowed pos error along major axis             [deg]
 #ERRBWIN_WORLD            #World RMS windowed pos error along minor axis             [deg]
 #ERRTHETAWIN_WORLD        #Windowed error ellipse pos. angle (CCW/world-x)           [deg]
@@ -184,7 +184,7 @@ THETA_J2000              #Position angle (east of north) (J2000)                
 #ISO6                     #Isophotal area at level 6                                 [pixel**2]
 #ISO7                     #Isophotal area at level 7                                 [pixel**2]
 FLAGS                    ## Extraction flags                                         
-#FLAGS_WEIGHT             ## Weighted extraction flags                                
+FLAGS_WEIGHT             ## Weighted extraction flags                                
 #FLAGS_WIN                #Flags for WINdowed parameters                            
 #IMAFLAGS_ISO             #FLAG-image flags OR'ed over the iso. profile             
 #NIMAFLAGS_ISO            #Number of flagged pixels entering IMAFLAGS_ISO           
@@ -192,7 +192,7 @@ FLAGS                    ## Extraction flags
 #NLOWDWEIGHT_ISO          #Nb of pixels with low det. weight over the iso. profile  
 FWHM_IMAGE               ## FWHM assuming a gaussian core                             [pixel]
 FWHM_WORLD               #FWHM assuming a gaussian core                             [deg]
-#ELONGATION               #A_IMAGE/B_IMAGE                                          
+ELONGATION               #A_IMAGE/B_IMAGE                                          
 ELLIPTICITY              #1 - B_IMAGE/A_IMAGE                                      
 #POLAR_IMAGE              #(A_IMAGE^2 - B_IMAGE^2)/(A_IMAGE^2 + B_IMAGE^2)          
 #POLAR_WORLD              #(A_WORLD^2 - B_WORLD^2)/(A_WORLD^2 + B_WORLD^2)          
@@ -208,7 +208,7 @@ ELLIPTICITY              #1 - B_IMAGE/A_IMAGE
 #FLUX_GROWTHSTEP          #Step for growth-curves                                    [pixel]
 #MAG_GROWTH               #Cumulated magnitude growth-curve                          [mag]
 #MAG_GROWTHSTEP           #Step for growth-curves                                    [pixel]
-#FLUX_RADIUS              #Fraction-of-light radii                                   [pixel]
+FLUX_RADIUS              #Fraction-of-light radii                                   [pixel]
 #XPSF_IMAGE               #X coordinate from PSF-fitting                             [pixel]
 #YPSF_IMAGE               #Y coordinate from PSF-fitting                             [pixel]
 #XPSF_WORLD               #PSF position along world x axis                           [deg]
