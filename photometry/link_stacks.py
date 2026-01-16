@@ -22,7 +22,7 @@ def link_files():
     newdirs = [get_newdir(file) for file in filenames]
 
     for newdir in newdirs:
-        newname = newdir / "nobkg.fits"
+        newname = newdir / "stacked.fits"
 
         if not newdir.is_dir():
             newdir.mkdir()

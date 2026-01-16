@@ -13,7 +13,7 @@ def main():
 
     outdir = Path(objectname) / f"stacked_{filtername}"
     indirs = ["../.." / x for x in
-              Path(objectname).glob(f"img_{filtername}_*/scamped.fits")]
+              Path(objectname).glob(f"img_{filtername}_*/nobkg.fits")]
     print("combining ", indirs, "into", outdir)
 
     if not outdir.is_dir():
