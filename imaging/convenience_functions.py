@@ -6,6 +6,10 @@ from astropy.stats import mad_std
 from matplotlib import pyplot as plt
 import numpy as np
 import ccdproc
+import seaborn
+
+
+cmap = seaborn.color_palette("mako", as_cmap=True)
 
 
 
@@ -43,7 +47,7 @@ def show_image(image,
                percl=99, percu=None, is_mask=False,
                figsize=(10, 10),
                dpi = None,
-               cmap='viridis', log=False, clip=True,
+               cmap=cmap, log=False, clip=True,
                clabel=None,
                clim=None,
                show_colorbar=True, show_ticks=True,
