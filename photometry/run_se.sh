@@ -7,6 +7,6 @@ echo "cd $1"
 cwd=$(pwd)
 cd $1
 
-sex -c ../../default.sex flat_fielded-astrom.fits
+sex -c ../../frame.sex flat_fielded-astrom.fits
 
 cd $cwd

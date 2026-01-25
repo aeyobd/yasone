@@ -19,16 +19,16 @@
   <PARAM name="Soft_Auth" datatype="char" arraysize="*" ucd="meta.bib.author;meta.software" value="Emmanuel Bertin"/>
   <PARAM name="Soft_Ref" datatype="char" arraysize="*" ucd="meta.bib.bibcode;meta.software" value="2006ASPC..351..112B"/>
   <PARAM name="NThreads" datatype="int" ucd="meta.number;meta.software" value="8"/>
-  <PARAM name="Date" datatype="char" arraysize="*" ucd="time.end;meta.software" value="2026-01-15"/>
-  <PARAM name="Time" datatype="char" arraysize="*" ucd="time.end;meta.software" value="15:54:00"/>
-  <PARAM name="Duration" datatype="float" ucd="time.duration;meta.software" value="16" unit="s"/>
+  <PARAM name="Date" datatype="char" arraysize="*" ucd="time.end;meta.software" value="2026-01-22"/>
+  <PARAM name="Time" datatype="char" arraysize="*" ucd="time.end;meta.software" value="20:49:34"/>
+  <PARAM name="Duration" datatype="float" ucd="time.duration;meta.software" value="15" unit="s"/>
   <PARAM name="User" datatype="char" arraysize="*" ucd="meta.curation" value="daniel"/>
   <PARAM name="Host" datatype="char" arraysize="*" ucd="meta.curation" value="(null)"/>
   <PARAM name="Path" datatype="char" arraysize="*" ucd="meta.dataset" value="/Users/daniel/yasone/photometry/yasone2/scamp"/>
   <TABLE ID="Fields" name="Fields">
    <DESCRIPTION>Data gathered by SCAMP for every  input catalog</DESCRIPTION>
    <!-- NFields may be 0 if an error occurred early in the processing -->
-   <PARAM name="NFields" datatype="int" ucd="meta.number;meta.dataset" value="16"/>
+   <PARAM name="NFields" datatype="int" ucd="meta.number;meta.dataset" value="14"/>
    <FIELD name="Catalog_Number" datatype="int" ucd="meta.record;meta.table;meta.file"/>
    <FIELD name="Catalog_Name" datatype="char" arraysize="*" ucd="meta.id;meta.table;meta.file"/>
    <FIELD name="Image_Ident" datatype="char" arraysize="*" ucd="meta.id;obs.field"/>
@@ -78,178 +78,156 @@
     <TR>
      <TD>1</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1514</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519392547</TD><TD>190.000</TD><TD>1.09</TD><TD>262.3470677 6.436237805</TD>
-     <TD>0.254391  0.254391</TD><TD>5.72248</TD><TD>0</TD>
-     <TD>1</TD><TD>0</TD><TD>0.812207</TD>
-     <TD>0.000153435</TD><TD>2.92156e-05</TD><TD>4.33712</TD><TD>0</TD><TD>0</TD>
-     <TD>2.22735</TD><TD>15687</TD><TD>2.22735</TD><TD>15687</TD>
-     <TD>0.000451287 0.00322725</TD><TD>0.0372203 0.0442503</TD><TD>-0.066269</TD><TD>131.617</TD><TD>331</TD><TD>0.000451287 0.00322725</TD><TD>0.0372203 0.0442503</TD><TD>-0.066269</TD><TD>131.617</TD><TD>331</TD>
+     <TD>2663</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519428228</TD><TD>190.000</TD><TD>1.08</TD><TD>262.3469953 6.436261109</TD>
+     <TD>0.255064  0.255064</TD><TD>5.72833</TD><TD>0</TD>
+     <TD>1</TD><TD>0</TD><TD>0.931759</TD>
+     <TD>0.000277689</TD><TD>2.76808e-05</TD><TD>3.64593</TD><TD>0</TD><TD>0</TD>
+     <TD>154.276</TD><TD>24566</TD><TD>253.517</TD><TD>14322</TD>
+     <TD>0.0117016 0.0112945</TD><TD>0.204847 0.190819</TD><TD>0.839</TD><TD>2529.2</TD><TD>235</TD><TD>0.0117016 0.0112945</TD><TD>0.204847 0.190819</TD><TD>0.839</TD><TD>2529.2</TD><TD>235</TD>
     </TR>
     <TR>
      <TD>2</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1652</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519399550</TD><TD>190.000</TD><TD>1.09</TD><TD>262.349893 6.437576487</TD>
-     <TD>0.254119  0.254119</TD><TD>5.71745</TD><TD>0</TD>
-     <TD>1</TD><TD>0</TD><TD>0.906361</TD>
-     <TD>0.000188659</TD><TD>2.96656e-06</TD><TD>5.18552</TD><TD>0</TD><TD>0</TD>
-     <TD>1.99405</TD><TD>16180</TD><TD>1.99405</TD><TD>16180</TD>
-     <TD>-2.60067e-05 0.00396848</TD><TD>0.0347915 0.0462573</TD><TD>-0.102604</TD><TD>134.503</TD><TD>284</TD><TD>-2.60067e-05 0.00396848</TD><TD>0.0347915 0.0462573</TD><TD>-0.102604</TD><TD>134.503</TD><TD>284</TD>
+     <TD>2663</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519435231</TD><TD>190.000</TD><TD>1.08</TD><TD>262.3498528 6.437590057</TD>
+     <TD>0.254185  0.254185</TD><TD>5.71379</TD><TD>0</TD>
+     <TD>0.99824</TD><TD>0.00983011</TD><TD>0.974001</TD>
+     <TD>2.759e-05</TD><TD>1.27764e-05</TD><TD>3.17602</TD><TD>0.0016587</TD><TD>12.0544</TD>
+     <TD>148.436</TD><TD>24484</TD><TD>242.708</TD><TD>14352</TD>
+     <TD>0.00177268 0.0141243</TD><TD>0.187387 0.171108</TD><TD>0.828721</TD><TD>2372.48</TD><TD>255</TD><TD>0.00177268 0.0141243</TD><TD>0.187387 0.171108</TD><TD>0.828721</TD><TD>2372.48</TD><TD>255</TD>
     </TR>
     <TR>
      <TD>3</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1578</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519406711</TD><TD>190.000</TD><TD>1.09</TD><TD>262.3442852 6.43914269</TD>
-     <TD>0.25419  0.25419</TD><TD>5.68956</TD><TD>0</TD>
-     <TD>0.999821</TD><TD>-0.0309764</TD><TD>0.820384</TD>
-     <TD>0.000249878</TD><TD>3.12389e-05</TD><TD>3.14313</TD><TD>0.00404739</TD><TD>59.6652</TD>
-     <TD>1.96207</TD><TD>16064</TD><TD>1.96207</TD><TD>16064</TD>
-     <TD>-0.000655497 0.0029129</TD><TD>0.0356238 0.0432601</TD><TD>-0.106768</TD><TD>134.05</TD><TD>295</TD><TD>-0.000655497 0.0029129</TD><TD>0.0356238 0.0432601</TD><TD>-0.106768</TD><TD>134.05</TD><TD>295</TD>
+     <TD>2609</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519442392</TD><TD>190.000</TD><TD>1.08</TD><TD>262.3442714 6.439054045</TD>
+     <TD>0.254063  0.254063</TD><TD>5.69584</TD><TD>0</TD>
+     <TD>0.999902</TD><TD>-0.00520816</TD><TD>0.873199</TD>
+     <TD>4.70862e-05</TD><TD>2.58317e-05</TD><TD>3.72584</TD><TD>0.000186224</TD><TD>65.6068</TD>
+     <TD>142.453</TD><TD>24283</TD><TD>232.118</TD><TD>14293</TD>
+     <TD>0.0130543 0.00293201</TD><TD>0.102457 0.0702818</TD><TD>0.497072</TD><TD>447.125</TD><TD>260</TD><TD>0.0130543 0.00293201</TD><TD>0.102457 0.0702818</TD><TD>0.497072</TD><TD>447.125</TD><TD>260</TD>
     </TR>
     <TR>
      <TD>4</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1602</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519413873</TD><TD>190.000</TD><TD>1.09</TD><TD>262.3455822 6.433474357</TD>
-     <TD>0.254279  0.254279</TD><TD>5.70611</TD><TD>0</TD>
-     <TD>1</TD><TD>0</TD><TD>0.886467</TD>
-     <TD>3.3096e-05</TD><TD>1.57358e-06</TD><TD>3.91442</TD><TD>0</TD><TD>0</TD>
-     <TD>2.12537</TD><TD>16132</TD><TD>2.12537</TD><TD>16132</TD>
-     <TD>-0.00222267 0.00390125</TD><TD>0.0354333 0.0437202</TD><TD>-0.104876</TD><TD>137.2</TD><TD>297</TD><TD>-0.00222267 0.00390125</TD><TD>0.0354333 0.0437202</TD><TD>-0.104876</TD><TD>137.2</TD><TD>297</TD>
+     <TD>2632</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519449554</TD><TD>190.000</TD><TD>1.08</TD><TD>262.3456019 6.433497124</TD>
+     <TD>0.254414  0.254414</TD><TD>5.71117</TD><TD>0</TD>
+     <TD>0.999917</TD><TD>-0.0265947</TD><TD>0.826194</TD>
+     <TD>7.07815e-05</TD><TD>-5.62211e-06</TD><TD>3.5477</TD><TD>0.000538763</TD><TD>87.7123</TD>
+     <TD>118.934</TD><TD>24515</TD><TD>194.663</TD><TD>14241</TD>
+     <TD>0.00167255 -0.00172704</TD><TD>0.164603 0.108745</TD><TD>0.519568</TD><TD>977.027</TD><TD>275</TD><TD>0.00167255 -0.00172704</TD><TD>0.164603 0.108745</TD><TD>0.519568</TD><TD>977.027</TD><TD>275</TD>
     </TR>
     <TR>
      <TD>5</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1659</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519420876</TD><TD>190.000</TD><TD>1.08</TD><TD>262.3484144 6.434823471</TD>
-     <TD>0.254348  0.254348</TD><TD>5.70663</TD><TD>0</TD>
-     <TD>1.00018</TD><TD>0.00260135</TD><TD>0.951647</TD>
-     <TD>0.000151052</TD><TD>5.43069e-07</TD><TD>4.70718</TD><TD>0.000151184</TD><TD>55.044</TD>
-     <TD>2.085</TD><TD>16276</TD><TD>2.085</TD><TD>16276</TD>
-     <TD>-0.00203232 0.00471523</TD><TD>0.0332831 0.0457377</TD><TD>-0.0706121</TD><TD>136.349</TD><TD>280</TD><TD>-0.00203232 0.00471523</TD><TD>0.0332831 0.0457377</TD><TD>-0.0706121</TD><TD>136.349</TD><TD>280</TD>
+     <TD>2607</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519456557</TD><TD>190.000</TD><TD>1.08</TD><TD>262.3484082 6.434851269</TD>
+     <TD>0.254251  0.254251</TD><TD>5.70745</TD><TD>0</TD>
+     <TD>0.999605</TD><TD>-0.000860144</TD><TD>0.992782</TD>
+     <TD>4.86999e-05</TD><TD>-2.91715e-06</TD><TD>3.19029</TD><TD>0.00029297</TD><TD>0.260753</TD>
+     <TD>129.706</TD><TD>24617</TD><TD>210.675</TD><TD>14401</TD>
+     <TD>0.00326429 0.00952628</TD><TD>0.194238 0.169721</TD><TD>0.797816</TD><TD>2265.76</TD><TD>265</TD><TD>0.00326429 0.00952628</TD><TD>0.194238 0.169721</TD><TD>0.797816</TD><TD>2265.76</TD><TD>265</TD>
     </TR>
     <TR>
      <TD>6</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1612</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519508145</TD><TD>190.000</TD><TD>1.09</TD><TD>262.3470368 6.436238731</TD>
-     <TD>0.25428  0.25428</TD><TD>5.70913</TD><TD>0</TD>
-     <TD>0.999566</TD><TD>-0.0106335</TD><TD>0.909155</TD>
-     <TD>0.00015175</TD><TD>-2.37194e-06</TD><TD>4.85433</TD><TD>0.000494626</TD><TD>66.0887</TD>
-     <TD>1.79174</TD><TD>16298</TD><TD>1.79174</TD><TD>16298</TD>
-     <TD>0.000261252 0.00184348</TD><TD>0.0352461 0.0544556</TD><TD>-0.00199556</TD><TD>124.117</TD><TD>277</TD><TD>0.000261252 0.00184348</TD><TD>0.0352461 0.0544556</TD><TD>-0.00199556</TD><TD>124.117</TD><TD>277</TD>
+     <TD>2588</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519555645</TD><TD>190.000</TD><TD>1.11</TD><TD>262.3470728 6.436277649</TD>
+     <TD>0.254563  0.254563</TD><TD>5.72981</TD><TD>0</TD>
+     <TD>1</TD><TD>0</TD><TD>0.889438</TD>
+     <TD>0.000173047</TD><TD>4.72393e-05</TD><TD>3.52704</TD><TD>0</TD><TD>0</TD>
+     <TD>123.715</TD><TD>24836</TD><TD>202.046</TD><TD>14479</TD>
+     <TD>-0.000236974 -0.00722666</TD><TD>0.129599 0.0877883</TD><TD>0.597231</TD><TD>624.288</TD><TD>253</TD><TD>-0.000236974 -0.00722666</TD><TD>0.129599 0.0877883</TD><TD>0.597231</TD><TD>624.288</TD><TD>253</TD>
     </TR>
     <TR>
      <TD>7</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1671</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519515148</TD><TD>190.000</TD><TD>1.09</TD><TD>262.3498414 6.437603684</TD>
-     <TD>0.254702  0.254702</TD><TD>5.72975</TD><TD>0</TD>
-     <TD>1</TD><TD>0</TD><TD>0.852878</TD>
-     <TD>0.000155711</TD><TD>2.96589e-05</TD><TD>3.65916</TD><TD>0</TD><TD>0</TD>
-     <TD>1.98572</TD><TD>16058</TD><TD>1.98572</TD><TD>16058</TD>
-     <TD>-0.000134555 0.00334171</TD><TD>0.0329075 0.0472206</TD><TD>-0.023563</TD><TD>124.032</TD><TD>270</TD><TD>-0.000134555 0.00334171</TD><TD>0.0329075 0.0472206</TD><TD>-0.023563</TD><TD>124.032</TD><TD>270</TD>
+     <TD>2393</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519562649</TD><TD>190.000</TD><TD>1.11</TD><TD>262.3498543 6.437609093</TD>
+     <TD>0.254503  0.254503</TD><TD>5.72606</TD><TD>0</TD>
+     <TD>1</TD><TD>0</TD><TD>0.825974</TD>
+     <TD>5.11413e-05</TD><TD>-2.36351e-05</TD><TD>2.9647</TD><TD>0</TD><TD>0</TD>
+     <TD>107.153</TD><TD>23334</TD><TD>172.257</TD><TD>13892</TD>
+     <TD>-0.00302866 -0.00405257</TD><TD>0.115621 0.0796566</TD><TD>0.544589</TD><TD>412.791</TD><TD>288</TD><TD>-0.00302866 -0.00405257</TD><TD>0.115621 0.0796566</TD><TD>0.544589</TD><TD>412.791</TD><TD>288</TD>
     </TR>
     <TR>
      <TD>8</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1604</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519522310</TD><TD>190.000</TD><TD>1.09</TD><TD>262.3444026 6.439066125</TD>
-     <TD>0.253965  0.253965</TD><TD>5.71462</TD><TD>0</TD>
-     <TD>1</TD><TD>0</TD><TD>0.803992</TD>
-     <TD>0.000220608</TD><TD>2.74254e-05</TD><TD>4.44234</TD><TD>0</TD><TD>0</TD>
-     <TD>1.79456</TD><TD>16156</TD><TD>1.79456</TD><TD>16156</TD>
-     <TD>0.000799501 0.00215163</TD><TD>0.034208 0.0444498</TD><TD>-0.124383</TD><TD>138.392</TD><TD>276</TD><TD>0.000799501 0.00215163</TD><TD>0.034208 0.0444498</TD><TD>-0.124383</TD><TD>138.392</TD><TD>276</TD>
+     <TD>2474</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519569810</TD><TD>190.000</TD><TD>1.12</TD><TD>262.3443087 6.43906999</TD>
+     <TD>0.252872  0.252872</TD><TD>5.74094</TD><TD>0</TD>
+     <TD>0.982453</TD><TD>0.521593</TD><TD>0.734443</TD>
+     <TD>4.74329e-05</TD><TD>-1.0865e-06</TD><TD>4.05856</TD><TD>0.0225043</TD><TD>26.921</TD>
+     <TD>245.535</TD><TD>22546</TD><TD>398.935</TD><TD>13309</TD>
+     <TD>-0.0245565 0.0100955</TD><TD>0.116184 0.0952132</TD><TD>-0.0375981</TD><TD>476.723</TD><TD>259</TD><TD>-0.0245565 0.0100955</TD><TD>0.116184 0.0952132</TD><TD>-0.0375981</TD><TD>476.723</TD><TD>259</TD>
     </TR>
     <TR>
      <TD>9</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1597</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519534161</TD><TD>190.000</TD><TD>1.10</TD><TD>262.3442631 6.439054794</TD>
-     <TD>0.254259  0.254259</TD><TD>5.70914</TD><TD>0</TD>
-     <TD>1</TD><TD>0</TD><TD>0.767574</TD>
-     <TD>9.73132e-05</TD><TD>-2.03385e-06</TD><TD>4.46687</TD><TD>0</TD><TD>0</TD>
-     <TD>2.05043</TD><TD>16119</TD><TD>2.05043</TD><TD>16119</TD>
-     <TD>-0.000122272 0.00258939</TD><TD>0.0335939 0.0432536</TD><TD>-0.123181</TD><TD>134.953</TD><TD>291</TD><TD>-0.000122272 0.00258939</TD><TD>0.0335939 0.0432536</TD><TD>-0.123181</TD><TD>134.953</TD><TD>291</TD>
+     <TD>2559</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519576972</TD><TD>190.000</TD><TD>1.12</TD><TD>262.3456044 6.43349394</TD>
+     <TD>0.254733  0.254733</TD><TD>5.71359</TD><TD>0</TD>
+     <TD>1</TD><TD>0</TD><TD>0.690165</TD>
+     <TD>-2.23682e-05</TD><TD>-2.22584e-05</TD><TD>2.88224</TD><TD>0</TD><TD>0</TD>
+     <TD>119.718</TD><TD>24452</TD><TD>196.278</TD><TD>14239</TD>
+     <TD>-0.00522396 0.00477444</TD><TD>0.138358 0.0767103</TD><TD>0.400424</TD><TD>697.019</TD><TD>258</TD><TD>-0.00522396 0.00477444</TD><TD>0.138358 0.0767103</TD><TD>0.400424</TD><TD>697.019</TD><TD>258</TD>
     </TR>
     <TR>
      <TD>10</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1615</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519541291</TD><TD>190.000</TD><TD>1.10</TD><TD>262.3455768 6.433487522</TD>
-     <TD>0.255383  0.255383</TD><TD>5.74482</TD><TD>0</TD>
-     <TD>1</TD><TD>0</TD><TD>0.800183</TD>
-     <TD>0.000247366</TD><TD>3.39169e-05</TD><TD>3.97728</TD><TD>0</TD><TD>0</TD>
-     <TD>1.81593</TD><TD>16147</TD><TD>1.81593</TD><TD>16147</TD>
-     <TD>-0.000566937 0.00255761</TD><TD>0.0346586 0.0457885</TD><TD>-0.0975903</TD><TD>140.682</TD><TD>286</TD><TD>-0.000566937 0.00255761</TD><TD>0.0346586 0.0457885</TD><TD>-0.0975903</TD><TD>140.682</TD><TD>286</TD>
+     <TD>2620</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519583975</TD><TD>190.000</TD><TD>1.13</TD><TD>262.3484199 6.43486524</TD>
+     <TD>0.254409  0.254409</TD><TD>5.70978</TD><TD>0</TD>
+     <TD>0.999924</TD><TD>-0.00747021</TD><TD>0.925384</TD>
+     <TD>0.000125053</TD><TD>-7.91983e-06</TD><TD>3.40735</TD><TD>0.000911247</TD><TD>74.1751</TD>
+     <TD>135.622</TD><TD>24783</TD><TD>222.759</TD><TD>14330</TD>
+     <TD>-0.0146886 0.0055839</TD><TD>0.182163 0.0867391</TD><TD>0.101536</TD><TD>1042.09</TD><TD>236</TD><TD>-0.0146886 0.0055839</TD><TD>0.182163 0.0867391</TD><TD>0.101536</TD><TD>1042.09</TD><TD>236</TD>
     </TR>
     <TR>
      <TD>11</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1587</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519548294</TD><TD>190.000</TD><TD>1.10</TD><TD>262.3484 6.434828114</TD>
-     <TD>0.254252  0.254252</TD><TD>5.72266</TD><TD>0</TD>
-     <TD>0.997341</TD><TD>-0.0469211</TD><TD>1.00515</TD>
-     <TD>0.000286084</TD><TD>-1.6482e-06</TD><TD>4.13459</TD><TD>0</TD><TD>0</TD>
-     <TD>1.65347</TD><TD>16181</TD><TD>1.65347</TD><TD>16181</TD>
-     <TD>0.000606083 0.00186526</TD><TD>0.0348765 0.0473519</TD><TD>-0.0166248</TD><TD>138.443</TD><TD>291</TD><TD>0.000606083 0.00186526</TD><TD>0.0348765 0.0473519</TD><TD>-0.0166248</TD><TD>138.443</TD><TD>291</TD>
+     <TD>2478</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519663100</TD><TD>190.000</TD><TD>1.21</TD><TD>262.3470445 6.436270918</TD>
+     <TD>0.254187  0.254187</TD><TD>5.70167</TD><TD>0</TD>
+     <TD>0.998703</TD><TD>-0.0435067</TD><TD>0.894</TD>
+     <TD>0.000126731</TD><TD>-6.56284e-06</TD><TD>3.63621</TD><TD>0.00179874</TD><TD>53.5356</TD>
+     <TD>105.767</TD><TD>24177</TD><TD>171.997</TD><TD>14083</TD>
+     <TD>0.00515993 0.0208813</TD><TD>0.183884 0.167713</TD><TD>0.676571</TD><TD>1736.25</TD><TD>266</TD><TD>0.00515993 0.0208813</TD><TD>0.183884 0.167713</TD><TD>0.676571</TD><TD>1736.25</TD><TD>266</TD>
     </TR>
     <TR>
      <TD>12</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1551</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519627419</TD><TD>190.000</TD><TD>1.16</TD><TD>262.3470014 6.436254564</TD>
-     <TD>0.254809  0.254809</TD><TD>5.71542</TD><TD>0</TD>
-     <TD>1</TD><TD>0</TD><TD>0.983344</TD>
-     <TD>9.90538e-05</TD><TD>2.7342e-06</TD><TD>5.22607</TD><TD>0</TD><TD>0</TD>
-     <TD>1.94718</TD><TD>15922</TD><TD>1.94718</TD><TD>15922</TD>
-     <TD>-8.96147e-05 0.00430928</TD><TD>0.0353113 0.044747</TD><TD>-0.0628311</TD><TD>139.623</TD><TD>295</TD><TD>-8.96147e-05 0.00430928</TD><TD>0.0353113 0.044747</TD><TD>-0.0628311</TD><TD>139.623</TD><TD>295</TD>
+     <TD>2356</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519670103</TD><TD>190.000</TD><TD>1.22</TD><TD>262.3497945 6.437624714</TD>
+     <TD>0.255434  0.255434</TD><TD>5.7479</TD><TD>0</TD>
+     <TD>1.00268</TD><TD>-0.0942617</TD><TD>1.2255</TD>
+     <TD>-4.81019e-05</TD><TD>-4.84917e-07</TD><TD>2.56776</TD><TD>0</TD><TD>0</TD>
+     <TD>87.4918</TD><TD>22842</TD><TD>139.698</TD><TD>13651</TD>
+     <TD>0.0020638 0.00893928</TD><TD>0.16171 0.153041</TD><TD>0.604136</TD><TD>1409.22</TD><TD>304</TD><TD>0.0020638 0.00893928</TD><TD>0.16171 0.153041</TD><TD>0.604136</TD><TD>1409.22</TD><TD>304</TD>
     </TR>
     <TR>
      <TD>13</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1530</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519634422</TD><TD>190.000</TD><TD>1.17</TD><TD>262.3498303 6.437599153</TD>
-     <TD>0.25467  0.25467</TD><TD>5.7299</TD><TD>0</TD>
-     <TD>1</TD><TD>0</TD><TD>0.955359</TD>
-     <TD>0.0001895</TD><TD>3.21988e-05</TD><TD>4.9511</TD><TD>0</TD><TD>0</TD>
-     <TD>1.87734</TD><TD>15503</TD><TD>1.87734</TD><TD>15503</TD>
-     <TD>0.00019825 0.00174185</TD><TD>0.0347099 0.043937</TD><TD>-0.0584262</TD><TD>134.168</TD><TD>305</TD><TD>0.00019825 0.00174185</TD><TD>0.0347099 0.043937</TD><TD>-0.0584262</TD><TD>134.168</TD><TD>305</TD>
+     <TD>2458</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519684426</TD><TD>190.000</TD><TD>1.24</TD><TD>262.3456383 6.433527738</TD>
+     <TD>0.254112  0.254112</TD><TD>5.69913</TD><TD>0</TD>
+     <TD>0.998307</TD><TD>0.156026</TD><TD>1.01611</TD>
+     <TD>0.000104318</TD><TD>-8.52837e-06</TD><TD>2.24423</TD><TD>0.00156132</TD><TD>54.7005</TD>
+     <TD>109.092</TD><TD>23528</TD><TD>180.283</TD><TD>13547</TD>
+     <TD>0.0161715 0.0221835</TD><TD>0.200014 0.184526</TD><TD>0.63211</TD><TD>2389.24</TD><TD>259</TD><TD>0.0161715 0.0221835</TD><TD>0.200014 0.184526</TD><TD>0.63211</TD><TD>2389.24</TD><TD>259</TD>
     </TR>
     <TR>
      <TD>14</TD><TD>detection.cat</TD><TD>Candidate2</TD>
      <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1527</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519641584</TD><TD>190.000</TD><TD>1.18</TD><TD>262.3444243 6.43907696</TD>
-     <TD>0.253858  0.253858</TD><TD>5.71221</TD><TD>0</TD>
-     <TD>1</TD><TD>0</TD><TD>0.729862</TD>
-     <TD>0.000216705</TD><TD>2.7951e-05</TD><TD>4.00507</TD><TD>0</TD><TD>0</TD>
-     <TD>2.18364</TD><TD>15457</TD><TD>2.18364</TD><TD>15457</TD>
-     <TD>6.45551e-05 0.00251841</TD><TD>0.0343284 0.0440872</TD><TD>-0.149833</TD><TD>134.29</TD><TD>269</TD><TD>6.45551e-05 0.00251841</TD><TD>0.0343284 0.0440872</TD><TD>-0.149833</TD><TD>134.29</TD><TD>269</TD>
-    </TR>
-    <TR>
-     <TD>15</TD><TD>detection.cat</TD><TD>Candidate2</TD>
-     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1539</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519648745</TD><TD>190.000</TD><TD>1.19</TD><TD>262.3455885 6.43348778</TD>
-     <TD>0.254275  0.254275</TD><TD>5.70728</TD><TD>0</TD>
-     <TD>1</TD><TD>0</TD><TD>0.861308</TD>
-     <TD>6.25186e-05</TD><TD>7.24408e-07</TD><TD>4.58453</TD><TD>0</TD><TD>0</TD>
-     <TD>2.00329</TD><TD>15434</TD><TD>2.00329</TD><TD>15434</TD>
-     <TD>-0.00185511 0.00277048</TD><TD>0.0324086 0.0443022</TD><TD>-0.106521</TD><TD>125.873</TD><TD>276</TD><TD>-0.00185511 0.00277048</TD><TD>0.0324086 0.0443022</TD><TD>-0.106521</TD><TD>125.873</TD><TD>276</TD>
-    </TR>
-    <TR>
-     <TD>16</TD><TD>detection.cat</TD><TD>Candidate2</TD>
-     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1508</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
-     <TD>2023.519655748</TD><TD>190.000</TD><TD>1.20</TD><TD>262.348371 6.434854528</TD>
-     <TD>0.25436  0.25436</TD><TD>5.70445</TD><TD>0</TD>
-     <TD>1.0006</TD><TD>-0.179941</TD><TD>1.0307</TD>
-     <TD>3.33062e-05</TD><TD>1.32814e-06</TD><TD>4.66275</TD><TD>0</TD><TD>0</TD>
-     <TD>1.9877</TD><TD>15390</TD><TD>1.9877</TD><TD>15390</TD>
-     <TD>-0.00201069 0.00188147</TD><TD>0.0351421 0.0438359</TD><TD>-0.0789316</TD><TD>134.937</TD><TD>295</TD><TD>-0.00201069 0.00188147</TD><TD>0.0351421 0.0438359</TD><TD>-0.0789316</TD><TD>134.937</TD><TD>295</TD>
+     <TD>2474</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.519691429</TD><TD>190.000</TD><TD>1.25</TD><TD>262.3484379 6.434859434</TD>
+     <TD>0.254235  0.254235</TD><TD>5.70471</TD><TD>0</TD>
+     <TD>0.998825</TD><TD>-0.0221625</TD><TD>0.88879</TD>
+     <TD>0.000107246</TD><TD>-7.96744e-07</TD><TD>3.73336</TD><TD>0.00178718</TD><TD>46.0383</TD>
+     <TD>105.64</TD><TD>23765</TD><TD>175.437</TD><TD>13589</TD>
+     <TD>0.000901945 0.0160848</TD><TD>0.200009 0.169279</TD><TD>0.593142</TD><TD>2080.58</TD><TD>246</TD><TD>0.000901945 0.0160848</TD><TD>0.200009 0.169279</TD><TD>0.593142</TD><TD>2080.58</TD><TD>246</TD>
     </TR>
    </TABLEDATA></DATA>
   </TABLE>
@@ -303,17 +281,17 @@
    <FIELD name="PhotNDets_Reference_HighSN" datatype="int" arraysize="1" ucd="meta.number;src"/>
    <DATA><TABLEDATA>
    <TR>
-     <TD>G1</TD><TD>1</TD><TD>16</TD>
+     <TD>G1</TD><TD>1</TD><TD>14</TD>
      <TD>2</TD><TD>0</TD><TD>1</TD>
-     <TD>262.3467187 6.436404415</TD><TD>0.254281  0.254281</TD><TD>5.94029</TD>
+     <TD>262.3471566 6.436057942</TD><TD>0.254394  0.254394</TD><TD>5.97935</TD>
      <TD>file</TD><TD>1</TD>
-     <TD>0.0182482 0.0181072</TD><TD>0.121027</TD><TD>1.96673</TD><TD>18544</TD>
-     <TD>0.0182482 0.0181072</TD><TD>0.121027</TD><TD>1.96673</TD><TD>18544</TD>
-     <TD>-0.00102771 0.00403533</TD><TD>0.0345059 0.0448828</TD><TD>-0.0715713</TD><TD>134.014</TD><TD>359</TD>
-     <TD>-0.00102771 0.00403533</TD><TD>0.0345058 0.0448823</TD><TD>-0.0715713</TD><TD>134.014</TD><TD>359</TD>
+     <TD>0.102019 0.105993</TD><TD>0.589713</TD><TD>130.735</TD><TD>28693</TD>
+     <TD>0.0932277 0.103255</TD><TD>0.985462</TD><TD>213.535</TD><TD>16952</TD>
+     <TD>-0.00116843 0.0102569</TD><TD>0.163816 0.128195</TD><TD>0.593952</TD><TD>1375.14</TD><TD>336</TD>
+     <TD>-0.00116843 0.0102569</TD><TD>0.163816 0.128194</TD><TD>0.593952</TD><TD>1375.14</TD><TD>336</TD>
      <TD>P1</TD>
-     <TD>0.0892821</TD><TD>24.7859</TD><TD>18450</TD>
-     <TD>0.0892821</TD><TD>24.7859</TD><TD>18450</TD>
+     <TD>0.16384</TD><TD>22.4504</TD><TD>28480</TD>
+     <TD>0.126463</TD><TD>33.2336</TD><TD>16871</TD>
      <TD>0</TD><TD>0</TD><TD>0</TD>
      <TD>0</TD><TD>0</TD><TD>0</TD>
     </TR>
@@ -330,7 +308,7 @@
    <FIELD name="Keys" datatype="char" arraysize="*" ucd="meta.note"/>
    <DATA><TABLEDATA>
     <TR>
-     <TD>A1</TD><TD>1</TD><TD>16</TD><TD>1</TD>
+     <TD>A1</TD><TD>1</TD><TD>14</TD><TD>1</TD>
      <TD>2</TD><TD>FILTER  = 'OPEN    '            ,QRUNID  =                       </TD>
     </TR>
    </TABLEDATA></DATA>
@@ -346,7 +324,7 @@
    <FIELD name="Keys" datatype="char" arraysize="*" ucd="meta.note"/>
    <DATA><TABLEDATA>
     <TR>
-     <TD>P1</TD><TD>1</TD><TD>16</TD><TD>0</TD>
+     <TD>P1</TD><TD>1</TD><TD>14</TD><TD>0</TD>
      <TD>1</TD><TD>FILTER  = 'OPEN    '            </TD>
     </TR>
    </TABLEDATA></DATA>
@@ -357,12 +335,12 @@
    <FIELD name="Time" datatype="char" arraysize="*" ucd="meta;time.end"/>
    <FIELD name="Msg" datatype="char" arraysize="*" ucd="meta"/>
    <DATA><TABLEDATA>
-    <TR><TD>2026-01-15</TD><TD>15:53:44</TD><TD>FLAGS parameter not found in catalog astrefcat.cat</TD></TR>
+    <TR><TD>2026-01-22</TD><TD>20:49:19</TD><TD>FLAGS parameter not found in catalog astrefcat.cat</TD></TR>
    </TABLEDATA></DATA>
   </TABLE>
   <RESOURCE ID="Config" name="Config">
    <DESCRIPTION>SCAMP configuration</DESCRIPTION>
-   <PARAM name="Command_Line" datatype="char" arraysize="*" ucd="obs.param" value="scamp -c ../../scamp.conf ../img_r_01/detection.cat ../img_r_02/detection.cat ../img_r_03/detection.cat ../img_r_04/detection.cat ../img_r_05/detection.cat ../img_r_06/detection.cat ../img_r_07/detection.cat ../img_r_08/detection.cat ../img_r_09/detection.cat ../img_r_10/detection.cat ../img_r_11/detection.cat ../img_r_12/detection.cat ../img_r_13/detection.cat ../img_r_14/detection.cat ../img_r_15/detection.cat ../img_r_16/detection.cat"/>
+   <PARAM name="Command_Line" datatype="char" arraysize="*" ucd="obs.param" value="scamp -c ../../scamp.conf ../img_i_01/detection.cat ../img_i_02/detection.cat ../img_i_03/detection.cat ../img_i_04/detection.cat ../img_i_05/detection.cat ../img_i_06/detection.cat ../img_i_07/detection.cat ../img_i_08/detection.cat ../img_i_09/detection.cat ../img_i_10/detection.cat ../img_i_11/detection.cat ../img_i_12/detection.cat ../img_i_14/detection.cat ../img_i_15/detection.cat"/>
    <PARAM name="Prefs_Name" datatype="char" arraysize="*" ucd="obs.param;meta.file" value="../../scamp.conf"/>
    <PARAM name="Ref_Server" datatype="char" arraysize="*" ucd="meta.ref.url" value="vizier.unistra.fr"/>
    <PARAM name="Ref_TimeOut" unit="s" datatype="double" arraysize="1" ucd="meta;time.duration" value="10"/>
@@ -388,8 +366,8 @@
    <PARAM name="Match" datatype="boolean" ucd="meta.code;obs.param" value="T"/>
    <PARAM name="Match_NMax" datatype="int" ucd="meta.number;src;obs.param" value="0"/>
    <PARAM name="PixScale_MaxErr" datatype="double" ucd="instr.precision;instr.pixel;obs.param" value="1.3"/>
-   <PARAM name="PosAngle_MaxErr" unit="deg" datatype="double" ucd="instr.precision;pos.posAng;obs.param" value="2"/>
-   <PARAM name="Position_MaxErr" unit="arcmin" datatype="double" arraysize="2" ucd="instr.precision;pos.eq;obs.param" value="0.0333333 0.0333333"/>
+   <PARAM name="PosAngle_MaxErr" unit="deg" datatype="double" ucd="instr.precision;pos.posAng;obs.param" value="1"/>
+   <PARAM name="Position_MaxErr" unit="arcmin" datatype="double" arraysize="2" ucd="instr.precision;pos.eq;obs.param" value="0.00833333 0.00833333"/>
    <PARAM name="Match_Resol" unit="arcsec" datatype="double" ucd="stat.param;phys.angSize" value="0"/>
    <PARAM name="Match_Flipped" datatype="boolean" ucd="instr.param;obs.param" value="F"/>
    <PARAM name="Mosaic_Type" datatype="char" arraysize="*" ucd="instr.param;obs.param" value="UNCHANGED"/>

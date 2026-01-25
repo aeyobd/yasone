@@ -3,7 +3,8 @@ from pathlib import Path
 
 
 def get_newdir(file, destname, increment):
-    prefix, filt, num = file.stem.split("_")
+    s = file.stem.replace("_err", "").replace(".mask", "")
+    prefix, filt, num = s.split("_")
     num = int(num) + increment
     newname = f"img_{filt}_{num:02d}"
     return Path(destname) / newname
@@ -18,16 +19,29 @@ def link_files(sourcename, destname=None, kind="obj", increment=0):
     newdirs = [get_newdir(file, destname, increment) for file in filenames]
 
     for newdir in newdirs:
-        newname = newdir / "flat_fielded.fits"
 
         if not newdir.is_dir():
             newdir.mkdir()
 
+        newname = newdir / "flat_fielded.fits"
+        if newname.exists():
+            os.remove(newname)
+
+        newname = newdir / "flat_fielded.weight.fits"
+        if newname.exists():
+            os.remove(newname)
+
+        newname = newdir / "flag.fits"
         if newname.exists():
             os.remove(newname)
 
     for file, newdir in zip(filenames, newdirs):
-        newname = newdir / "flat_fielded.fits"
+        if "_err" in file.stem:
+            newname = newdir / "flat_fielded.weight.fits"
+        elif ".mask.fits" in file.name:
+            newname = newdir / "flag.fits"
+        else:
+            newname = newdir / "flat_fielded.fits"
         
         os.symlink("../.." / file, newname)
         print("linking", file, "=>", newname)

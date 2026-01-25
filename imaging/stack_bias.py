@@ -3,7 +3,7 @@ from pathlib import Path
 
 import ccdproc
 from ccdproc import ImageFileCollection
-from convenience_functions import combine_images
+from convenience_functions import combine_images, combine_images_err
 
 def get_biases(foldername):
     imgfiles = ImageFileCollection(foldername, glob_include="bias*.fits")
@@ -28,8 +28,10 @@ def main():
 
         files = imgfiles.files_filtered(include_path=True)
         bias_stacked = combine_images(files)
+        bias_stacked_err = combine_images_err(imgfiles)
 
         bias_stacked.write(Path(folder, "bias_stacked.fits"))
+        bias_stacked_err.write(Path(folder, "bias_stacked_err.fits"))
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ rm -rf scamp
 mkdir scamp
 
 cd scamp
+echo scamping $(echo ../img_$2*/detection.cat)
 scamp -c ../../scamp.conf ../img_$2*/detection.cat
 cd .. 
 # we are in objectname directory

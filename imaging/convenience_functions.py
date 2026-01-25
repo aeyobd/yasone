@@ -1,6 +1,7 @@
 from astropy import visualization as aviz
 from astropy.nddata.blocks import block_reduce
 from astropy.nddata.utils import Cutout2D
+from astropy.nddata import CCDData
 from astropy.stats import mad_std
 
 from matplotlib import pyplot as plt
@@ -289,13 +290,34 @@ def display_cosmic_rays(cosmic_rays, images, titles=None,
 
 
 
+def combine_images_err(imgfiles):
+    err = mad_std(np.stack([x for x in imgfiles.data()]), axis=0)
+    return CCDData(err, unit="adu")
+
+
+
 """
     combine_images(filenames, **kwargs)
 
 Combines images using ccdproc. Expects CCDData and uses
-median combination with MAD_STD sigma clipping at 5 sigma.
+median combination with median
 """
 def combine_images(filenames, method="median", **kwargs):
+    return ccdproc.combine(filenames, 
+                           method=method,
+                           sigma_clip=False, 
+                           mem_limit=1e9,
+                           **kwargs
+                            )
+
+
+"""
+    combine_images_average(filenames, **kwargs)
+
+Combines images using ccdproc. Expects CCDData and uses
+median combination with MAD_STD sigma clipping at 5 sigma.
+"""
+def combine_images_average(filenames, method="average", **kwargs):
     return ccdproc.combine(filenames, 
                            method=method,
                            sigma_clip=True, sigma_clip_low_thresh=5, sigma_clip_high_thresh=5, 

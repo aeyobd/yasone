@@ -24,9 +24,9 @@ CLEAN_PARAM      1.0            # Cleaning efficiency
  
 #-------------------------------- WEIGHTing ----------------------------------
 
-WEIGHT_TYPE      MAP_RMS           # type of WEIGHTing: NONE, BACKGROUND,
+WEIGHT_TYPE      NONE           # type of WEIGHTing: NONE, BACKGROUND,
                                 # MAP_RMS, MAP_VAR or MAP_WEIGHT
-WEIGHT_IMAGE     bkg_err.fits    # weight-map filename
+WEIGHT_IMAGE     flat_fielded.weight.fits    # weight-map filename
 # Elenore uses a weightmap...
 
 #-------------------------------- FLAGging -----------------------------------

@@ -9,10 +9,10 @@ FLUXERR_ISO              #RMS error for isophotal flux                          
 #FLUXERR_ISOCOR           #RMS error for corrected isophotal flux                    [count]
 #MAG_ISOCOR               #Corrected isophotal magnitude                             [mag]
 #MAGERR_ISOCOR            #RMS error for corrected isophotal magnitude               [mag]
-FLUX_APER[4]                #Flux vector within fixed circular aperture(s)             [count]
-FLUXERR_APER[4]             #RMS error vector for aperture flux(es)                    [count]
-MAG_APER[4]                 #Fixed aperture magnitude vector                           [mag]
-MAGERR_APER[4]              #RMS error vector for fixed aperture mag.                  [mag]
+FLUX_APER[1]                #Flux vector within fixed circular aperture(s)             [count]
+FLUXERR_APER[1]             #RMS error vector for aperture flux(es)                    [count]
+MAG_APER[1]                 #Fixed aperture magnitude vector                           [mag]
+MAGERR_APER[1]              #RMS error vector for fixed aperture mag.                  [mag]
 FLUX_AUTO                #Flux within a Kron-like elliptical aperture               [count]
 FLUXERR_AUTO             #RMS error for AUTO flux                                   [count]
 MAG_AUTO                 #Kron-like elliptical aperture magnitude                   [mag]
@@ -70,8 +70,8 @@ Y_IMAGE                  #Object position along y                               
 #Y_MAMA                   #Barycenter position along MAMA y axis                     [m**(-6)]
 #ALPHA_SKY                #Right ascension of barycenter (native)                    [deg]
 #DELTA_SKY                #Declination of barycenter (native)                        [deg]
-#ALPHA_J2000              #Right ascension of barycenter (J2000)                     [deg]
-#DELTA_J2000              #Declination of barycenter (J2000)                         [deg]
+ALPHA_J2000              #Right ascension of barycenter (J2000)                     [deg]
+DELTA_J2000              #Declination of barycenter (J2000)                         [deg]
 #ALPHA_B1950              #Right ascension of barycenter (B1950)                     [deg]
 #DELTA_B1950              #Declination of barycenter (B1950)                         [deg]
 X2_IMAGE                 #Variance along x                                          [pixel**2]
@@ -116,6 +116,7 @@ THETA_J2000              #Position angle (east of north) (J2000)                
 #ERRTHETA_SKY             #Native error ellipse pos. angle (east of north)           [deg]
 #ERRTHETA_J2000           #J2000 error ellipse pos. angle (east of north)            [deg]
 #ERRTHETA_B1950           #B1950 error ellipse pos. angle (east of north)            [deg]
+SNR_WIN                 # signal to noise ratio in gaussian window
 XWIN_IMAGE               #Windowed position estimate along x                        [pixel]
 YWIN_IMAGE               #Windowed position estimate along y                        [pixel]
 #XWIN_FOCAL               #Windowed position along focal-plane x axis               
@@ -185,9 +186,9 @@ ERRTHETAWIN_IMAGE        #Windowed error ellipse pos angle (CCW/x)              
 #ISO7                     #Isophotal area at level 7                                 [pixel**2]
 FLAGS                    ## Extraction flags                                         
 FLAGS_WEIGHT             ## Weighted extraction flags                                
-#FLAGS_WIN                #Flags for WINdowed parameters                            
-#IMAFLAGS_ISO             #FLAG-image flags OR'ed over the iso. profile             
-#NIMAFLAGS_ISO            #Number of flagged pixels entering IMAFLAGS_ISO           
+FLAGS_WIN                #Flags for WINdowed parameters                            
+IMAFLAGS_ISO             #FLAG-image flags OR'ed over the iso. profile             
+NIMAFLAGS_ISO            #Number of flagged pixels entering IMAFLAGS_ISO           
 #NLOWWEIGHT_ISO           #Nb of pixels with low weight over the iso. profile       
 #NLOWDWEIGHT_ISO          #Nb of pixels with low det. weight over the iso. profile  
 FWHM_IMAGE               ## FWHM assuming a gaussian core                             [pixel]
@@ -199,7 +200,7 @@ ELLIPTICITY              #1 - B_IMAGE/A_IMAGE
 #POLARWIN_IMAGE           #(AWIN^2 - BWIN^2)/(AWIN^2 + BWIN^2)                      
 #POLARWIN_WORLD           #(AWIN^2 - BWIN^2)/(AWIN^2 + BWIN^2)                      
 #CLASS_STAR               #S/G classifier output                                    
-#VIGNET                   #Pixel data around detection                               [count]
+VIGNET[45,45]                   #Pixel data around detection                               [count]
 #VIGNET_SHIFT             #Pixel data around detection, corrected for shift          [count]
 #VECTOR_ASSOC             #ASSOCiated parameter vector                              
 #NUMBER_ASSOC             #Number of ASSOCiated IDs                                 

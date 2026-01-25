@@ -3,6 +3,10 @@
 *.gz
 *.csv
 *.cat
+*.header
+*.head
+*.cmd
+*.txz
 
 *.fits
 *.pdf
