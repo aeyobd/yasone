@@ -4,8 +4,9 @@ import FITSIO
 import Printf: @printf
 import StatsBase: median
 import ImageMorphology: label_components
-using ForwardDiff
+using ADTypes: AutoForwardDiff
 using DataFrames
+using PyFITS
 
 
 function moffat(r; alpha=1, gamma=1, amplitude=1)
@@ -59,15 +60,26 @@ end
 
 
 function moffat_2d_model(x, y;
-        x_c=0, y_c=0, params::AbstractVector{<:Real}, 
-        alpha::Real=1.1, sat_level::Real=Inf
-    )
+        params::AbstractVector{<:Real}, 
+        alpha::Real=1.1)
     scale, dx, dy, gamma = params
 
-    prof =  moffat_2d(x .- x_c .- dx, y .- y_c .- dy; amplitude=scale,gamma=gamma, alpha=alpha)
-    return min.(prof, sat_level)
+    prof =  moffat_2d(x .- dx, y .- dy; amplitude=scale,gamma=gamma, alpha=alpha)
+    return prof
 end
 
+function moffat_2d_gradient(x, y; params::AbstractVector{<:Real}, alpha::Real=1.1)
+    scale, dx, dy, gamma = params
+    prof = moffat_2d_model(x, y, params=params, alpha=alpha)
+
+    r2 = @. (x-dx)^2 + (y-dy)^2
+    d_scale = @. prof / scale
+    d_dx = @. scale * (1 + r2/gamma^2)^(-alpha-1) * alpha * 2*(x-dx)/gamma
+    d_dy = @. scale * (1 + r2/gamma^2)^(-alpha-1) * alpha * 2*(y-dy)/gamma
+    d_gamma = @. scale * (1 + r2/gamma^2)^(-alpha-1) * alpha * r2/gamma^3 * 2
+
+    return [d_scale, d_dx, d_dy, d_gamma]
+end
 
 
 """
@@ -83,6 +95,21 @@ function read_image(filename)
     return img
 end
 
+
+"""
+    write_image(filename)
+
+Reads a FITS image, return an array containing the image values.
+"""
+function write_image(filename, img)
+    if isfile(filename)
+        rm(filename)
+    end
+    
+    img = FITSIO.FITS(filename, "w") do f
+        write(f, img)
+    end
+end
 
 
 """
@@ -117,7 +144,7 @@ function get_group_centroids_areas(img)
     end
 
     centroids = Vector{Tuple{Int,Int}}(undef, n_labels)
-    rel_bboxes = Vector{Tuple{Int,Int,Int,Int}}(undef, n_labels)
+    bboxes = Vector{Tuple{Int,Int,Int,Int}}(undef, n_labels)
 
     # now calculate  centres and bboxes
     for k in 1:n_labels
@@ -127,15 +154,15 @@ function get_group_centroids_areas(img)
         centroids[k] = (cx, cy)
 
 
-        rel_bboxes[k] = (
-            rowmin[k] - cx,
-            rowmax[k] - cx,
-            colmin[k] - cy,
-            colmax[k] - cy,
+        bboxes[k] = (
+            rowmin[k],
+            rowmax[k],
+            colmin[k],
+            colmax[k],
         )
     end
 
-    return centroids, areas, rel_bboxes
+    return centroids, areas, bboxes
 end
 
 
@@ -143,10 +170,10 @@ function get_cutout_bounds(img_size, centroid, bbox, radius; pad=5)
     x_c, y_c = centroid
     Nx, Ny = img_size
 
-    x_min = min(x_c - radius, x_c + bbox[1] - pad)
-    x_max = max(x_c + radius, x_c + bbox[2] + pad)
-    y_min = min(y_c - radius, y_c + bbox[3] - pad)
-    y_max = max(y_c + radius, y_c + bbox[4] + pad)
+    x_min = min(x_c - radius, bbox[1] - pad)
+    x_max = max(x_c + radius, bbox[2] + pad)
+    y_min = min(y_c - radius, bbox[3] - pad)
+    y_max = max(y_c + radius, bbox[4] + pad)
 
     # apply boundary conditions
     x_min = max(x_min, 1)
@@ -181,24 +208,44 @@ end
 
 
 """
-Fit a Moffat PSF to an image cutout by minimizing chi-squared.
+    fit_model_psf_chi2(model, image; params)
 
-Optimized parameters:
-(scale, dx, dy, alpha, gamma)
+Fit a function model to the psf of a given cutout image. 
+The model should take x and y positions and a parameter vector for the first three
+arguments. Additional keywords are passed to the model.
+Return a dict containing the best-fit parameters and basic convergence information
 
-Returns a dict containing the optimized parameters.
+# Parameters
+## Required
+- `lower` The lower parameter bounds
+- `upper` The upper parameter bounds
+- `p0` An initial guess for the parameters,
+## Optional
+- `x0`: The index corresponding to the first pixel row
+- `y0`: The index corresponding to the first pixel column
+- `mask`: A mask image
+- `uncertainty`: An uncertainty image
+- `chi2_f`: A functional form to transform z-scores before summing. For chi2, this is a quadratic
+- `chi2_scale`: Scale the z-scores before passing to chi2_f?
+
 """
-function fit_moff_simple_psf_chi2(
+function fit_model_psf_chi2(
+    model, model_gradient,
     image::AbstractMatrix;
-    x_c,
-    y_c,
     uncertainty = nothing,
     mask = nothing,
-    initial_scale::Real = 1.0,
-    bounds = nothing,
-    sat_level = 62_000,
-    alpha = 1.1,
-    gamma_0 = 1.0,
+    lower,
+    upper,
+    p0,
+    x0 = 1,
+    y0 = 1,
+    chi2_f = x->x^2, 
+    chi2_f_der = x->2x, 
+    chi2_scale::Real = 1,
+    iterations::Int = 100,
+    x_reltol = 1e-10,
+    f_reltol = 1e-10,
+    kwargs...
 )
 
     image_clean, combined_mask = clean_image_mask(image, mask)
@@ -210,85 +257,101 @@ function fit_moff_simple_psf_chi2(
 
     Nx, Ny = size(image_clean)
     x_img, y_img = image_grid(Nx, Ny)
-
-    if bounds === nothing
-        bounds = (-x_c, Nx-x_c+1, -y_c, Ny-y_c+1)
-    end
-
-    # scale, dx, dy, width
-    lower = [0,  bounds[1][1], bounds[2][1], 0]
-    upper = [Inf, bounds[1][end], bounds[2][end], 50]
-    p0 = [initial_scale, 0.0, 0.0, gamma_0]
+    x_img = x_img[combined_mask] .+ x0 .- 1
+    y_img = y_img[combined_mask] .+ y0 .- 1
+    image_clean = image_clean[combined_mask]
 
     function chi2_func(params)
-        x = x_img .- x_c
-        y = y_img .- y_c
-        model = moffat_2d_model(x, y, params=params, sat_level=sat_level, alpha=alpha)
+        img_model = model(x_img, y_img, params=params; kwargs...)
 
-        resid = image_clean .- model
-        return sum((resid[combined_mask] ./ uncertainty_clean) .^ 2)
+        resid = image_clean .- img_model
+        return sum(@. chi2_f(resid / uncertainty_clean / chi2_scale))
     end
 
+    function gradient_chi2!(G, params)
+        img_grad = model_gradient(x_img, y_img, params=params; kwargs...)
+
+        img_model = model(x_img, y_img, params=params; kwargs...)
+        resid = image_clean .- img_model
+        
+        for i in eachindex(params)
+            G[i] = sum(@. -chi2_f_der(resid / uncertainty_clean / chi2_scale) * img_grad[i] / uncertainty_clean / chi2_scale) 
+        end
+        return G
+    end
+
+    options = Optim.Options(show_trace = false,
+        x_reltol = x_reltol,
+        f_reltol = f_reltol,
+        iterations = iterations
+    )
     opt = optimize(
         chi2_func,
-        lower, upper, p0,
+        gradient_chi2!,
+        lower, upper, p0, 
         Fminbox(LBFGS()),
-        Optim.Options(show_trace = false),
-        autodiff = :forward
+        options,
+        autodiff = AutoForwardDiff()
     )
 
     params_best = Optim.minimizer(opt)
     min_chi2 = Optim.minimum(opt)
 
-    best_scale, best_dx, best_dy, best_gamma = params_best
-
     return Dict(
-        :scale => best_scale,
-        :x_shift => best_dx,
-        :y_shift => best_dy,
-        :alpha => alpha,
-        :gamma => best_gamma,
+        :params => params_best,
         :chi2 => min_chi2,
         :success => Optim.converged(opt),
     )
 end
 
 
-function fit_all_cutouts(img, img_err, cutout_cens, cutout_bbox; radius=20, pad=5, sat_level=62_000)
+function fit_all_cutouts(img, img_err, cutout_cens, cutout_bbox; 
+        radius=20, pad=5, xi=10000, alpha=1.1)
     # outputs
     img_residual = copy(img)
     img_model = zeros(size(img))
     fits = []
 
     x_img, y_img = image_grid(size(img)...)
+    bkg_rms = median(img_err)
+    @info "median err: $bkg_rms"
 
     for i in eachindex(cutout_cens)
 
         println("processing $i / $(length(cutout_cens))")
         cen = cutout_cens[i]
-        cutout_bounds = get_cutout_bounds(size(img), cen, cutout_bbox[i], 
-                                          radius, pad=pad)
+        bbox = cutout_bbox[i]
+        cutout_bounds = get_cutout_bounds(size(img), cen, bbox, radius, pad=pad)
 
         cutout = img_residual[cutout_bounds...]
         cutout_err = img_err[cutout_bounds...]
 
-        x_c = cen[1] - cutout_bounds[1][1]
-        y_c = cen[2] - cutout_bounds[2][1]
-        bounds = (cutout_bounds[1][[1, end]] .- cen[1], 
-                  cutout_bounds[2][[1,end]] .- cen[2])
+        param_names = [:scale, :dx, :dy, :alpha, :gamma]
+        x_low = cutout_bounds[1][1]
+        y_low = cutout_bounds[2][1]
+        lower = [0., bbox[1], bbox[3], 0.0001]
+        upper = [Inf, bbox[2], bbox[4], 100.0]
+        p0 = [1e5, cen[1], cen[2], 0.065]
 
-        fit = fit_moff_simple_psf_chi2(cutout, x_c=x_c, y_c=y_c, 
-            sat_level=sat_level, bounds=bounds, uncertainty=cutout_err)
+        fit = fit_model_psf_chi2(moffat_2d_model, moffat_2d_gradient, cutout,
+                                 uncertainty=cutout_err,
+                                 x0=x_low, y0=y_low,
+                                 lower=lower, upper=upper, p0=p0,
+                                 alpha=alpha)
 
-        params_best = [fit[:scale], fit[:x_shift], fit[:y_shift], fit[:gamma]]
+        params_best = fit[:params]
 
-        model = moffat_2d_model(x_img, y_img, params=params_best, 
-            x_c=cen[1], y_c=cen[2], sat_level=sat_level)
+        model = moffat_2d_model(x_img, y_img, params=params_best)
 
         # update results
         img_residual .-= model
         img_model .+= model
         push!(fits, fit)
+
+
+        if !fit[:success]
+            @info "fit failed to converge"
+        end
     end
 
     return img_model, img_residual, fits
@@ -313,10 +376,10 @@ function filter_and_sort_regions(centroids, areas, bboxes; size_min=20, n_max=no
 end
 
 
-function run_all(img_dir; n_max = 10)
-    img = read_image(img_dir * "/nobkg.fits")
-    flags = read_image(img_dir * "/flag.fits")
-    img_err = read_image(img_dir * "/flat_fielded.weight.fits")
+function run_all(imgname, weightname, flagsname; n_max = nothing)
+    img = read_image(imgname)
+    flags = read_image(flagsname)
+    img_err = 1 ./ sqrt.(read_image(weightname))
     flag_sat_extended = 1
 
     mask = (flags .& flag_sat_extended) .> 0
@@ -329,6 +392,23 @@ function run_all(img_dir; n_max = 10)
     img_model, img_residual, fits = fit_all_cutouts(img_masked, img_err, centroids, bboxes)
 
 
-    return img_masked, img_model, img_residual, DataFrame(fits)
+    return img_model, img_residual, DataFrame(fits)
 end
 
+function semilog(x)
+    return @. sign(x) * log(1 + abs(x))
+end
+
+function (@main)(ARGS)
+    imgname, weightname, flagsname = ARGS
+
+    img_model, img_residual, df = run_all(imgname, weightname, flagsname)
+
+    img_dir = dirname(imgname)
+    if img_dir == ""
+        img_dir = "."
+    end
+    write_image(img_dir * "/bright_model.fits", img_model)
+    write_image(img_dir * "/bright_residual.fits", img_residual)
+    write_fits(img_dir * "/bright_catalogue.fits", df, overwrite=true)
+end

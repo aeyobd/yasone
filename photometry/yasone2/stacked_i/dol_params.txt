@@ -1,0 +1,8 @@
+img_RAper = 5
+img_Rsky = 10.0 14.0
+img_RPSF = 51
+SigFind = 2.0
+SigFinal = 2.0
+NegSky = 0
+NoiseMult = 0.05
+MaxS = 7.0
