@@ -12,7 +12,7 @@ def main():
 
     objectname, filtername = sys.argv[1:]
 
-    outdir = Path(objectname) / f"stacked_{filtername}"
+    outdir = Path(objectname) / f"coadd_median_{filtername}"
     indirs = ["../.." / x for x in
               Path(objectname).glob(f"img_{filtername}_*/flag.fits")]
 

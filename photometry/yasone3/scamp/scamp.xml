@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="file:///usr/local/share/scamp/scamp.xsl"?>
+<VOTABLE version="1.1"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="http://www.ivoa.net/xml/VOTable/v1.1"
+ xmlns:stc="http://www.ivoa.net/xml/STC/v1.10">
+<DESCRIPTION>produced by SCAMP</DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<RESOURCE ID="SCAMP" name="detection.cat">
+ <DESCRIPTION>Data related to SCAMP</DESCRIPTION>
+ <INFO name="QUERY_STATUS" value="OK" />
+ <COOSYS ID="J2000" equinox="J2000" epoch="2000.0" system="ICRS"/>
+ <RESOURCE ID="MetaData" name="MetaData">
+  <DESCRIPTION>SCAMP meta-data</DESCRIPTION>
+  <INFO name="QUERY_STATUS" value="OK" />
+  <PARAM name="Software" datatype="char" arraysize="*" ucd="meta.title;meta.software" value="SCAMP"/>
+  <PARAM name="Version" datatype="char" arraysize="*" ucd="meta.version;meta.software" value="2.14.0"/>
+  <PARAM name="Soft_URL" datatype="char" arraysize="*" ucd="meta.ref.url;meta.software" value="http://astromatic.net/software/scamp"/>
+  <PARAM name="Soft_Auth" datatype="char" arraysize="*" ucd="meta.bib.author;meta.software" value="Emmanuel Bertin"/>
+  <PARAM name="Soft_Ref" datatype="char" arraysize="*" ucd="meta.bib.bibcode;meta.software" value="2006ASPC..351..112B"/>
+  <PARAM name="NThreads" datatype="int" ucd="meta.number;meta.software" value="8"/>
+  <PARAM name="Date" datatype="char" arraysize="*" ucd="time.end;meta.software" value="2026-01-28"/>
+  <PARAM name="Time" datatype="char" arraysize="*" ucd="time.end;meta.software" value="21:41:53"/>
+  <PARAM name="Duration" datatype="float" ucd="time.duration;meta.software" value="15" unit="s"/>
+  <PARAM name="User" datatype="char" arraysize="*" ucd="meta.curation" value="daniel"/>
+  <PARAM name="Host" datatype="char" arraysize="*" ucd="meta.curation" value="(null)"/>
+  <PARAM name="Path" datatype="char" arraysize="*" ucd="meta.dataset" value="/Users/daniel/yasone/photometry/yasone3/scamp"/>
+  <TABLE ID="Fields" name="Fields">
+   <DESCRIPTION>Data gathered by SCAMP for every  input catalog</DESCRIPTION>
+   <!-- NFields may be 0 if an error occurred early in the processing -->
+   <PARAM name="NFields" datatype="int" ucd="meta.number;meta.dataset" value="15"/>
+   <FIELD name="Catalog_Number" datatype="int" ucd="meta.record;meta.table;meta.file"/>
+   <FIELD name="Catalog_Name" datatype="char" arraysize="*" ucd="meta.id;meta.table;meta.file"/>
+   <FIELD name="Image_Ident" datatype="char" arraysize="*" ucd="meta.id;obs.field"/>
+   <FIELD name="NExtensions" datatype="int" ucd="meta.record"/>
+   <FIELD name="NAxis" datatype="int" ucd="pos.wcs.naxis"/>
+   <FIELD name="Lng_Axis" datatype="int" ucd="meta.id;pos.eq.ra"/>
+   <FIELD name="Lat_Axis" datatype="int" ucd="meta.id;pos.eq.dec"/>
+   <FIELD name="Ext_Header" datatype="boolean" ucd="meta.code"/>
+   <FIELD name="NDetect" datatype="int" ucd="meta.number;src"/>
+   <FIELD name="Group" datatype="int" ucd="meta.id.parent;meta.dataset"/>
+   <FIELD name="Astr_Instrum" datatype="char" arraysize="*" ucd="meta.id.parent;meta.dataset"/>
+   <FIELD name="Phot_Instrum" datatype="char" arraysize="*" ucd="meta.id.parent;meta.dataset"/>
+   <FIELD name="Photom_Flag" datatype="boolean" ucd="meta.code;phot"/>
+   <FIELD name="Photom_Link" datatype="boolean" ucd="meta.code;phot"/>
+   <FIELD name="Observation_Date" datatype="double" ucd="time.epoch;obs.field" unit="yr"/>
+   <FIELD name="Exposure_Time" datatype="float" ucd="time.duration;obs.exposure"/>
+   <FIELD name="AirMass" datatype="float" ucd="obs.airMass"/>
+   <FIELD name="Field_Coordinates" datatype="double" arraysize="2" ucd="pos.eq.ra;pos.eq.dec;obs.field" unit="deg"/>
+   <FIELD name="Pixel_Scale" datatype="float" arraysize="2"  ucd="instr.scale;instr.pixel;stat.mean" unit="arcsec"/>
+   <FIELD name="Max_Radius" datatype="float" ucd="phys.size.radius" unit="arcmin"/>
+   <FIELD name="ZeroPoint_Corr" datatype="float" ucd="phot.mag;phot.calib;arith.zp" unit="mag"/>
+   <!-- =========== MATCHing statistics =========== -->
+   <FIELD name="DPixelScale" datatype="float" ucd="instr.scale;instr.pixel;arith.ratio"/>
+   <FIELD name="DPosAngle" datatype="float" ucd="pos.posAng;obs.image;arith.diff" unit="deg"/>
+   <FIELD name="AS_Contrast" datatype="float" ucd="stat.correlation;arith.ratio"/>
+   <FIELD name="DX" datatype="float" ucd="pos.eq.ra;arith.diff" unit="deg"/>
+   <FIELD name="DY" datatype="float" ucd="pos.eq.dec;arith.diff" unit="deg"/>
+   <FIELD name="XY_Contrast" datatype="float" ucd="stat.correlation;arith.ratio"/>
+   <FIELD name="Shear" datatype="float" ucd="phys.size.axisRatio;obs.image"/>
+   <FIELD name="Shear_PosAngle" datatype="float" ucd="pos.posAng;obs.image" unit="deg"/>
+   <!-- =========== Astrometric statistics =========== -->
+   <FIELD name="Chi2_Internal" datatype="float" ucd="stat.fit.chi2"/>
+   <FIELD name="NDeg_Internal" datatype="int" ucd="stat.fit.dof"/>
+   <FIELD name="Chi2_Internal_HighSN" datatype="float" ucd="stat.fit.chi2"/>
+   <FIELD name="NDeg_Internal_HighSN" datatype="int" ucd="stat.fit.dof"/>
+   <FIELD name="AstromOffset_Reference" datatype="float" arraysize="2" ucd="pos.eq.ra;pos.eq.dec;arith.diff;obs.field" unit="arcsec"/>
+   <FIELD name="AstromSigma_Reference" datatype="float" arraysize="2" ucd="stat.stdev;pos.eq;obs.field" unit="arcsec"/>
+   <FIELD name="AstromCorr_Reference" datatype="float" ucd="stat.correlation;pos.eq;obs.field"/>
+   <FIELD name="Chi2_Reference" datatype="float" ucd="stat.fit.chi2"/>
+   <FIELD name="NDeg_Reference" datatype="int" ucd="stat.fit.dof"/>
+   <FIELD name="AstromOffset_Reference_HighSN" datatype="float" arraysize="2" ucd="pos.eq.ra;pos.eq.dec;arith.diff;obs.field" unit="arcsec"/>
+   <FIELD name="AstromSigma_Reference_HighSN" datatype="float" arraysize="2" ucd="stat.stdev;pos.eq;obs.field" unit="arcsec"/>
+   <FIELD name="AstromCorr_Reference_HighSN" datatype="float" ucd="stat.correlation;pos.eq;obs.field"/>
+   <FIELD name="Chi2_Reference_HighSN" datatype="float" ucd="stat.fit.chi2"/>
+   <FIELD name="NDeg_Reference_HighSN" datatype="int" ucd="stat.fit.dof"/>
+   <DATA><TABLEDATA>
+    <TR>
+     <TD>1</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>2043</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.558052869</TD><TD>190.000</TD><TD>1.87</TD><TD>292.9597197 -26.4361571</TD>
+     <TD>0.254394  0.254394</TD><TD>5.71097</TD><TD>0</TD>
+     <TD>0.99989</TD><TD>-0.00895526</TD><TD>0.920902</TD>
+     <TD>-3.57645e-06</TD><TD>-1.36137e-06</TD><TD>5.20965</TD><TD>0.000673107</TD><TD>53.4834</TD>
+     <TD>37.5719</TD><TD>21605</TD><TD>39.3688</TD><TD>20514</TD>
+     <TD>0.00713483 -0.00117135</TD><TD>0.0922527 0.0869578</TD><TD>0.139399</TD><TD>165.533</TD><TD>688</TD><TD>0.00713483 -0.00117135</TD><TD>0.0922527 0.0869578</TD><TD>0.139399</TD><TD>165.533</TD><TD>688</TD>
+    </TR>
+    <TR>
+     <TD>2</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>2153</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.558059872</TD><TD>190.000</TD><TD>1.89</TD><TD>292.9628647 -26.43478639</TD>
+     <TD>0.254235  0.254235</TD><TD>5.71762</TD><TD>0</TD>
+     <TD>0.996939</TD><TD>0.110601</TD><TD>0.996831</TD>
+     <TD>0.000335876</TD><TD>6.30083e-06</TD><TD>5.08541</TD><TD>0.00454716</TD><TD>24.6413</TD>
+     <TD>37.2077</TD><TD>21526</TD><TD>39.0705</TD><TD>20379</TD>
+     <TD>0.00783929 -0.000367923</TD><TD>0.0918605 0.0849726</TD><TD>0.232586</TD><TD>179.857</TD><TD>677</TD><TD>0.00783929 -0.000367923</TD><TD>0.0918605 0.0849726</TD><TD>0.232586</TD><TD>179.857</TD><TD>677</TD>
+    </TR>
+    <TR>
+     <TD>3</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>2144</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.558067034</TD><TD>190.000</TD><TD>1.90</TD><TD>292.9566194 -26.43328</TD>
+     <TD>0.255121  0.255121</TD><TD>5.72504</TD><TD>0</TD>
+     <TD>1.00285</TD><TD>0.343582</TD><TD>1.03066</TD>
+     <TD>-2.62244e-05</TD><TD>4.36587e-05</TD><TD>5.54803</TD><TD>0.000337939</TD><TD>11.066</TD>
+     <TD>40.478</TD><TD>21386</TD><TD>42.5395</TD><TD>20235</TD>
+     <TD>0.0100247 -0.00145656</TD><TD>0.0845158 0.076959</TD><TD>0.0562663</TD><TD>188.498</TD><TD>666</TD><TD>0.0100247 -0.00145656</TD><TD>0.0845158 0.076959</TD><TD>0.0562663</TD><TD>188.498</TD><TD>666</TD>
+    </TR>
+    <TR>
+     <TD>4</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>2233</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.558074195</TD><TD>190.000</TD><TD>1.92</TD><TD>292.9580976 -26.43891107</TD>
+     <TD>0.254591  0.254591</TD><TD>5.71508</TD><TD>0</TD>
+     <TD>0.999976</TD><TD>0.00140939</TD><TD>0.953103</TD>
+     <TD>-2.54289e-05</TD><TD>2.5589e-07</TD><TD>5.35133</TD><TD>0.00118538</TD><TD>72.8957</TD>
+     <TD>41.5128</TD><TD>21635</TD><TD>43.6225</TD><TD>20448</TD>
+     <TD>0.00929547 -3.81755e-05</TD><TD>0.0841029 0.0841005</TD><TD>0.182462</TD><TD>196.094</TD><TD>669</TD><TD>0.00929547 -3.81755e-05</TD><TD>0.0841029 0.0841005</TD><TD>0.182462</TD><TD>196.094</TD><TD>669</TD>
+    </TR>
+    <TR>
+     <TD>5</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>2196</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.558081199</TD><TD>190.000</TD><TD>1.94</TD><TD>292.9612788 -26.43738461</TD>
+     <TD>0.254665  0.254665</TD><TD>5.72415</TD><TD>0</TD>
+     <TD>0.999742</TD><TD>-0.623421</TD><TD>1.02481</TD>
+     <TD>0.00018687</TD><TD>0.000286265</TD><TD>5.76106</TD><TD>0.000354551</TD><TD>24.7553</TD>
+     <TD>40.9215</TD><TD>21719</TD><TD>43.0079</TD><TD>20541</TD>
+     <TD>0.00509179 0.00190696</TD><TD>0.106236 0.0885006</TD><TD>-0.0707945</TD><TD>187.745</TD><TD>674</TD><TD>0.00509179 0.00190696</TD><TD>0.106236 0.0885006</TD><TD>-0.0707945</TD><TD>187.745</TD><TD>674</TD>
+    </TR>
+    <TR>
+     <TD>6</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>1725</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.623337944</TD><TD>190.000</TD><TD>1.82</TD><TD>292.9586337 -26.43611583</TD>
+     <TD>0.2552  0.2552</TD><TD>5.7056</TD><TD>0</TD>
+     <TD>1.00315</TD><TD>-0.149842</TD><TD>1.01371</TD>
+     <TD>5.31944e-05</TD><TD>-7.66829e-05</TD><TD>3.06265</TD><TD>0.00411158</TD><TD>6.16381</TD>
+     <TD>41.5409</TD><TD>19946</TD><TD>43.2679</TD><TD>19076</TD>
+     <TD>0.00212176 0.00100632</TD><TD>0.0749536 0.0816717</TD><TD>0.278085</TD><TD>143.571</TD><TD>725</TD><TD>0.00212176 0.00100632</TD><TD>0.0749536 0.0816717</TD><TD>0.278085</TD><TD>143.571</TD><TD>725</TD>
+    </TR>
+    <TR>
+     <TD>7</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>1902</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.623344947</TD><TD>190.000</TD><TD>1.81</TD><TD>292.9615368 -26.43478499</TD>
+     <TD>0.252515  0.252515</TD><TD>5.61205</TD><TD>0</TD>
+     <TD>0.972889</TD><TD>0.0300986</TD><TD>1.02774</TD>
+     <TD>0.00120727</TD><TD>0.000178385</TD><TD>1.31949</TD><TD>0.0275291</TD><TD>57.4809</TD>
+     <TD>145.651</TD><TD>20969</TD><TD>152.62</TD><TD>19907</TD>
+     <TD>0.0186964 -0.00163609</TD><TD>0.132245 0.0847149</TD><TD>-0.0752621</TD><TD>547.733</TD><TD>708</TD><TD>0.0186964 -0.00163609</TD><TD>0.132245 0.0847149</TD><TD>-0.0752621</TD><TD>547.733</TD><TD>708</TD>
+    </TR>
+    <TR>
+     <TD>8</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>1885</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.623351950</TD><TD>190.000</TD><TD>1.80</TD><TD>292.9553841 -26.43323526</TD>
+     <TD>0.254451  0.254451</TD><TD>5.69574</TD><TD>0</TD>
+     <TD>0.999447</TD><TD>-0.00526213</TD><TD>0.853284</TD>
+     <TD>-4.98503e-05</TD><TD>-1.26011e-05</TD><TD>4.0341</TD><TD>0.000499909</TD><TD>14.0678</TD>
+     <TD>41.6671</TD><TD>20780</TD><TD>43.8232</TD><TD>19667</TD>
+     <TD>0.00956145 1.60902e-06</TD><TD>0.09225 0.0782745</TD><TD>0.0932467</TD><TD>190.298</TD><TD>709</TD><TD>0.00956145 1.60902e-06</TD><TD>0.09225 0.0782745</TD><TD>0.0932467</TD><TD>190.298</TD><TD>709</TD>
+    </TR>
+    <TR>
+     <TD>9</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>1725</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.623358953</TD><TD>190.000</TD><TD>1.80</TD><TD>292.9571211 -26.43895181</TD>
+     <TD>0.251146  0.251146</TD><TD>5.67314</TD><TD>0</TD>
+     <TD>0.976305</TD><TD>0.285607</TD><TD>1.01716</TD>
+     <TD>-0.000175456</TD><TD>0.000186264</TD><TD>4.43395</TD><TD>0.0257549</TD><TD>27.8348</TD>
+     <TD>355.412</TD><TD>17809</TD><TD>371.769</TD><TD>16964</TD>
+     <TD>-0.00108164 0.013167</TD><TD>0.209743 0.106191</TD><TD>0.650346</TD><TD>1709.05</TD><TD>642</TD><TD>-0.00108164 0.013167</TD><TD>0.209743 0.106191</TD><TD>0.650346</TD><TD>1709.05</TD><TD>642</TD>
+    </TR>
+    <TR>
+     <TD>10</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>1730</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.623365956</TD><TD>190.000</TD><TD>1.79</TD><TD>292.9599549 -26.43751667</TD>
+     <TD>0.253932  0.253932</TD><TD>5.69011</TD><TD>0</TD>
+     <TD>1</TD><TD>0</TD><TD>0.921529</TD>
+     <TD>-8.31546e-05</TD><TD>2.57715e-05</TD><TD>2.79305</TD><TD>0</TD><TD>0</TD>
+     <TD>44.3421</TD><TD>19769</TD><TD>46.42</TD><TD>18789</TD>
+     <TD>0.0100262 0.00535928</TD><TD>0.0832862 0.0860658</TD><TD>0.228585</TD><TD>199.543</TD><TD>686</TD><TD>0.0100262 0.00535928</TD><TD>0.0832862 0.0860658</TD><TD>0.228585</TD><TD>199.543</TD><TD>686</TD>
+    </TR>
+    <TR>
+     <TD>11</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>1883</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.623474963</TD><TD>190.000</TD><TD>1.75</TD><TD>292.958994 -26.435975</TD>
+     <TD>0.254114  0.254114</TD><TD>5.70339</TD><TD>0</TD>
+     <TD>0.999143</TD><TD>0.0199684</TD><TD>1.16513</TD>
+     <TD>4.07252e-05</TD><TD>-2.59169e-05</TD><TD>4.06709</TD><TD>0.0011671</TD><TD>15.6662</TD>
+     <TD>38.9158</TD><TD>21233</TD><TD>40.7439</TD><TD>20198</TD>
+     <TD>0.00964831 0.00441975</TD><TD>0.0828479 0.0840948</TD><TD>0.206591</TD><TD>186.17</TD><TD>723</TD><TD>0.00964831 0.00441975</TD><TD>0.0828479 0.0840948</TD><TD>0.206591</TD><TD>186.17</TD><TD>723</TD>
+    </TR>
+    <TR>
+     <TD>12</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>1646</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.623481966</TD><TD>190.000</TD><TD>1.76</TD><TD>292.9621146 -26.43463327</TD>
+     <TD>0.25401  0.25401</TD><TD>5.69698</TD><TD>0</TD>
+     <TD>0.998665</TD><TD>0.172552</TD><TD>1.10545</TD>
+     <TD>7.57814e-05</TD><TD>3.38643e-05</TD><TD>3.17186</TD><TD>0.000886735</TD><TD>20.5844</TD>
+     <TD>39.1986</TD><TD>19021</TD><TD>40.0827</TD><TD>18552</TD>
+     <TD>0.0105251 0.00399881</TD><TD>0.088929 0.0833778</TD><TD>0.200341</TD><TD>170.329</TD><TD>745</TD><TD>0.0105251 0.00399881</TD><TD>0.088929 0.0833778</TD><TD>0.200341</TD><TD>170.329</TD><TD>745</TD>
+    </TR>
+    <TR>
+     <TD>13</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>1841</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.623489128</TD><TD>190.000</TD><TD>1.76</TD><TD>292.9559289 -26.43314291</TD>
+     <TD>0.254011  0.254011</TD><TD>5.69915</TD><TD>0</TD>
+     <TD>0.999946</TD><TD>-0.0106112</TD><TD>0.962733</TD>
+     <TD>-0.000171381</TD><TD>1.6785e-05</TD><TD>3.66513</TD><TD>0.000326212</TD><TD>57.8298</TD>
+     <TD>42.0142</TD><TD>20686</TD><TD>44.1481</TD><TD>19599</TD>
+     <TD>0.00361617 0.0060916</TD><TD>0.0883288 0.0854259</TD><TD>0.107612</TD><TD>196.982</TD><TD>721</TD><TD>0.00361617 0.0060916</TD><TD>0.0883288 0.0854259</TD><TD>0.107612</TD><TD>196.982</TD><TD>721</TD>
+    </TR>
+    <TR>
+     <TD>14</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>1914</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.623496289</TD><TD>190.000</TD><TD>1.77</TD><TD>292.957287 -26.43872831</TD>
+     <TD>0.255343  0.255343</TD><TD>5.73775</TD><TD>0</TD>
+     <TD>1.00171</TD><TD>0.0227812</TD><TD>1.146</TD>
+     <TD>-0.000103505</TD><TD>-5.12875e-05</TD><TD>4.19266</TD><TD>0.00181247</TD><TD>34.7721</TD>
+     <TD>41.8709</TD><TD>21166</TD><TD>43.9515</TD><TD>20067</TD>
+     <TD>0.0101203 0.0051985</TD><TD>0.087063 0.0932983</TD><TD>0.130612</TD><TD>209.624</TD><TD>724</TD><TD>0.0101203 0.0051985</TD><TD>0.087063 0.0932983</TD><TD>0.130612</TD><TD>209.624</TD><TD>724</TD>
+    </TR>
+    <TR>
+     <TD>15</TD><TD>detection.cat</TD><TD>Candidate3</TD>
+     <TD>1</TD><TD>2</TD><TD>0</TD><TD>1</TD><TD>F</TD>
+     <TD>1892</TD><TD>1</TD><TD>A1</TD><TD>P1</TD><TD>F</TD><TD>F</TD>
+     <TD>2023.623503292</TD><TD>190.000</TD><TD>1.77</TD><TD>292.9604313 -26.43740806</TD>
+     <TD>0.253972  0.253972</TD><TD>5.68738</TD><TD>0</TD>
+     <TD>1.00005</TD><TD>-0.00576512</TD><TD>0.938451</TD>
+     <TD>2.17442e-05</TD><TD>2.15935e-05</TD><TD>4.1367</TD><TD>0.000373054</TD><TD>41.7652</TD>
+     <TD>41.9133</TD><TD>21194</TD><TD>43.9529</TD><TD>20108</TD>
+     <TD>0.00555003 0.00701293</TD><TD>0.0980643 0.0911331</TD><TD>0.110307</TD><TD>198.02</TD><TD>725</TD><TD>0.00555003 0.00701293</TD><TD>0.0980643 0.0911331</TD><TD>0.110307</TD><TD>198.02</TD><TD>725</TD>
+    </TR>
+   </TABLEDATA></DATA>
+  </TABLE>
+  <TABLE ID="FGroups" name="FGroups">
+   <DESCRIPTION>Data gathered by SCAMP for every  group of fields found</DESCRIPTION>
+   <PARAM name="NFGroups" datatype="int" ucd="meta.number;meta.dataset" value="1"/>
+   <FIELD name="Name" datatype="char" arraysize="*" ucd="meta.id;meta.dataset"/>
+   <FIELD name="Index" datatype="int" ucd="meta.record;meta.dataset"/>
+   <FIELD name="NFields" datatype="int" ucd="meta.number;meta.dataset"/>
+   <FIELD name="NAxis" datatype="int" ucd="pos.wcs.naxis"/>
+   <FIELD name="Lng_Axis" datatype="int" ucd="meta.id;pos.eq.ra"/>
+   <FIELD name="Lat_Axis" datatype="int" ucd="meta.id;pos.eq.de"/>
+   <FIELD name="Field_Coordinates" datatype="double" arraysize="2" ucd="pos.eq.ra;pos.eq.dec;obs.field" unit="deg"/>
+   <FIELD name="Pixel_Scale" datatype="float" arraysize="2"  ucd="instr.pixel;obs.field;stat.mean" unit="arcsec"/>
+   <FIELD name="Max_Radius" datatype="float" ucd="phys.size.radius;obs.field" unit="arcmin"/>
+   <!-- =========== Astrometric statistics =========== -->
+   <FIELD name="AstRef_Catalog" datatype="char" arraysize="*" ucd="meta.id;meta.dataset"/>
+   <FIELD name="AstRef_Band" datatype="char" arraysize="*" ucd="instr.bandpass"/>
+   <FIELD name="AstromSigma_Internal" datatype="float" arraysize="2" ucd="stat.stdev;pos.eq;obs.field" unit="arcsec"/>
+   <FIELD name="AstromCorr_Internal" datatype="float" ucd="stat.correlation;pos.eq;obs.field"/>
+   <FIELD name="AstromChi2_Internal" datatype="float" ucd="stat.fit.chi2"/>
+   <FIELD name="AstromNDets_Internal" datatype="int" ucd="meta.number;src"/>
+   <FIELD name="AstromSigma_Internal_HighSN" datatype="float" arraysize="2" ucd="stat.stdev;pos.eq;obs.field" unit="arcsec"/>
+   <FIELD name="AstromCorr_Internal_HighSN" datatype="float" ucd="stat.correlation;pos.eq;obs.field"/>
+   <FIELD name="AstromChi2_Internal_HighSN" datatype="float" ucd="stat.fit.chi2"/>
+   <FIELD name="AstromNDets_Internal_HighSN" datatype="int" ucd="meta.number;src"/>
+   <FIELD name="AstromOffset_Reference" datatype="float" arraysize="2" ucd="arith.diff;pos.eq;obs.field" unit="arcsec"/>
+   <FIELD name="AstromSigma_Reference" datatype="float" arraysize="2" ucd="stat.stdev;pos.eq;obs.field" unit="arcsec"/>
+   <FIELD name="AstromCorr_Reference" datatype="float" ucd="stat.correlation;pos.eq;obs.field"/>
+   <FIELD name="AstromChi2_Reference" datatype="float" ucd="stat.fit.chi2"/>
+   <FIELD name="AstromNDets_Reference" datatype="int" ucd="meta.number;src"/>
+   <FIELD name="AstromOffset_Reference_HighSN" datatype="float" arraysize="2" ucd="arith.diff;pos.eq;obs.field" unit="arcsec"/>
+   <FIELD name="AstromSigma_Reference_HighSN" datatype="float" arraysize="2" ucd="stat.stDev;pos.eq;obs.field" unit="arcsec"/>
+   <FIELD name="AstromCorr_Reference_HighSN" datatype="float" ucd="stat.correlation;pos.eq;obs.field"/>
+   <FIELD name="AstromChi2_Reference_HighSN" datatype="float" ucd="stat.fit.chi2"/>
+   <FIELD name="AstromNDets_Reference_HighSN" datatype="int" ucd="meta.number;src"/>
+   <!-- =========== Photometric statistics =========== -->
+   <PARAM name="NPhotInstru" datatype="int" ucd="meta.number;meta.em" value="1"/>
+   <FIELD name="PhotInstru_Name" datatype="char" arraysize="*" ucd="meta.id;instr.bandpass"/>
+   <FIELD name="PhotSigma_Internal" datatype="float" arraysize="1" ucd="stat.error;phot.mag" unit="mag"/>
+   <FIELD name="PhotChi2_Internal" datatype="float" arraysize="1" ucd="stat.chi2;phot.mag" unit="mag"/>
+   <FIELD name="PhotNDets_Internal" datatype="int" arraysize="1" ucd="meta.number;src"/>
+   <FIELD name="PhotSigma_Internal_HighSN" datatype="float" arraysize="1" ucd="stat.error;phot.mag" unit="mag"/>
+   <FIELD name="PhotChi2_Internal_HighSN" datatype="float" arraysize="1" ucd="stat.chi2;phot.mag" unit="mag"/>
+   <FIELD name="PhotNDets_Internal_HighSN" datatype="int" arraysize="1" ucd="meta.number;src"/>
+   <FIELD name="PhotSigma_Reference" datatype="float" arraysize="1" ucd="stat.error;phot.mag" unit="mag"/>
+   <FIELD name="PhotChi2_Reference" datatype="float" arraysize="1" ucd="stat.chi2;phot.mag" unit="mag"/>
+   <FIELD name="PhotNDets_Reference" datatype="int" arraysize="1" ucd="meta.number;src"/>
+   <FIELD name="PhotSigma_Reference_HighSN" datatype="float" arraysize="1" ucd="stat.error;phot.mag" unit="mag"/>
+   <FIELD name="PhotChi2_Reference_HighSN" datatype="float" arraysize="1" ucd="stat.chi2;phot.mag" unit="mag"/>
+   <FIELD name="PhotNDets_Reference_HighSN" datatype="int" arraysize="1" ucd="meta.number;src"/>
+   <DATA><TABLEDATA>
+   <TR>
+     <TD>G1</TD><TD>1</TD><TD>15</TD>
+     <TD>2</TD><TD>0</TD><TD>1</TD>
+     <TD>292.9589941 -26.43609606</TD><TD>0.254336  0.254336</TD><TD>5.95437</TD>
+     <TD>file</TD><TD>1</TD>
+     <TD>0.102672 0.0566144</TD><TD>0.0875978</TD><TD>65.8266</TD><TD>25464</TD>
+     <TD>0.104001 0.0567305</TD><TD>0.0932157</TD><TD>68.9455</TD><TD>24153</TD>
+     <TD>0.00844105 0.00390379</TD><TD>0.0890568 0.0813397</TD><TD>0.154352</TD><TD>303.25</TD><TD>827</TD>
+     <TD>0.00844105 0.00390379</TD><TD>0.0890564 0.0813396</TD><TD>0.154352</TD><TD>303.25</TD><TD>827</TD>
+     <TD>P1</TD>
+     <TD>0.191731</TD><TD>993.966</TD><TD>25319</TD>
+     <TD>0.189766</TD><TD>1044.19</TD><TD>24022</TD>
+     <TD>0</TD><TD>0</TD><TD>0</TD>
+     <TD>0</TD><TD>0</TD><TD>0</TD>
+    </TR>
+   </TABLEDATA></DATA>
+  </TABLE>
+  <TABLE ID="Astrometric_Instruments" name="Astrometric_Instruments">
+   <DESCRIPTION>Data gathered by SCAMP for every  astrometric instrument identified</DESCRIPTION>
+   <PARAM name="NAstromInstru" datatype="int" ucd="meta.number;meta.dataset" value="1"/>
+   <FIELD name="Name" datatype="char" arraysize="*" ucd="meta.id;meta.dataset"/>
+   <FIELD name="Index" datatype="int" ucd="meta.record;meta.dataset"/>
+   <FIELD name="NFields" datatype="int" ucd="meta.number;meta.dataset"/>
+   <FIELD name="NExtensions" datatype="int" ucd="meta.number;meta.dataset"/>
+   <FIELD name="NKeys" datatype="int" ucd="meta.number"/>
+   <FIELD name="Keys" datatype="char" arraysize="*" ucd="meta.note"/>
+   <DATA><TABLEDATA>
+    <TR>
+     <TD>A1</TD><TD>1</TD><TD>15</TD><TD>1</TD>
+     <TD>2</TD><TD>FILTER  = 'OPEN    '            ,QRUNID  =                       </TD>
+    </TR>
+   </TABLEDATA></DATA>
+  </TABLE>
+  <TABLE ID="Photometric_Instruments" name="Photometric_Instruments">
+   <DESCRIPTION>Data gathered by SCAMP for every  photometric instrument identified</DESCRIPTION>
+   <PARAM name="NPhotomInstru" datatype="int" ucd="meta.number;meta.dataset" value="1"/>
+   <FIELD name="Name" datatype="char" arraysize="*" ucd="meta.id;meta.dataset"/>
+   <FIELD name="Index" datatype="int" ucd="meta.record;meta.dataset"/>
+   <FIELD name="NFields" datatype="int" ucd="meta.number;meta.dataset"/>
+   <FIELD name="MagZeroPoint_Output" datatype="float" ucd="phot.mag;phot.calib;arith.zp" unit="mag"/>
+   <FIELD name="NKeys" datatype="int" ucd="meta.number"/>
+   <FIELD name="Keys" datatype="char" arraysize="*" ucd="meta.note"/>
+   <DATA><TABLEDATA>
+    <TR>
+     <TD>P1</TD><TD>1</TD><TD>15</TD><TD>0</TD>
+     <TD>1</TD><TD>FILTER  = 'OPEN    '            </TD>
+    </TR>
+   </TABLEDATA></DATA>
+  </TABLE>
+  <TABLE ID="Warnings" name="Warnings">
+   <DESCRIPTION>SCAMP warnings (limited to the last 1000)</DESCRIPTION>
+   <FIELD name="Date" datatype="char" arraysize="*" ucd="meta;time.end"/>
+   <FIELD name="Time" datatype="char" arraysize="*" ucd="meta;time.end"/>
+   <FIELD name="Msg" datatype="char" arraysize="*" ucd="meta"/>
+   <DATA><TABLEDATA>
+    <TR><TD>2026-01-28</TD><TD>21:41:38</TD><TD>FLAGS parameter not found in catalog astrefcat.cat</TD></TR>
+   </TABLEDATA></DATA>
+  </TABLE>
+  <RESOURCE ID="Config" name="Config">
+   <DESCRIPTION>SCAMP configuration</DESCRIPTION>
+   <PARAM name="Command_Line" datatype="char" arraysize="*" ucd="obs.param" value="scamp -c ../../scamp.conf ../img_r_01/detection.cat ../img_r_02/detection.cat ../img_r_03/detection.cat ../img_r_04/detection.cat ../img_r_05/detection.cat ../img_r_11/detection.cat ../img_r_12/detection.cat ../img_r_13/detection.cat ../img_r_14/detection.cat ../img_r_15/detection.cat ../img_r_16/detection.cat ../img_r_17/detection.cat ../img_r_18/detection.cat ../img_r_19/detection.cat ../img_r_20/detection.cat"/>
+   <PARAM name="Prefs_Name" datatype="char" arraysize="*" ucd="obs.param;meta.file" value="../../scamp.conf"/>
+   <PARAM name="Ref_Server" datatype="char" arraysize="*" ucd="meta.ref.url" value="vizier.unistra.fr"/>
+   <PARAM name="Ref_TimeOut" unit="s" datatype="double" arraysize="1" ucd="meta;time.duration" value="10"/>
+   <PARAM name="AstRef_Catalog" datatype="char" arraysize="*" ucd="meta.code;meta.file" value="FILE"/>
+   <PARAM name="AstRef_Band" datatype="char" arraysize="*" ucd="instr.bandpass" value="DEFAULT"/>
+   <PARAM name="AstRefCat_Name" datatype="char" arraysize="*" ucd="meta.id;meta.file;meta.dataset" value="../astrefcat.cat"/>
+   <PARAM name="AstRefCent_Keys" datatype="char" arraysize="*" ucd="meta.id;pos.eq" value="X_WORLD,Y_WORLD"/>
+   <PARAM name="AstRefErr_Keys" datatype="char" arraysize="*" ucd="meta.id;pos.errorEllipse" value="ERRA_WORLD,ERRB_WORLD,ERRTHETA_WORLD"/>
+   <PARAM name="AstRefMag_Key" datatype="char" arraysize="*" ucd="meta.id;phot.mag" value="MAG"/>
+   <PARAM name="AstRefMagErr_Key" datatype="char" arraysize="*" ucd="meta.id;phot.mag" value="MAGERR"/>
+   <PARAM name="AstRefObsDate_Key" datatype="char" arraysize="*" ucd="meta.id;time.epoch" value="OBSDATE"/>
+   <PARAM name="AstRefMag_Limits" unit="mag" datatype="double" arraysize="2" ucd="phot.mag;stat.min;stat.max;obs.param" value="-99 99"/>
+   <PARAM name="Save_RefCatalog" datatype="boolean" ucd="meta.code" value="T"/>
+   <PARAM name="RefOut_CatPath" datatype="char" arraysize="*" ucd="meta.id;meta.file" value="."/>
+   <PARAM name="MergedOutCat_Name" datatype="char" arraysize="*" ucd="meta.id;meta.file;meta.dataset" value="merged.cat"/>
+   <PARAM name="MergedOutCat_Type" datatype="char" arraysize="*" ucd="meta.code;meta.dataset" value="NONE"/>
+   <PARAM name="Save_DGeoMap" datatype="boolean" ucd="meta.code" value="F"/>
+   <PARAM name="DGeoMap_Name" datatype="char" arraysize="*" ucd="meta.id;meta.file;meta.dataset" value="dgeo.fits"/>
+   <PARAM name="DGeoMap_Step" unit="pix" datatype="int" ucd="meta.number" value="2"/>
+   <PARAM name="DGeoMap_NNearest" datatype="int" ucd="meta.number" value="21"/>
+   <PARAM name="FullOutCat_Name" datatype="char" arraysize="*" ucd="meta.id;meta.file;meta.dataset" value="full.cat"/>
+   <PARAM name="FullOutCat_Type" datatype="char" arraysize="*" ucd="meta.code;meta.dataset" value="FITS_LDAC"/>
+   <PARAM name="Match" datatype="boolean" ucd="meta.code;obs.param" value="T"/>
+   <PARAM name="Match_NMax" datatype="int" ucd="meta.number;src;obs.param" value="0"/>
+   <PARAM name="PixScale_MaxErr" datatype="double" ucd="instr.precision;instr.pixel;obs.param" value="1.2"/>
+   <PARAM name="PosAngle_MaxErr" unit="deg" datatype="double" ucd="instr.precision;pos.posAng;obs.param" value="1"/>
+   <PARAM name="Position_MaxErr" unit="arcmin" datatype="double" arraysize="2" ucd="instr.precision;pos.eq;obs.param" value="0.00833333 0.00833333"/>
+   <PARAM name="Match_Resol" unit="arcsec" datatype="double" ucd="stat.param;phys.angSize" value="0"/>
+   <PARAM name="Match_Flipped" datatype="boolean" ucd="instr.param;obs.param" value="F"/>
+   <PARAM name="Mosaic_Type" datatype="char" arraysize="*" ucd="instr.param;obs.param" value="UNCHANGED"/>
+   <PARAM name="FixFocalPlane_NMin" datatype="int" ucd="meta.number;src;obs.param" value="1"/>
+   <PARAM name="CrossId_Radius" unit="arcsec" datatype="double" ucd="pos.angDistance;stat.max" value="8"/>
+   <PARAM name="Solve_Astrom" datatype="boolean" ucd="meta.code;obs.param" value="T"/>
+   <PARAM name="Projection_Type" datatype="char" arraysize="*" ucd="instr.param;obs.param" value="SAME"/>
+   <PARAM name="AstrInstru_Key" datatype="char" arraysize="*" ucd="meta.id;instr.setup;pos" value="FILTER,QRUNID"/>
+   <PARAM name="Stability_Type" datatype="char" arraysize="*" ucd="instr.param;obs.param" value="EXPOSURE"/>
+   <PARAM name="Centroid_Keys" datatype="char" arraysize="*" ucd="meta.id;pos.barycenter;src" value="XWIN_IMAGE,YWIN_IMAGE"/>
+   <PARAM name="CentroidErr_Keys" datatype="char" arraysize="*" ucd="meta.id;pos.errorEllipse;src" value="ERRAWIN_IMAGE,ERRBWIN_IMAGE,ERRTHETAWIN_IMAGE"/>
+   <PARAM name="Distort_Keys" datatype="char" arraysize="*" ucd="meta.id;stat.fit.param;src" value="XWIN_IMAGE,YWIN_IMAGE"/>
+   <PARAM name="Distort_Groups" datatype="int" arraysize="2" ucd="meta.id;stat.fit.param" value="1 1"/>
+   <PARAM name="Distort_Degrees" datatype="int" arraysize="1" ucd="meta.id;stat.fit.param" value="3"/>
+   <PARAM name="FocDistort_Degree" datatype="int" ucd="meta.id;stat.fit.param" value="1"/>
+   <PARAM name="Astref_Weight" datatype="double" ucd="meta.id;stat.fit.param" value="1"/>
+   <PARAM name="AstrAccuracy_Type" datatype="char" arraysize="*" ucd="instr.param;obs.param" value="SIGMA-PIXEL"/>
+   <PARAM name="AstrAccuracy_Key" datatype="char" arraysize="*" ucd="meta.id;stat.fit.param;src" value="ASTRACCU"/>
+   <PARAM name="Astr_Accuracy" datatype="double" ucd="meta.id;stat.param;pos" value="0.01"/>
+   <PARAM name="AstrClip_NSigma" datatype="double" ucd="meta.id;stat.param;pos" value="3"/>
+   <PARAM name="Compute_Parallaxes" datatype="boolean" ucd="meta.code;obs.param" value="F"/>
+   <PARAM name="Compute_ProperMotions" datatype="boolean" ucd="meta.code;obs.param" value="F"/>
+   <PARAM name="Correct_ColourShifts" datatype="boolean" ucd="meta.code;obs.param" value="F"/>
+   <PARAM name="Include_AstRefCatalog" datatype="boolean" ucd="meta.code;obs.param" value="T"/>
+   <PARAM name="Astr_FlagsMask" datatype="int" ucd="meta.code.qual" value="252"/>
+   <PARAM name="Astr_ImaFlagsMask" datatype="int" ucd="meta.code.qual" value="0"/>
+   <PARAM name="Solve_Photom" datatype="boolean" ucd="meta.code;phot.calib;obs.param" value="F"/>
+   <PARAM name="MagZero_Out" unit="mag" datatype="double" arraysize="1" ucd="arith.zp;phot.calib;obs.param" value="0"/>
+   <PARAM name="MagZero_IntErr" unit="mag" datatype="double" arraysize="1" ucd="stat.error;phot.mag;obs.param" value="0.01"/>
+   <PARAM name="MagZero_RefErr" unit="mag" datatype="double" arraysize="1" ucd="stat.error;phot.calib;obs.param" value="0.03"/>
+   <PARAM name="PhotInstru_Key" datatype="char" arraysize="*" ucd="meta.id;instr.setup;phot.calib" value="FILTER"/>
+   <PARAM name="MagZero_Key" datatype="char" arraysize="*" ucd="meta.id;arith.zp;phot.calib" value="PHOT_C"/>
+   <PARAM name="ExpoTime_Key" datatype="char" arraysize="*" ucd="meta.id;time.duration.expo" value="EXPTIME"/>
+   <PARAM name="AirMass_Key" datatype="char" arraysize="*" ucd="meta.id;obs.airmass" value="AIRMASS"/>
+   <PARAM name="Extinct_Key" datatype="char" arraysize="*" ucd="meta.id;obs.atmos.extinction" value="PHOT_K"/>
+   <PARAM name="PhotomFlag_Key" datatype="char" arraysize="*" ucd="meta.id;obs.atmos" value="PHOTFLAG"/>
+   <PARAM name="PhotFlux_Key" datatype="char" arraysize="*" ucd="meta.id;phot.flux;src" value="FLUX_AUTO"/>
+   <PARAM name="PhotFluxerr_Key" datatype="char" arraysize="*" ucd="meta.id;phot.flux;src" value="FLUXERR_AUTO"/>
+   <PARAM name="PhotClip_NSigma" datatype="double" ucd="meta.id;stat.param;phot" value="3"/>
+   <PARAM name="Phot_Accuracy" datatype="double" ucd="meta.id;stat.param;phot" value="0.001"/>
+   <PARAM name="Phot_FlagsMask" datatype="int" ucd="meta.code.qual" value="252"/>
+   <PARAM name="Phot_ImaFlagsMask" datatype="int" ucd="meta.code.qual" value="0"/>
+   <PARAM name="SN_Thresholds" datatype="double" arraysize="2" ucd="stat.snr;stat.min;phot.flux;obs.param" value="5 20"/>
+   <PARAM name="FWHM_Thresholds" datatype="double" arraysize="2" ucd="phys.size.diameter;stat.min;instr.det.psf;obs.param" value="0 100"/>
+   <PARAM name="Ellipticity_Max" datatype="double" ucd="src.ellipticity;stat.max;obs.param" value="0.5"/>
+   <PARAM name="Flags_Mask" datatype="int" ucd="meta.code.qual" value="240"/>
+   <PARAM name="WeightFlags_Mask" datatype="int" ucd="meta.code.qual" value="0"/>
+   <PARAM name="ImaFlags_Mask" datatype="int" ucd="meta.code.qual" value="0"/>
+   <PARAM name="AHeader_Global" datatype="char" arraysize="*" ucd="meta.id;meta.file" value="scamp.ahead"/>
+   <PARAM name="AHeader_Name" datatype="char" arraysize="*" ucd="meta.id;meta.file" value=""/>
+   <PARAM name="AHeader_Suffix" datatype="char" arraysize="*" ucd="meta.id.part;meta.file" value=".ahead"/>
+   <PARAM name="Header_Name" datatype="char" arraysize="*" ucd="meta.id;meta.file" value=""/>
+   <PARAM name="Header_Suffix" datatype="char" arraysize="*" ucd="meta.id.part;meta.file" value=".head"/>
+   <PARAM name="Header_Type" datatype="char" arraysize="*" ucd="meta.code;meta.file" value="NORMAL"/>
+   <PARAM name="CheckPlot_CKey" datatype="char" arraysize="*" ucd="meta.id;meta.code" value="SCAMPCOL"/>
+   <PARAM name="CheckPlot_Dev" datatype="char" arraysize="*" ucd="meta.code" value="PDF"/>
+   <PARAM name="CheckPlot_Res" datatype="int" arraysize="1" ucd="meta.number;meta" value="0"/>
+   <PARAM name="CheckPlot_AntiAlias" datatype="boolean" ucd="meta.code" value="T"/>
+   <PARAM name="CheckPlot_Type" datatype="char" arraysize="*" ucd="meta.code" value="FGROUPS,DISTORTION,ASTR_REFERROR2D,ASTR_REFERROR1D,ASTR_CHI2"/>
+   <PARAM name="CheckPlot_Name" datatype="char" arraysize="*" ucd="meta.id;meta.file" value="fgroups,distort,astr_referror2d,astr_referror1d,astr_chi2"/>
+   <PARAM name="CheckImage_Type" datatype="char" arraysize="*" ucd="meta.code" value="NONE"/>
+   <PARAM name="CheckImage_Name" datatype="char" arraysize="*" ucd="meta.id;meta.file;meta.fits" value="check.fits"/>
+   <PARAM name="Verbose_Type" datatype="char" arraysize="*" ucd="meta.code" value="NORMAL"/>
+   <PARAM name="Write_XML" datatype="boolean" ucd="meta.code" value="T"/>
+   <PARAM name="XSL_URL" datatype="char" arraysize="*" ucd="meta.ref.url" value="file:///usr/local/share/scamp/scamp.xsl"/>
+   <PARAM name="NThreads" datatype="int" ucd="meta.number;meta.software" value="8"/>
+  </RESOURCE>
+ </RESOURCE>
+</RESOURCE>
+</VOTABLE>

@@ -58,19 +58,19 @@ function moffat_2d(
     return moffat(r; alpha=alpha, gamma=gamma, amplitude=amplitude)
 end
 
-
 function moffat_2d_model(x, y;
         params::AbstractVector{<:Real}, 
-        alpha::Real=1.1)
+        alpha=1.1
+        )
     scale, dx, dy, gamma = params
 
-    prof =  moffat_2d(x .- dx, y .- dy; amplitude=scale,gamma=gamma, alpha=alpha)
+    prof =  moffat_2d(x .- dx, y .- dy; amplitude=scale, gamma=gamma, alpha=alpha)
     return prof
 end
 
-function moffat_2d_gradient(x, y; params::AbstractVector{<:Real}, alpha::Real=1.1)
+function moffat_2d_gradient(x, y; params::AbstractVector{<:Real}, alpha=1.1)
     scale, dx, dy, gamma = params
-    prof = moffat_2d_model(x, y, params=params, alpha=alpha)
+    prof = moffat_2d_model(x, y, params=params)
 
     r2 = @. (x-dx)^2 + (y-dy)^2
     d_scale = @. prof / scale
@@ -79,6 +79,44 @@ function moffat_2d_gradient(x, y; params::AbstractVector{<:Real}, alpha::Real=1.
     d_gamma = @. scale * (1 + r2/gamma^2)^(-alpha-1) * alpha * r2/gamma^3 * 2
 
     return [d_scale, d_dx, d_dy, d_gamma]
+end
+
+
+
+function moffat_2d_model_alpha(x, y;
+        params::AbstractVector{<:Real}, 
+        )
+    scale, dx, dy, gamma, alpha = params
+
+    prof =  moffat_2d(x .- dx, y .- dy; amplitude=scale, gamma=gamma, alpha=alpha)
+    return prof
+end
+
+function moffat_2d_alpha_gradient(x, y; params::AbstractVector{<:Real},)
+    scale, dx, dy, gamma, alpha = params
+    prof = moffat_2d_model(x, y, params=params)
+
+    r2 = @. (x-dx)^2 + (y-dy)^2
+    d_scale = @. prof / scale
+    d_dx = @. scale * (1 + r2/gamma^2)^(-alpha-1) * alpha * 2*(x-dx)/gamma
+    d_dy = @. scale * (1 + r2/gamma^2)^(-alpha-1) * alpha * 2*(y-dy)/gamma
+    d_gamma = @. scale * (1 + r2/gamma^2)^(-alpha-1) * alpha * r2/gamma^3 * 2
+    d_alpha = @. -prof * log(r2 / gamma^2 + 1)
+
+    return [d_scale, d_dx, d_dy, d_gamma, d_alpha]
+end
+
+function moffat_2d_hessian(x, y; params::AbstractVector{<:Real}, alpha::Real=1.1)
+    scale, dx, dy, gamma = params
+    prof = moffat_2d_model(x, y, params=params, alpha=alpha)
+
+    r2 = @. (x-dx)^2 + (y-dy)^2
+    d_scale_scale = @. -prof / scale^2
+    d_dx_scale = @.  (1 + r2/gamma^2)^(-alpha-1) * alpha * 2*(x-dx)/gamma
+    d_dy_scale = @. (1 + r2/gamma^2)^(-alpha-1) * alpha * 2*(y-dy)/gamma
+    d_gamma_scale = @. (1 + r2/gamma^2)^(-alpha-1) * alpha * r2/gamma^3 * 2
+
+    return
 end
 
 
@@ -166,7 +204,7 @@ function get_group_centroids_areas(img)
 end
 
 
-function get_cutout_bounds(img_size, centroid, bbox, radius; pad=5)
+function get_cutout_bounds(img_size, centroid, bbox, radius; pad=20)
     x_c, y_c = centroid
     Nx, Ny = img_size
 
@@ -229,7 +267,7 @@ Return a dict containing the best-fit parameters and basic convergence informati
 - `chi2_scale`: Scale the z-scores before passing to chi2_f?
 
 """
-function fit_model_psf_chi2(
+function fit_model_grad_psf_chi2(
     model, model_gradient,
     image::AbstractMatrix;
     uncertainty = nothing,
@@ -304,9 +342,92 @@ function fit_model_psf_chi2(
     )
 end
 
+"""
+    fit_model_psf_chi2(model, image; params)
+
+Fit a function model to the psf of a given cutout image. 
+The model should take x and y positions and a parameter vector for the first three
+arguments. Additional keywords are passed to the model.
+Return a dict containing the best-fit parameters and basic convergence information
+
+# Parameters
+## Required
+- `lower` The lower parameter bounds
+- `upper` The upper parameter bounds
+- `p0` An initial guess for the parameters,
+## Optional
+- `x0`: The index corresponding to the first pixel row
+- `y0`: The index corresponding to the first pixel column
+- `mask`: A mask image
+- `uncertainty`: An uncertainty image
+- `chi2_f`: A functional form to transform z-scores before summing. For chi2, this is a quadratic
+- `chi2_scale`: Scale the z-scores before passing to chi2_f?
+
+"""
+function fit_model_psf_chi2(
+    model,
+    image::AbstractMatrix;
+    uncertainty = nothing,
+    mask = nothing,
+    lower,
+    upper,
+    p0,
+    x0 = 1,
+    y0 = 1,
+    chi2_f = x->x^2, 
+    chi2_f_der = x->2x, 
+    chi2_scale::Real = 1,
+    iterations::Int = 100,
+    x_reltol = 1e-10,
+    f_reltol = 1e-10,
+    kwargs...
+)
+
+    image_clean, combined_mask = clean_image_mask(image, mask)
+    if isnothing(uncertainty)
+        uncertainty_clean = 1
+    else
+        uncertainty_clean = uncertainty[combined_mask]
+    end
+
+    Nx, Ny = size(image_clean)
+    x_img, y_img = image_grid(Nx, Ny)
+    x_img = x_img[combined_mask] .+ x0 .- 1
+    y_img = y_img[combined_mask] .+ y0 .- 1
+    image_clean = image_clean[combined_mask]
+
+    function chi2_func(params)
+        img_model = model(x_img, y_img, params=params; kwargs...)
+
+        resid = image_clean .- img_model
+        return sum(@. chi2_f(resid / uncertainty_clean / chi2_scale))
+    end
+
+    options = Optim.Options(show_trace = false,
+        x_reltol = x_reltol,
+        f_reltol = f_reltol,
+        iterations = iterations
+    )
+    opt = optimize(
+        chi2_func,
+        lower, upper, p0, 
+        Fminbox(LBFGS()),
+        options,
+        autodiff = AutoForwardDiff()
+    )
+
+    params_best = Optim.minimizer(opt)
+    min_chi2 = Optim.minimum(opt)
+
+    return Dict(
+        :params => params_best,
+        :chi2 => min_chi2,
+        :success => Optim.converged(opt),
+    )
+end
 
 function fit_all_cutouts(img, img_err, cutout_cens, cutout_bbox; 
-        radius=20, pad=5, xi=10000, alpha=1.1)
+        radius=30, pad=30, xi=10, alpha=1.1)
     # outputs
     img_residual = copy(img)
     img_model = zeros(size(img))
@@ -329,35 +450,46 @@ function fit_all_cutouts(img, img_err, cutout_cens, cutout_bbox;
         param_names = [:scale, :dx, :dy, :alpha, :gamma]
         x_low = cutout_bounds[1][1]
         y_low = cutout_bounds[2][1]
-        lower = [0., bbox[1], bbox[3], 0.0001]
-        upper = [Inf, bbox[2], bbox[4], 100.0]
+        lower = [0., bbox[1], bbox[3], 0.01]
+        upper = [Inf, bbox[2], bbox[4], 30.0]
         p0 = [1e5, cen[1], cen[2], 0.065]
 
-        fit = fit_model_psf_chi2(moffat_2d_model, moffat_2d_gradient, cutout,
+        #fit = fit_model_grad_psf_chi2(moffat_2d_model, moffat_2d_gradient, cutout,
+        #                         uncertainty=cutout_err,
+        #                         x0=x_low, y0=y_low,
+        #                         lower=lower, upper=upper, p0=p0,
+        #                         chi2_f = semilog2,
+        #                         chi2_f_der = semilog2_der
+        #                        #chi2_scale = 5,
+        #                        )
+        fit = fit_model_psf_chi2(moffat_2d_model, cutout,
                                  uncertainty=cutout_err,
                                  x0=x_low, y0=y_low,
                                  lower=lower, upper=upper, p0=p0,
-                                 alpha=alpha)
+                                 chi2_f = semilog2,
+                                 chi2_scale = xi,
+                                 alpha = alpha
+                                )
 
         params_best = fit[:params]
 
         model = moffat_2d_model(x_img, y_img, params=params_best)
 
-        # update results
-        img_residual .-= model
-        img_model .+= model
-        push!(fits, fit)
-
 
         if !fit[:success]
             @info "fit failed to converge"
         end
+
+        img_residual .-= model
+        img_model .+= model
+        push!(fits, fit)
+
     end
 
     return img_model, img_residual, fits
 end
 
-function filter_and_sort_regions(centroids, areas, bboxes; size_min=20, n_max=nothing)
+function filter_and_sort_regions(centroids, areas, bboxes; size_min=50, n_max=nothing)
     idxs = eachindex(areas)[areas .> size_min]
 
     if isnothing(n_max)
@@ -395,8 +527,12 @@ function run_all(imgname, weightname, flagsname; n_max = nothing)
     return img_model, img_residual, DataFrame(fits)
 end
 
-function semilog(x)
-    return @. sign(x) * log(1 + abs(x))
+function semilog2(x)
+    return @. log(1 + abs(x))^2
+end
+
+function semilog2_der(x)
+    return @. 2*log(1 + abs(x)) /(1+abs(x)) * sign(x)
 end
 
 function (@main)(ARGS)

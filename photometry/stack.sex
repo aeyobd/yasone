@@ -14,7 +14,7 @@ DETECT_THRESH    2            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
 ANALYSIS_THRESH  2            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
  
 FILTER           Y              # apply filter for detection (Y or N)?
-FILTER_NAME      ../../filters/gauss_3.0_5x5.conv # name of the file containing the filter
+FILTER_NAME      ../../filters/gauss_2.5_5x5.conv # name of the file containing the filter
  
 DEBLEND_NTHRESH  64             # Number of deblending sub-thresholds
 DEBLEND_MINCONT  0.00003          # Minimum contrast parameter for deblending; Elanor significantly reduces this
@@ -45,7 +45,7 @@ PHOT_AUTOAPERS   0.0,0.0        # <estimation>,<measurement> minimum apertures
                                 # for MAG_AUTO and MAG_PETRO
 PHOT_FLUXFRAC    0.5            # flux fraction used for FLUX_RADIUS
 
-SATUR_LEVEL      58000.0        # level (in ADUs) at which arises saturation, double check
+SATUR_LEVEL      62000.0        # level (in ADUs) at which arises saturation, double check
 SATUR_KEY        SATURATE       # keyword for saturation level (in ADUs)
  
 MAG_ZEROPOINT    0.0            # magnitude zero-point, pass when calling script
@@ -68,12 +68,12 @@ BACK_FILTERSIZE  6              # Background filter: <size> or <width>,<height>
  
 #------------------------------ Check Image ----------------------------------
  
-CHECKIMAGE_TYPE  BACKGROUND, APERTURES, SEGMENTATION, -BACKGROUND, BACKGROUND_RMS
+CHECKIMAGE_TYPE  APERTURES, SEGMENTATION
                                 # can be NONE, BACKGROUND, BACKGROUND_RMS
                                 # MINIBACKGROUND, MINIBACK_RMS, -BACKGROUND,
                                 # FILTERED, OBJECTS, -OBJECTS, SEGMENTATION,
                                 # or APERTURES
-CHECKIMAGE_NAME  bkg.fits, apertures.fits, segmentation.fits, nobkg.fits, bkg_err.fits
+CHECKIMAGE_NAME  apertures.fits, segmentation.fits
                                 # Filename for the check-image
  
 #--------------------- Memory (change with caution!) -------------------------

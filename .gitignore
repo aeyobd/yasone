@@ -7,6 +7,8 @@
 *.head
 *.cmd
 *.txz
+*.psf
+dol_test*
 
 *.fits
 *.pdf

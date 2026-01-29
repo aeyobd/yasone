@@ -31,6 +31,9 @@ def main():
         tot_err = CCDData(inv_var, unit="")
         tot_err.write(path / "nobkg.weight.fits")
 
+        f_bkg = np.median(bkg_err.data**2 / sigma2)
+        print(path, f"frac bkg = {f_bkg:0.2f}")
+
 
 if __name__ == "__main__":
     main()

@@ -9,6 +9,9 @@ import tomllib
 import os
 
 from trim_images import trim_image
+FLAG_SAT = 4
+FLAG_BRIGHTSAT = 8
+FLAG_BADPIXEL = 16
 
 
 def load_master_bpm():
@@ -18,11 +21,18 @@ def load_master_bpm():
 BPM = load_master_bpm()
 
 def create_mask(img, sat_thresh=62_000):
+    bpm_mask = BPM.data == 0.
     sat_mask = img.data > sat_thresh
-    return 1 * create_closed_mask(sat_mask) + 2 * (BPM.data == 0.)
+    bright_sat_mask = create_bright_mask(sat_mask)
+
+    flags = FLAG_SAT * sat_mask
+    flags += FLAG_BRIGHTSAT * create_bright_mask(sat_mask) 
+    flags += FLAG_BADPIXEL * (BPM.data == 0.)
+
+    return flags
 
 
-def create_closed_mask(sat_mask):
+def create_bright_mask(sat_mask):
     # dialate to connect outline features
     mask = (ndimage.binary_dilation(sat_mask, iterations=4))
     
@@ -53,6 +63,8 @@ def remove_small_groups(mask, min_size):
             result[minr:maxr, minc:maxc][convex_hull] = False
 
     return result
+
+
 
 def fill_small_convex_hulls(binary_image, max_size):
     """Fill convex hulls of True regions smaller than max_size"""

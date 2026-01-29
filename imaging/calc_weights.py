@@ -38,6 +38,7 @@ def process_folder(file_keys, foldername):
         if name.startswith("bias"):
             continue
 
+        print("processing", name)
         origpath = foldername + "/unbiased/" + name
         imgpath = foldername + "/flat_fielded/" + name
         newpath = foldername + "/flat_fielded/" + name.replace(".fits",
@@ -61,16 +62,18 @@ def process_folder(file_keys, foldername):
         var_img = (flat_err / flat)**2 * (img.data)**2
 
         sigma2 = var_count + var_bias + var_img
-        print("count: ", np.median(var_count))
-        print("bias: ", np.median(var_bias))
-        print("flat: ", np.median(var_img))
+        print("count: ", np.median(var_count / sigma2))
+        print("bias: ", np.median(var_bias / sigma2))
+        print("flat: ", np.median(var_img / sigma2))
         CCDData(np.sqrt(sigma2), unit="adu").write(newpath)
 
 
 
 def process_all(img_keys):
     for foldername, file_keys in img_keys.items():
+        print("processing folder: ", foldername)
         process_folder(file_keys, foldername)
+        print()
 
 
 def main():
