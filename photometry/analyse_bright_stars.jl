@@ -512,7 +512,7 @@ function run_all(imgname, weightname, flagsname; n_max = nothing)
     img = read_image(imgname)
     flags = read_image(flagsname)
     img_err = 1 ./ sqrt.(read_image(weightname))
-    flag_sat_extended = 1
+    flag_sat_extended = 8
 
     mask = (flags .& flag_sat_extended) .> 0
     centroids, areas, bboxes = get_group_centroids_areas(mask)
@@ -536,7 +536,9 @@ function semilog2_der(x)
 end
 
 function (@main)(ARGS)
-    imgname, weightname, flagsname = ARGS
+    imgname = get(ARGS, 1, "coadd.fits")
+    weightname = get(ARGS, 2, "coadd.weight.fits")
+    flagsname = get(ARGS, 3, "flag.fits")
 
     img_model, img_residual, df = run_all(imgname, weightname, flagsname)
 
