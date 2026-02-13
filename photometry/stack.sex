@@ -10,14 +10,14 @@ PARAMETERS_NAME  ../../photometry.param  # name of the file containing catalog c
 DETECT_TYPE      CCD            # CCD (linear) or PHOTO (with gamma correction)
 DETECT_MINAREA   3              # min. # of pixels above threshold
 
-DETECT_THRESH    2            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
-ANALYSIS_THRESH  2            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
+DETECT_THRESH    1.5            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
+ANALYSIS_THRESH  1.5            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
  
 FILTER           Y              # apply filter for detection (Y or N)?
 FILTER_NAME      ../../filters/gauss_2.5_5x5.conv # name of the file containing the filter
  
 DEBLEND_NTHRESH  64             # Number of deblending sub-thresholds
-DEBLEND_MINCONT  0.00003          # Minimum contrast parameter for deblending; Elanor significantly reduces this
+DEBLEND_MINCONT  0.000001          # Minimum contrast parameter for deblending; Elanor significantly reduces this
  
 CLEAN            Y              # Clean spurious detections? (Y or N)?
 CLEAN_PARAM      1.0            # Cleaning efficiency
