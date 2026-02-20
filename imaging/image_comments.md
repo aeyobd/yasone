@@ -184,3 +184,9 @@ Possibly bad frames
 - g05, i03, i06
 - r15 (satellite)
 
+
+$$
+y = {\rm asinh}\left(\frac{Q * x}{stretch}\right) *
+        \frac{frac}{{\rm asinh}(frac * Q)} \\
+        & frac = 0.1
+$$

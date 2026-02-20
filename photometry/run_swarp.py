@@ -21,7 +21,7 @@ def main():
     if not outdir.is_dir():
         outdir.mkdir()
     else:
-        [os.remove(f) for f in outdir.glob("*")]
+        [os.remove(f) for f in outdir.glob("*.fits")]
 
     os.chdir(outdir)
 

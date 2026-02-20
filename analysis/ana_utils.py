@@ -1,5 +1,6 @@
 import shapely
 import numpy as np
+import pathlib
 
 from astropy.coordinates import SkyCoord
 from astropy import units as u
@@ -38,7 +39,9 @@ def make_polygon(iso, mag_err, dm, A_b, A_r, iso_width=0.05, b="SDSS_g", r="SDSS
 def get_obs_props(objname):
     obs_props = {}
 
-    with open("object_properties.toml", "rb") as f:
+    pwd = pathlib.Path(__file__).parent.resolve()
+
+    with open(pwd / "object_properties.toml", "rb") as f:
         obs_props = tomllib.load(f)[objname]
 
     return obs_props
@@ -98,7 +101,7 @@ def read_catalogue(objname, filter_bad=True):
     cat = Table.read(f"../photometry/{objname}/allcolours.cat")
 
     if filter_bad:
-        cat = cat[(cat["RFLAGS"] < 4 ) & (cat["RFLAGS_WEIGHT"] == 0) ]
+        cat = cat[(cat["R_FLAGS"] < 4 ) & (cat["R_FLAGS_WEIGHT"] == 0) ]
 
     add_columns(cat, objname)
     return cat
@@ -153,8 +156,8 @@ def add_flux_param(cat):
     k = 3
     l = 1
     
-    x = catalogue_matched[f"R_MAG_APER_{i}"] - catalogue_matched[f"R_MAG_APER_{j}"]
-    y = -catalogue_matched[f"R_MAG_APER_{k}"] + catalogue_matched[f"R_MAG_APER_{l}"]
+    x = cat[f"R_MAG_APER_{i}"] - cat[f"R_MAG_APER_{j}"]
+    y = -cat[f"R_MAG_APER_{k}"] + cat[f"R_MAG_APER_{l}"]
 
     flux_param = y - 0.5*x
 

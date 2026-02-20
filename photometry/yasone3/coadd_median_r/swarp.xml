@@ -16,23 +16,23 @@
   <PARAM name="Soft_Auth" datatype="char" arraysize="*" ucd="meta.bib.author;meta.software" value="Emmanuel Bertin"/>
   <PARAM name="Soft_Ref" datatype="char" arraysize="*" ucd="meta.bib.bibcode;meta.software" value="2002ASPC..281..228B"/>
   <PARAM name="NThreads" datatype="int" ucd="meta.number;meta.software" value="8"/>
-  <PARAM name="Date" datatype="char" arraysize="*" ucd="time.event.end;meta.software" value="2026-01-28"/>
-  <PARAM name="Time" datatype="char" arraysize="*" ucd="time.event.end;meta.software" value="21:52:37"/>
-  <PARAM name="Duration" datatype="float" ucd="time.event;meta.software" value="4.58" unit="s"/>
+  <PARAM name="Date" datatype="char" arraysize="*" ucd="time.event.end;meta.software" value="2026-02-19"/>
+  <PARAM name="Time" datatype="char" arraysize="*" ucd="time.event.end;meta.software" value="21:11:06"/>
+  <PARAM name="Duration" datatype="float" ucd="time.event;meta.software" value="3.95" unit="s"/>
   <PARAM name="User" datatype="char" arraysize="*" ucd="meta.curation" value="daniel"/>
   <PARAM name="Host" datatype="char" arraysize="*" ucd="meta.curation" value="(null)"/>
   <PARAM name="Path" datatype="char" arraysize="*" ucd="meta.dataset" value="/Users/daniel/yasone/photometry"/>
   <PARAM name="Image_Name" datatype="char" arraysize="*" ucd="obs.image;meta.fits" value="flag.fits"/>
   <PARAM name="Weight_Name" datatype="char" arraysize="*" ucd="obs.image;meta.fits" value="flag.weight.fits"/>
-  <PARAM name="NOverlap_Max" datatype="int" ucd="meta.number;stat.max;obs.image" value="15"/>
+  <PARAM name="NOverlap_Max" datatype="int" ucd="meta.number;stat.max;obs.image" value="14"/>
   <PARAM name="ExpTime_Max" datatype="float" ucd="time.expo;stat.max;obs.image" value="0" unit="s"/>
   <PARAM name="Gain_Max" datatype="float" ucd="instr.calib;stat.max;obs.image" value="1.9" unit="photon/ADU"/>
   <TABLE ID="Input_Image_Data" name="Input_Image_Data">
    <DESCRIPTION>Data gathered by SWarp for every FITS input image</DESCRIPTION>
    <!-- NFrames may be 0 if an error occurred early in the processing -->
-   <PARAM name="NFrames" datatype="int" ucd="meta.number;meta.dataset" value="15"/>
+   <PARAM name="NFrames" datatype="int" ucd="meta.number;meta.dataset" value="14"/>
    <!-- CurrFrame may differ from NFrames if an error occurred -->
-   <PARAM name="CurrFrame" datatype="int" ucd="meta.number;meta.dataset" value="15"/>
+   <PARAM name="CurrFrame" datatype="int" ucd="meta.number;meta.dataset" value="14"/>
    <FIELD name="Frame_Index" datatype="int" ucd="meta.record"/>
    <FIELD name="Image_Name" datatype="char" arraysize="*" ucd="obs.image;meta.fits"/>
    <FIELD name="Weight_Name" datatype="char" arraysize="*" ucd="obs.image;meta.fits"/>
@@ -67,138 +67,129 @@
    <FIELD name="COOSYS" datatype="char" arraysize="*" ucd="meta.code;pos"/>
    <DATA><TABLEDATA>
     <TR>
-     <TD>1</TD><TD>../../yasone3/img_r_15/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:33</TD><TD>0.00</TD>
+     <TD>1</TD><TD>../../yasone3/img_r_12/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:02</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>1.00002</TD><TD>292.9589044 -26.4378565</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>0.999716</TD><TD>292.9604851 -26.43513221</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>2</TD><TD>../../yasone3/img_r_12/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:33</TD><TD>0.00</TD>
+     <TD>2</TD><TD>../../yasone3/img_r_13/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:02</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>0.999432</TD><TD>292.9604847 -26.43513237</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>1.00055</TD><TD>292.9542813 -26.43364609</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>3</TD><TD>../../yasone3/img_r_13/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:33</TD><TD>0.00</TD>
+     <TD>3</TD><TD>../../yasone3/img_r_14/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:03</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>1.00027</TD><TD>292.9543214 -26.43364647</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>0.998676</TD><TD>292.9567312 -26.43923666</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>4</TD><TD>../../yasone3/img_r_14/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:34</TD><TD>0.00</TD>
+     <TD>4</TD><TD>../../yasone3/img_r_01/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:03</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>0.998392</TD><TD>292.9566918 -26.43920087</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>0.99964</TD><TD>292.9586279 -26.43651217</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>5</TD><TD>../../yasone3/img_r_01/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:34</TD><TD>0.00</TD>
+     <TD>5</TD><TD>../../yasone3/img_r_20/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:03</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>0.999356</TD><TD>292.9585883 -26.43651214</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>1.00063</TD><TD>292.9593392 -26.43775057</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>6</TD><TD>../../yasone3/img_r_20/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:34</TD><TD>0.00</TD>
+     <TD>6</TD><TD>../../yasone3/img_r_18/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:03</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>1.00034</TD><TD>292.9593785 -26.43775037</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>1.00046</TD><TD>292.9547555 -26.43350457</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>7</TD><TD>../../yasone3/img_r_18/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:34</TD><TD>0.00</TD>
+     <TD>7</TD><TD>../../yasone3/img_r_11/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:04</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>1.00017</TD><TD>292.9547955 -26.43350497</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>1.00028</TD><TD>292.9573634 -26.43647679</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>8</TD><TD>../../yasone3/img_r_11/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:34</TD><TD>0.00</TD>
+     <TD>8</TD><TD>../../yasone3/img_r_16/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:04</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>1</TD><TD>292.9573635 -26.43647676</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>1.00056</TD><TD>292.9578376 -26.43633526</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>9</TD><TD>../../yasone3/img_r_16/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:35</TD><TD>0.00</TD>
+     <TD>9</TD><TD>../../yasone3/img_r_17/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:04</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>1.00028</TD><TD>292.9578376 -26.43633525</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>1.00048</TD><TD>292.9609988 -26.43499067</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>10</TD><TD>../../yasone3/img_r_17/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:35</TD><TD>0.00</TD>
+     <TD>10</TD><TD>../../yasone3/img_r_19/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:04</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>1.0002</TD><TD>292.9609984 -26.43499085</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>1.00046</TD><TD>292.956257 -26.43909513</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>11</TD><TD>../../yasone3/img_r_19/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:35</TD><TD>0.00</TD>
+     <TD>11</TD><TD>../../yasone3/img_r_03/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:04</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>1.00018</TD><TD>292.9562572 -26.43909473</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>0.999633</TD><TD>292.9555458 -26.43371689</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>12</TD><TD>../../yasone3/img_r_03/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:35</TD><TD>0.00</TD>
+     <TD>12</TD><TD>../../yasone3/img_r_04/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:05</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>0.999349</TD><TD>292.9555066 -26.43368188</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>0.999352</TD><TD>292.9569682 -26.43927205</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>13</TD><TD>../../yasone3/img_r_04/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:36</TD><TD>0.00</TD>
+     <TD>13</TD><TD>../../yasone3/img_r_05/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:05</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>0.999068</TD><TD>292.9570079 -26.43927163</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>0.999612</TD><TD>292.9601295 -26.43792748</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
     <TR>
-     <TD>14</TD><TD>../../yasone3/img_r_05/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:36</TD><TD>0.00</TD>
+     <TD>14</TD><TD>../../yasone3/img_r_02/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
+     <TD>0</TD><TD>2026-02-19</TD><TD>21:11:05</TD><TD>0.00</TD>
      <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
      <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
      <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>0.999328</TD><TD>292.9601292 -26.43792725</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
-     <TD>ICRS</TD>
-    </TR>
-    <TR>
-     <TD>15</TD><TD>../../yasone3/img_r_02/flag.fits</TD><TD>(null)</TD><TD>T</TD><TD>(null)</TD>
-     <TD>0</TD><TD>2026-01-28</TD><TD>21:52:36</TD><TD>0.00</TD>
-     <TD>0</TD><TD>0</TD><TD>F</TD><TD>MANUAL</TD><TD>128</TD><TD>6</TD><TD>0</TD>
-     <TD>NONE</TD><TD>F</TD><TD>0</TD><TD>1</TD><TD>F</TD>
-     <TD>1.9</TD><TD>50000</TD><TD>0</TD><TD>1</TD>
-     <TD>0.999328</TD><TD>292.9617095 -26.43516773</TD><TD>0.254722</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
+     <TD>0.999612</TD><TD>292.9617101 -26.43516757</TD><TD>0.254758</TD><TD>0</TD><TD>2000</TD><TD>2000</TD>
      <TD>ICRS</TD>
     </TR>
    </TABLEDATA></DATA>
@@ -209,27 +200,26 @@
    <FIELD name="Time" datatype="char" arraysize="*" ucd="meta;time.event.end"/>
    <FIELD name="Msg" datatype="char" arraysize="*" ucd="meta"/>
    <DATA><TABLEDATA>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>COMBINE_TYPE incompatible with RESAMPLING_TYPE FLAGS: Forcing to OR</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_15/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_12/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_13/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_14/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_01/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_20/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_18/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_11/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_16/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_17/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_19/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_03/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_04/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_05/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
-    <TR><TD>2026-01-28</TD><TD>21:52:33</TD><TD>../../yasone3/img_r_02/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>COMBINE_TYPE incompatible with RESAMPLING_TYPE FLAGS: Forcing to OR</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_12/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_13/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_14/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_01/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_20/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_18/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_11/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_16/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_17/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_19/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_03/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_04/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_05/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
+    <TR><TD>2026-02-19</TD><TD>21:11:02</TD><TD>../../yasone3/img_r_02/flag.fits has flux scale = 0: I will take 1 instead</TD></TR>
    </TABLEDATA></DATA>
   </TABLE>
   <RESOURCE ID="Config" name="Config">
    <DESCRIPTION>SWarp configuration</DESCRIPTION>
-   <PARAM name="Command_Line" datatype="char" arraysize="*" ucd="obs.param" value="swarp -c ../../flags.swarp ../../yasone3/img_r_15/flag.fits ../../yasone3/img_r_12/flag.fits ../../yasone3/img_r_13/flag.fits ../../yasone3/img_r_14/flag.fits ../../yasone3/img_r_01/flag.fits ../../yasone3/img_r_20/flag.fits ../../yasone3/img_r_18/flag.fits ../../yasone3/img_r_11/flag.fits ../../yasone3/img_r_16/flag.fits ../../yasone3/img_r_17/flag.fits ../../yasone3/img_r_19/flag.fits ../../yasone3/img_r_03/flag.fits ../../yasone3/img_r_04/flag.fits ../../yasone3/img_r_05/flag.fits ../../yasone3/img_r_02/flag.fits"/>
+   <PARAM name="Command_Line" datatype="char" arraysize="*" ucd="obs.param" value="swarp -c ../../flags.swarp ../../yasone3/img_r_12/flag.fits ../../yasone3/img_r_13/flag.fits ../../yasone3/img_r_14/flag.fits ../../yasone3/img_r_01/flag.fits ../../yasone3/img_r_20/flag.fits ../../yasone3/img_r_18/flag.fits ../../yasone3/img_r_11/flag.fits ../../yasone3/img_r_16/flag.fits ../../yasone3/img_r_17/flag.fits ../../yasone3/img_r_19/flag.fits ../../yasone3/img_r_03/flag.fits ../../yasone3/img_r_04/flag.fits ../../yasone3/img_r_05/flag.fits ../../yasone3/img_r_02/flag.fits"/>
    <PARAM name="Prefs_Name" datatype="char" arraysize="*" ucd="obs.param;meta.file" value="../../flags.swarp"/>
    <PARAM name="ImageOut_Name" datatype="char" arraysize="*" ucd="meta.dataset;meta.file" value="flag.fits"/>
    <PARAM name="WeightOut_Name" datatype="char" arraysize="*" ucd="meta.dataset;meta.file" value="flag.weight.fits"/>

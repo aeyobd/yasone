@@ -16,6 +16,8 @@ dol_test*
 *.log
 *.zip
 
+*.pdf 
+*.jpg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
