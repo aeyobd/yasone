@@ -1,23 +1,23 @@
 #-------------------------------- Catalog ------------------------------------
  
-CATALOG_NAME     psf_phot.cat       # name of the output catalog
+CATALOG_NAME     detection.cat       # name of the output catalog
 CATALOG_TYPE     FITS_LDAC     # NONE,ASCII,ASCII_HEAD, ASCII_SKYCAT,
                                 # ASCII_VOTABLE, FITS_1.0 or FITS_LDAC
-PARAMETERS_NAME  ../../psf_phot.param  # name of the file containing catalog contents
+PARAMETERS_NAME  ../../photometry.param  # name of the file containing catalog contents
  
 #------------------------------- Extraction ----------------------------------
  
 DETECT_TYPE      CCD            # CCD (linear) or PHOTO (with gamma correction)
 DETECT_MINAREA   3              # min. # of pixels above threshold
 
-DETECT_THRESH    2            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
-ANALYSIS_THRESH  2            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
+DETECT_THRESH    1.5            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
+ANALYSIS_THRESH  1.5            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
  
 FILTER           Y              # apply filter for detection (Y or N)?
 FILTER_NAME      ../../filters/gauss_2.5_5x5.conv # name of the file containing the filter
  
 DEBLEND_NTHRESH  64             # Number of deblending sub-thresholds
-DEBLEND_MINCONT  0.00003          # Minimum contrast parameter for deblending; Elanor significantly reduces this
+DEBLEND_MINCONT  0.000001          # Minimum contrast parameter for deblending; Elanor significantly reduces this
  
 CLEAN            Y              # Clean spurious detections? (Y or N)?
 CLEAN_PARAM      1.0            # Cleaning efficiency
@@ -36,7 +36,7 @@ FLAG_TYPE        OR             # flag pixel combination: OR, AND, MIN, MAX
 
 #------------------------------ Photometry -----------------------------------
  
-PHOT_APERTURES   2, 4, 6, 10, 14, 20, 40, 80, 200       # MAG_APER aperture diameter(s) in pixels, 
+PHOT_APERTURES   2, 4, 6, 10, 14, 20, 40       # MAG_APER aperture diameter(s) in pixels, 
 # pass when calling script
 PHOT_AUTOPARAMS  2.5, 3.5       # MAG_AUTO parameters: <Kron_fact>,<min_radius>
 PHOT_PETROPARAMS 2.0, 3.5       # MAG_PETRO parameters: <Petrosian_fact>,
@@ -73,7 +73,7 @@ CHECKIMAGE_TYPE  APERTURES, SEGMENTATION
                                 # MINIBACKGROUND, MINIBACK_RMS, -BACKGROUND,
                                 # FILTERED, OBJECTS, -OBJECTS, SEGMENTATION,
                                 # or APERTURES
-CHECKIMAGE_NAME  psf_phot_apertures.fits, psf_phot_segmentation.fits
+CHECKIMAGE_NAME  apertures.fits, segmentation.fits
                                 # Filename for the check-image
  
 #--------------------- Memory (change with caution!) -------------------------
@@ -100,7 +100,4 @@ WRITE_XML        N              # Write XML file (Y/N)?
 XML_NAME         sex.xml        # Filename for XML output
 
 
-#INTERP_TYPE      NONE
-PSF_NAME          psf_calibration.psf
-PSF_NMAX          5
-PATTERN_TYPE      RINGS-HARMONIC
+INTERP_TYPE      NONE

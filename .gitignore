@@ -8,6 +8,7 @@
 *.cmd
 *.txz
 *.psf
+*.xml
 dol_test*
 
 *.fits

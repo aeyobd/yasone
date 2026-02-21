@@ -98,7 +98,7 @@ def get_mag_shift(objname):
 
 
 def read_catalogue(objname, filter_bad=True):
-    cat = Table.read(f"../photometry/{objname}/allcolours.cat")
+    cat = Table.read(f"../photometry/{objname}/allcolours_psf.cat")
 
     if filter_bad:
         cat = cat[(cat["R_FLAGS"] < 4 ) & (cat["R_FLAGS_WEIGHT"] == 0) ]
