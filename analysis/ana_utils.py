@@ -89,31 +89,31 @@ def get_extinction(A_V):
     return A_g, A_r, A_i
 
 
-def get_mag_shift(objname):
+def get_mag_shift(objname, catname):
     shifts = {}
-    with open("../photometry/" + objname + "/panstarrs_shift.toml", "rb") as f:
+    with open("../photometry/" + objname + f"/{catname}_panstarrs_shift.toml", "rb") as f:
         shifts = tomllib.load(f)
     return shifts
 
 
 
-def read_catalogue(objname, filter_bad=True):
-    cat = Table.read(f"../photometry/{objname}/allcolours_psf.cat")
+def read_catalogue(objname, filter_bad=True, catname=""):
+    cat = Table.read(f"../photometry/{objname}/{catname}.cat")
 
     if filter_bad:
         cat = cat[(cat["R_FLAGS"] < 4 ) & (cat["R_FLAGS_WEIGHT"] == 0) ]
 
-    add_columns(cat, objname)
+    add_columns(cat, objname, catname)
     return cat
 
 
 
-def add_columns(cat, objname):
+def add_columns(cat, objname, catname):
     xi, eta = to_tangent(to_coords(cat), get_coord0(objname))
     cat["xi"] = xi * 60 * u.arcmin
     cat["eta"] = eta * 60 * u.arcmin
 
-    shifts = get_mag_shift(objname)
+    shifts = get_mag_shift(objname, catname)
     cat["G_MAG"] -= shifts["g"]
     cat["R_MAG"] -= shifts["r"]
     cat["I_MAG"] -= shifts["i"]
@@ -129,6 +129,9 @@ def add_columns(cat, objname):
     cat["R_SNR"] = 1/cat["R_MAG_ERR"] * np.log(10) / 2.5
     cat["I_SNR"] = 1/cat["I_MAG_ERR"] * np.log(10) / 2.5
 
+    cat["INDEX"] = np.arange(len(cat))
+    if "R_MAG_APER_2" in cat.colnames:
+        cat["MAG_23"] =  cat["R_MAG_APER_2"] - cat["R_MAG_APER_3"]
 
 
 

@@ -3,8 +3,8 @@ ra = 265.52019
 dec = 13.17146
 
 obsnames = ["0001", "0002", "0003"]
-dm = 15.395906230238126
-A_V = 1.0
+dm = 15.74 # adding difference in r-band extinction
+A_V = 0.0
 iso_fe_h = "m1.50"
 iso_age = 12e9
 r_h_arcsec = 24
@@ -15,19 +15,19 @@ ra = 262.34921
 dec = 6.42302
 
 obsnames = ["0004", "0005", "0006"]
-dm = 16.505149978319906
-A_V = 0.8
+dm = 16.86 # also updated for extinction
+A_V = 0.0
 iso_fe_h = "m1.50"
 iso_age = 12e9
 r_h_arcsec = 25
 
 
 [yasone3]
-ra = 292.966
-dec = -26.458
+ra = 292.96258
+dec = -26.44994
 obsnames = ["0007", "0008", "0009"]
-dm = 16.7
-A_V = 0.65
+dm = 16.36 # updated
+A_V = 0.0
 iso_fe_h = "m2.00"
 iso_age = 12e9
 r_h_arcsec = 29

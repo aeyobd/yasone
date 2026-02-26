@@ -22,11 +22,6 @@ The noise on the bias images appears to be around 2 ADU/frame (likely near the r
 
 Flats show increased vignetting near edges, where optical efficiency may drop below 70%. However, we will likely discard the edges regardless in the combined image. 
 
-We calculate the pixel-by-pixel RMS as follows
-$$
-\delta^2 \textrm{pixel} = \delta^2 \textrm{background}  + ...
-$$
-
 ## Removing artefacts and bright stars
 
 We mask out pixels known to be bad (from SAUSERO).
@@ -68,9 +63,7 @@ We additionally fit the magnitude deviation of  saturated stars with a quadratic
 
 # Catalogue & Data processing details
 
-Steps:
-
-Imaging:
+## Imaging
 
 1. `trim_images.py`, trims images based on fits header, creating images in `obsname/trimmed`
 2. `stack_bias.py` creates master biases for each observation date, creating a `stacked_bias.fits` in each calibration date folder
@@ -82,7 +75,7 @@ Imaging:
    2. While crude, this algorithm maybe is only imprecise for few images (failing to connect one tail (yasone 1 g), and merging two bright stars in one filter in yasone2)
 7. `calc_weights.py` calculates the total pixel-by-pixel RMS error for the flat-fielded images.
 
-Uncertainty analysis:
+## Uncertainty analysis
 
 The final bkg-subtracted images are given by
 $$
@@ -94,7 +87,7 @@ $$
 $$
 Formally, the uncertainties on the number of photons (when multiplying by the gain) is given by $(\delta {\rm counts})^2 = {\rm counts}$, but since we have to convert to electrons, $(\delta gv)^2 = (v-b)\, g $. However, if we work in ADUs, then the variance is $(\delta  v)^2 = v / g$. (i.e., divide by $g$). In practice,  excluding the background, 60-90% of the variance is simply poisson uncertainty. In addition, the background contributes 50-60% of the total variance. 
 
-In addition, the ADU RMs are as below
+In addition, the ADU background RMS are as below
 
 - Yasone 1: 50, 80-100, 95-115
 - Yasone 2: 55; 87-100, 100-120
@@ -102,7 +95,7 @@ In addition, the ADU RMs are as below
 
 
 
-Photometry:
+## Photometry
 
 1. `link_files.py` simply reorganizes the file trees for photometric analysis (now one reduced image per directory)
 2. `astrometrize_all.sh` astrometrizes images using astrometry.net to create an initial calibration that SCAMP will improve on
@@ -121,27 +114,13 @@ TODO:
 4. `calibrate_vs_panstarrs.py` calculates zeropoints based on the panstarrs and notes our calibration results and calibration catalogues
 5. `combine_all_photometry.py` combines the photometry for each band into a final uncalibrated catalogue. 
 
-Analysis (TODO):
-
-1. make_cmd_detection_plot.py
-2. fit_cmd.py
-3. fit_light_profile.py
-
-
-
 flag images:
 
-- 1: Possible diffraction spike
-- 2: Near bright star
+- 1: Possible diffraction spike (not implemented)
+- 2: Near bright star (not implemented)
 - 4: Individually saturated pixel
 - 8: Part of very saturated region near bright star
 - 16: bad pixel
-
-
-
-Catalogue columns
-
-- 
 
 
 
@@ -161,38 +140,4 @@ Julen processes individual stacked images given by sausero using source extracto
 - xmatch using kdtree
 - panstarrs uses slightly different filters??
 - star-galaxy seperation based on ellipticity and comparing to panstarrs classification.
-
-```
-zero_point_estimation_g = 28.15227
-zero_point_estimation_error_g = 0.01692 
-
-zero_point_estimation_r = 28.24766 
-zero_point_estimation_error_r = 0.01008
-
-zero_point_estimation_i = 27.81407
-zero_point_estimation_error_i = 0.01047
-
-# Which for Yasone-2, I obtained:
-
-# zero_point_estimation_g = 28.12761 
-# zero_point_estimation_error_g = 0.01931
-
-# zero_point_estimation_r = 28.13342
-# zero_point_estimation_error_r = 0.00882
-
-# zero_point_estimation_i = 27.61163
-# zero_point_estimation_error_i = 0.01528
-
-# And for Yasone-3:
-
-# zero_point_estimation_g = 27.93537
-# zero_point_estimation_error_g = 0.01880
-
-# zero_point_estimation_r = 28.06096 
-# zero_point_estimation_error_r = 0.01128
-
-# zero_point_estimation_i = 27.49029
-# zero_point_estimation_error_i = 0.01095
-
-```
 

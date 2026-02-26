@@ -10,14 +10,14 @@ PARAMETERS_NAME  ../../photometry.param  # name of the file containing catalog c
 DETECT_TYPE      CCD            # CCD (linear) or PHOTO (with gamma correction)
 DETECT_MINAREA   3              # min. # of pixels above threshold
 
-DETECT_THRESH    2            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
-ANALYSIS_THRESH  2            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
+DETECT_THRESH    1.5            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
+ANALYSIS_THRESH  1.5            # <sigmas> or <threshold>,<ZP> in mag.arcsec-2
  
 FILTER           Y              # apply filter for detection (Y or N)?
 FILTER_NAME      ../../filters/gauss_2.5_5x5.conv # name of the file containing the filter
  
 DEBLEND_NTHRESH  64             # Number of deblending sub-thresholds
-DEBLEND_MINCONT  0.001          # Minimum contrast parameter for deblending; Elanor significantly reduces this
+DEBLEND_MINCONT  0.0001          # Minimum contrast parameter for deblending
  
 CLEAN            Y              # Clean spurious detections? (Y or N)?
 CLEAN_PARAM      1.0            # Cleaning efficiency
@@ -57,7 +57,7 @@ PIXEL_SCALE      0.0            # size of pixel in arcsec (0=use FITS WCS info)
  
 #------------------------- Star/Galaxy Separation ----------------------------
  
-SEEING_FWHM      1.2            # stellar FWHM in arcsec, change dynamically
+SEEING_FWHM      0.6            # stellar FWHM in arcsec, change dynamically
 STARNNW_NAME     default.nnw    # Neural-Network_Weight table filename
  
 #------------------------------ Background -----------------------------------
@@ -79,8 +79,8 @@ CHECKIMAGE_NAME  phot_apertures.fits, phot_segmentation.fits,
  
 #--------------------- Memory (change with caution!) -------------------------
  
-MEMORY_OBJSTACK  3000           # number of objects in stack
-MEMORY_PIXSTACK  300000         # number of pixels in stack
+MEMORY_OBJSTACK  6000           # number of objects in stack
+MEMORY_PIXSTACK  1200000         # number of pixels in stack
 MEMORY_BUFSIZE   1024           # number of lines in buffer
  
 #------------------------------- ASSOCiation ---------------------------------
