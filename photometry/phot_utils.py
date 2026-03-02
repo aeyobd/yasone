@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from astropy import coordinates
 from astropy import units as u
+from astropy.table import Table, join, vstack
 
 plate_scale = 0.254 # arcmin / pixel
 
@@ -69,4 +70,67 @@ def xmatch(ra1, dec1, ra2, dec2, rmax=1*u.arcsec):
 
     has_xmatch = xmatch_sep < rmax
     return xmatch_indicies, xmatch_sep, has_xmatch
+
+
+
+def outer_join_xmatch(cat1, cat2, ra1="ALPHA_J2000", dec1="DELTA_J2000",
+                      ra2="ALPHA_J2000", dec2="DELTA_J2000",
+                      lprefix="1_", rprefix="2_",
+                      xmatch_radius = 1 * u.arcsec,
+                      **kwargs
+                      ):
+    xmatch_idx, xmatch_sep, has_xmatch = xmatch(
+            cat1[ra1], cat1[dec1], cat2[ra2], cat2[dec2],
+            xmatch_radius)
+
+    cat1 = cat1.copy()
+    cat2 = cat2.copy()
+
+    # create indexes to use for xmatch
+    cat1["_idx1"] = np.arange(len(cat1))
+    cat2["_idx2"] = np.arange(len(cat2))
+    matched_cat1 = cat1[has_xmatch]
+    matched_cat2 = cat2[xmatch_idx[has_xmatch]]
+
+    # rename matched indicies
+    matched_cat2["_idx1"] = matched_cat1["_idx1"]
+
+    matched_join = join(
+        matched_cat1, 
+        matched_cat2,
+        keys = "_idx1",
+        join_type="inner",
+        **kwargs
+    )
+
+    assert len(matched_join) == np.sum(has_xmatch)
+
+    unmatched_cat1 = cat1[~has_xmatch]
+    matched_idx2 = xmatch_idx[has_xmatch]
+    unmatched_mask2 = np.ones(len(cat2), dtype=bool)
+    unmatched_mask2[matched_idx2] = False
+    unmatched_cat2 = cat2[unmatched_mask2]
+
+
+    print("matched count", len(matched_join))
+    print("unmatched left", len(unmatched_cat1))
+    print("total left", len(cat1))
+    print("unmatched right", len(unmatched_cat2))
+    print("total right", len(cat2))
+
+    assert len(matched_join) + len(unmatched_cat1) == len(cat1)
+    #assert len(matched_join) + len(unmatched_cat2) == len(cat2)
+
+        # Remove temporary keys
+    for t in (matched_join, unmatched_cat1, unmatched_cat2):
+        for col in ['_idx1', '_idx2']:
+            if col in t.colnames:
+                t.remove_column(col)
+
+    # Stack everything (outer behavior)
+    result = vstack([matched_join, unmatched_cat1, unmatched_cat2],
+                    join_type='outer')
+
+    #assert len(result) == len(matched_join) + len(unmatched_cat1) + len(unmatched_cat2)
+    return result
 

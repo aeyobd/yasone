@@ -8,7 +8,25 @@ from astropy.table import Table
 
 import tomllib
 from scipy.optimize import curve_fit
+from dustmaps.sfd import SFDQuery
 
+def correct_dust(cat):
+    coords = to_coords(cat)
+    A_V = 3.1 * SFDQuery()(coords)
+    A_g, A_r, A_i = get_extinction(A_V)
+    print("median extinctions")
+    print("A_g", np.median(A_g))
+    print("A_r", np.median(A_r))
+    print("A_i", np.median(A_i))
+
+    cat["A_g"] = A_g
+    cat["A_r"] = A_r
+    cat["A_i"] = A_i
+    cat["G_MAG"] -= A_g
+    cat["R_MAG"] -= A_r
+    cat["I_MAG"] -= A_i
+
+    return cat
 
 
 def is_in_poly(x, y, x_poly, y_poly):
@@ -89,31 +107,39 @@ def get_extinction(A_V):
     return A_g, A_r, A_i
 
 
-def get_mag_shift(objname, catname):
+def get_mag_shift(objname, catname, shiftname):
     shifts = {}
-    with open("../photometry/" + objname + f"/{catname}_panstarrs_shift.toml", "rb") as f:
+    if shiftname is None:
+        path = "../photometry/" + objname + f"/{catname}_panstarrs_shift.toml"
+    else:
+        path = "../photometry/" + objname + f"/{shiftname}.toml"
+    with open(path, "rb") as f:
         shifts = tomllib.load(f)
     return shifts
 
 
 
-def read_catalogue(objname, filter_bad=True, catname=""):
+def read_catalogue(objname, filter_bad=True, catname="", shiftname=None,
+                   deredden=False):
     cat = Table.read(f"../photometry/{objname}/{catname}.cat")
 
     if filter_bad:
         cat = cat[(cat["R_FLAGS"] < 4 ) & (cat["R_FLAGS_WEIGHT"] == 0) ]
 
-    add_columns(cat, objname, catname)
+    add_columns(cat, objname, catname, shiftname=shiftname)
+    if deredden:
+        correct_dust(cat)
     return cat
 
 
 
-def add_columns(cat, objname, catname):
+def add_columns(cat, objname, catname, shiftname=None):
     xi, eta = to_tangent(to_coords(cat), get_coord0(objname))
     cat["xi"] = xi * 60 * u.arcmin
     cat["eta"] = eta * 60 * u.arcmin
 
-    shifts = get_mag_shift(objname, catname)
+    shifts = get_mag_shift(objname, catname, shiftname)
+    print(shifts)
     cat["G_MAG"] -= shifts["g"]
     cat["R_MAG"] -= shifts["r"]
     cat["I_MAG"] -= shifts["i"]
@@ -135,8 +161,23 @@ def add_columns(cat, objname, catname):
 
 
 
+def flatten_arrays(cat):
+    cat_out = Table()
+
+    for col in cat.colnames:
+        if len(cat[col].shape) > 1:
+            for i in range(cat_r[col].shape[1]):
+                cat_out[col] = cat[col][:, i]
+            else:
+                cat_out[col] = cat[col]
+    return cat_out
+
+
 def fit_err(mag, magerr):
     filt = np.isfinite(magerr)
+    filt &= np.isfinite(mag)
+    if hasattr(mag, "mask"):
+        filt &= ~mag.mask
     if hasattr(magerr, "mask"):
         filt &= ~magerr.mask
 
@@ -187,5 +228,5 @@ def select_annuli(cat, coord0, radius, radius_bkg):
 
 
 def to_coords(cat):
-    return SkyCoord(cat["R_ALPHA_J2000"], cat["R_DELTA_J2000"], unit=u.degree)
+    return SkyCoord(cat["ra"], cat["dec"], unit=u.degree)
 

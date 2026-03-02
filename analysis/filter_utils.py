@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from astropy.coordinates import SkyCoord
 
 
-from dustmaps.sfd import SFDQuery
 from dustmaps.bayestar import BayestarWebQuery
 from dustmaps.planck import PlanckQuery
 
@@ -26,7 +25,7 @@ from shapely import Polygon
 
 
 
-isos_fe_h = ["m1.00", "m1.25", "m1.50", "m1.75", "m2.00", "m2.50", "m3.00"]
+isos_fe_h = ["p0.00", "m0.25", "m0.50", "m0.75", "m1.00", "m1.25", "m1.50", "m1.75", "m2.00", "m2.50", "m3.00"]
 
 isonames = [f"../MIST/MIST_v1.2_vvcrit0.4_SDSSugriz/MIST_v1.2_feh_{iso_fe_h}_afe_p0.0_vvcrit0.4_SDSSugriz.iso.cmd" for iso_fe_h in isos_fe_h]
 isochrones = {fe_h: read_iso.ISOCMD(name) for fe_h, name in zip(isos_fe_h, isonames)}
@@ -61,19 +60,6 @@ class filter_params:
 
     objname: str = ""
 
-def correct_dust(cat):
-    coords = ana_utils.to_coords(cat)
-    A_V = 3.1 * SFDQuery()(coords)
-    A_g, A_r, A_i = ana_utils.get_extinction(A_V)
-
-    cat["A_g"] = A_g
-    cat["A_r"] = A_r
-    cat["A_i"] = A_i
-    cat["G_MAG"] -= A_g
-    cat["R_MAG"] -= A_r
-    cat["I_MAG"] -= A_i
-
-    return cat
 
 
 
@@ -86,7 +72,7 @@ def calibrate_mag_col(cat, col):
         if hasattr(cat[f"{filt}_{col}"], "mask"):
             filt_good &= ~cat[f"{filt}_{col}"].mask
 
-        residual = np.median((cat[f"{filt}_{col}"] - cat[f"{filt}_MAG"])[filt_good])
+        residual = np.ma.median((cat[f"{filt}_{col}"] - cat[f"{filt}_MAG"])[filt_good])
 
         print(residual)
         cat[f"{filt}_{col}"] -= residual
@@ -282,41 +268,21 @@ def get_extinction(params):
     return A_g, A_r, A_i + params.A_i_extra
 
 
-
-def filter_catalog(cat, params):    
+def get_flags_filter(cat, params):
     filt = np.full(len(cat), True, )
 
     if params.flags_max is not None:
         filt &= cat["R_FLAGS"] <= params.flags_max
     if params.flags_weight_max is not None:
         filt &= cat["R_FLAGS_WEIGHT"] <= params.flags_weight_max
-    if params.detection_sigma is not None:
-        filt &= cat["R_SNR"] > params.detection_sigma
-    if params.ellipticity_max is not None:
-        filt &= cat["R_ELLIPTICITY"] <= params.ellipticity_max
-    if params.fwhm_max is not None:
-        filt &= cat["R_FWHM_IMAGE"] <= params.fwhm_max
-    if params.r_half_max is not None:
-        filt &= cat["R_FLUX_RADIUS"] <= params.r_half_max
-
-    if params.r23_max is not None:
-        if np.isfinite(params.r23_max_sigma):
-            thresh_23 = derive_threshhold(cat["MAG_23"][filt], cat[filt])
-        else:
-            thresh_23 = params.r23_max
-        filt &= cat["MAG_23"] < thresh_23
 
     if params.mode == "gr":
-        filt &= select_gr(cat, params)
         filt &= filter_nans(cat[params.gcol])
         filt &= filter_nans(cat[params.rcol])
     elif params.mode == "ri":
-        filt &= select_ri(cat, params)
         filt &= filter_nans(cat[params.icol])
         filt &= filter_nans(cat[params.rcol])
     elif params.mode == "gri":
-        filt &= select_gr(cat, params)
-        filt &= select_ri(cat, params)
         filt &= filter_nans(cat[params.gcol])
         filt &= filter_nans(cat[params.rcol])
         filt &= filter_nans(cat[params.icol])
@@ -328,6 +294,43 @@ def filter_catalog(cat, params):
         raise Exception(f"mode not known {params.mode}")
         return None
 
+    return filt
+
+
+def get_star_galaxy_filter(cat, params):
+    filt = np.full(len(cat), True, )
+
+    if params.ellipticity_max is not None:
+        filt &= cat["R_ELLIPTICITY"] <= params.ellipticity_max
+    if params.fwhm_max is not None:
+        filt &= cat["R_FWHM_IMAGE"] <= params.fwhm_max
+    if params.r_half_max is not None:
+        filt &= cat["R_FLUX_RADIUS"] <= params.r_half_max
+
+    if params.r23_max_sigma is not None:
+        thresh_23 = derive_threshhold(cat["MAG_23"], cat,
+                                      sigma=params.r23_max_sigma)
+        filt &= cat["MAG_23"] < thresh_23
+    elif params.r23_max is not None:
+        thresh_23 = params.r23_max
+        filt &= cat["MAG_23"] < params.r23_max
+
+    return filt
+
+def filter_catalog(cat, params):    
+    filt = get_flags_filter(cat, params)
+    filt &= get_star_galaxy_filter(cat, params)
+
+    if params.detection_sigma is not None:
+        filt &= cat["R_SNR"] > params.detection_sigma
+
+    if params.mode == "gr":
+        filt &= select_gr(cat, params)
+    elif params.mode == "ri":
+        filt &= select_ri(cat, params)
+    elif params.mode == "gri":
+        filt &= select_gr(cat, params)
+        filt &= select_ri(cat, params)
 
     return cat[filt]
 
@@ -435,7 +438,7 @@ def get_coord0(objname):
     return SkyCoord(props["ra"], props["dec"], unit=u.deg)
 
 
-def plot_with_hist(cat, params, vmax=None, vmin=None):
+def plot_with_hist(cat, params, vmax=None, vmin=None, **kwargs):
     fig, axs = plt.subplots(2, 4, figsize=(8, 4))
 
     cat_filtered = filter_catalog(cat, params)
@@ -450,7 +453,8 @@ def plot_with_hist(cat, params, vmax=None, vmin=None):
     background_counts = [rand_overdensity(cat_filtered, params.r_cen, safe_region=safe_region) for i in range(10_000)]
     Ncen = count_centre(cat_filtered, params.r_cen)
 
-    plot_riso(cat, params, results=results.iloc[0, :], fig=fig, axs=axs)
+    plot_detection(cat, params, results=results.iloc[0, :], fig=fig, axs=axs,
+              **kwargs)
 
 
     plt.sca(axs[1][-1])
@@ -516,15 +520,14 @@ def select_subsets(cat, params, xi, eta):
         "background_selected": df_bkg,
         "selected": cat_filtered,
         "unselected": cat[filt_no],
+        "all": cat,
     }
 
 
 
 def plot_unselected_points(subsets, params, xi, eta):
-    tangent_axis()
-
-    df = subsets["unselected"]
-    plt.scatter(df["xi"], df["eta"], s=1, lw=0, color="k")
+    cat_filtered = subsets["unselected"]
+    plot_tangent(cat_filtered, s=1, lw=0, color="C1")
 
     circ = plt.Circle((0, 0), params.r_cen, color="C0", lw=0.3, fill=False,
                       zorder=-1, alpha=1)
@@ -537,13 +540,17 @@ def plot_unselected_points(subsets, params, xi, eta):
     plt.title("unselected")
 
 
+
+def plot_tangent(cat, **kwargs):
+    tangent_axis()
+    plt.scatter(cat["xi"], cat["eta"], **kwargs)
+
+
 def plot_selected_points(subsets, params, xi, eta):
 
-    tangent_axis()
     cat_filtered = subsets["selected"]
 
-    plt.scatter(cat_filtered["xi"], cat_filtered["eta"], s=1, lw=0, color="C3")
-
+    plot_tangent(cat_filtered, s=3, lw=0, color="C3")
     circ = plt.Circle((0, 0), params.r_cen, color="C0", lw=0.3, fill=False,
                       zorder=-1, alpha=1)
     plt.gca().add_patch(circ)
@@ -585,11 +592,11 @@ def plot_gr_centre(subsets, params):
 
     x = df_cen_all[params.gcol] - df_cen_all[params.rcol]
     y = df_cen_all[params.gcol]
-    plt.scatter(x, y, lw=0, s=1, color="k")
+    plt.scatter(x, y, lw=0, s=1, color="k", label="all")
 
     x = df_cen[params.gcol] - df_cen[params.rcol]
     y = df_cen[params.gcol]
-    plt.scatter(x, y, lw=0, s=5, color="C3")
+    plt.scatter(x, y, lw=0, s=5, color="C3", label="selected")
 
     plt.title("centre")
 
@@ -631,7 +638,7 @@ def plot_ri_centre(subsets, params):
     plt.title("centre")
 
 
-def plot_riso(cat, params, xi=-1.5/60, eta=-1.5/60, results=None, fig=None, axs=None):
+def plot_detection(cat, params, xi=-1.5/60, eta=-1.5/60, results=None, fig=None, axs=None):
 
     subsets = select_subsets(cat, params, xi=xi, eta=eta)
 
@@ -677,8 +684,10 @@ def tangent_axis(tangent_bounds=None):
     plt.yticks(np.arange(-5, 6))
 
     if tangent_bounds is not None:
-        plt.xlim(tangent_bounds[2], tangent_bounds[0])
+        plt.xlim(tangent_bounds[0], tangent_bounds[2])
         plt.ylim(tangent_bounds[1], tangent_bounds[3])
+
+    plt.gca().invert_xaxis()
     plt.gca().set_aspect(1)
 
 

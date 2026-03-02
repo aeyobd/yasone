@@ -22,28 +22,52 @@ from astropy.nddata import CCDData
 
 def get_panstarrs(objname):
     panstarrs = Table.read(f"../survey_data/{objname}_panstarrs.fits")
+    for col in panstarrs.colnames:
+        panstarrs[col] = panstarrs[col].reshape(-1)
 
-    panstarrs_filt = (panstarrs["qualityFlag"] & 4).reshape(-1) > 0
+    panstarrs_filt = (panstarrs["qualityFlag"] & 4) > 0
 
-    for filt in ["g", "r", "i"]:
-        panstarrs_filt &= panstarrs[f"{filt}Flags"].reshape(-1) & 2 == 0
-        panstarrs_filt &= panstarrs[f"{filt}Flags"].reshape(-1) & 1 == 0
+    for filt in ["G", "R", "I"]:
+        panstarrs_filt &= panstarrs[f"{filt.lower()}Flags"] & 2 == 0
+        panstarrs_filt &= panstarrs[f"{filt.lower()}Flags"] & 1 == 0
+        panstarrs_filt &= panstarrs[f"{filt.lower()}MeanPSFMag"] > -10
         # panstarrs_filt &= panstarrs[f"{filt}MeanPSFMagNpt"].reshape(-1) > 2
 
+    # apply corrections from Tonry et al. 2012, Apj.759.99, table 6,
+    # the SDSS - PS1 vs g-r PS1 quadratics
+
+    gr = panstarrs["gMeanPSFMag"] - panstarrs["rMeanPSFMag"]
+
+    panstarrs["G_MAG"] = panstarrs["gMeanPSFMag"] + 0.013 + 0.145*gr + 0.019*gr**2
+    panstarrs["R_MAG"] = panstarrs["rMeanPSFMag"] - 0.001 + 0.004*gr + 0.007*gr**2
+    panstarrs["I_MAG"] = panstarrs["iMeanPSFMag"] - 0.005 + 0.011*gr + 0.010*gr**2
+
+    # technically should also add ri uncertainty here, but this doesnt matter
+    # too much
+    panstarrs["G_MAG_ERR"] = panstarrs["gMeanPSFMagErr"] + 0.008
+    panstarrs["R_MAG_ERR"] = panstarrs["rMeanPSFMagErr"] + 0.004
+    panstarrs["I_MAG_ERR"] = panstarrs["iMeanPSFMagErr"] + 0.004
+
+
+
+    print("median shifts")
+    print("g", np.median(panstarrs["G_MAG"] - panstarrs["gMeanPSFMag"]))
+    print("r", np.median(panstarrs["R_MAG"] - panstarrs["rMeanPSFMag"]))
+    print("i", np.median(panstarrs["I_MAG"] - panstarrs["iMeanPSFMag"]))
     return panstarrs[panstarrs_filt]
 
 
 def determine_zeropoints(cat):
     panstarrs_zeropoints = {}
 
-    for filtname in ["g", "r", "i"]:
-        mag0 = cat[f"{filtname.upper()}_MAG"]
-        mag_ps = cat[f"mag_{filtname}_panstarrs"]
+    for filtname in ["G", "R", "I"]:
+        mag0 = cat[f"{filtname}_MAG"]
+        mag_ps = cat[f"{filtname}_MAG_PS1"]
         filt = cat["R_FLAGS"] == 0
         filt &= ~mag0.mask
         filt &= mag_ps > -10
 
-        w = 1/(cat[f"mag_{filtname}_err_panstarrs"]**2 + cat["R_MAG_ERR"]**2)
+        w = 1/(cat[f"{filtname}_MAG_PS1_ERR"]**2)
         residuals = mag0[filt] - mag_ps[filt]
 
         m_weighted = weighted_median(residuals, w[filt])
@@ -54,7 +78,7 @@ def determine_zeropoints(cat):
         print("filter: ", filtname)
         print("weighted median, median", m_weighted, m)
         print("sigmaclipped mean, median: ", m_sc, ",", med_sc)
-        panstarrs_zeropoints[filtname] = med_sc
+        panstarrs_zeropoints[filtname.lower()] = med_sc
 
     return panstarrs_zeropoints
 
@@ -71,9 +95,9 @@ def match_catalogues(cat_gtc, panstarrs):
     panstarrs_xmatch = panstarrs[xmatch_idx]
     osiris_x_panstarrs = cat_gtc[xmatch_filt_panstarrs]
 
-    for filt in ["g", "r", "i"]:
-        cat_gtc[f"mag_{filt}_panstarrs"] = panstarrs_xmatch[f"{filt}MeanApMag"].reshape(-1)
-        cat_gtc[f"mag_{filt}_err_panstarrs"] = panstarrs_xmatch[f"{filt}MeanApMagErr"].reshape(-1)
+    for filt in ["G", "R", "I"]:
+        cat_gtc[f"{filt}_MAG_PS1"] = panstarrs_xmatch[f"{filt}_MAG"].reshape(-1)
+        cat_gtc[f"{filt}_MAG_PS1_ERR"] = panstarrs_xmatch[f"{filt}_MAG_ERR"].reshape(-1)
 
     return cat_gtc[xmatch_filt_panstarrs]
 
@@ -88,6 +112,8 @@ def main():
     cat_gtc = Table.read(f"{objname}/{catname}.cat")
     cat_panstarrs = get_panstarrs(objname)
     cat_matched = match_catalogues(cat_gtc, cat_panstarrs)
+
+    cat_matched.write(f"{objname}/{catname}_x_PS.cat", format="fits", overwrite=True)
     zeropoints = determine_zeropoints(cat_matched)
 
     with open(Path(objname) / f"{catname}_panstarrs_shift.toml", "wb") as f:
@@ -107,8 +133,8 @@ def plot_residuals(cat, panstarrs_zeropoints):
 
         filt = ["g", "r", "i"][i]
         mag0 = cat[f"{filt.upper()}_MAG"] - panstarrs_zeropoints[filt]
-        mag_ps = cat[f"mag_{filt}_panstarrs"]
-        mag_ps_err = cat[f"mag_{filt}_err_panstarrs"]
+        mag_ps = cat[f"{filt.upper()}_MAG_PS1"]
+        mag_ps_err = cat[f"{filt.upper()}_MAG_PS1_ERR"]
         plt.scatter(mag0, mag_ps, s=1,  c=cs, alpha=0.1)
         plt.xlim(24, 17)
         plt.ylim(24, 17)

@@ -8,3 +8,14 @@ select * into mydb.stds1 from fGetNearbyObjEq(232.664292907031 , 5.9837443939958
 inner join ObjectThin o on o.objid=nb.objid and o.nDetections>1
 inner join MeanObject m on o.objid=m.objid and o.uniquePspsOBid=m.uniquePspsOBid
 ```
+
+
+## DESI LSS 10
+For desi lss10, I use the magrnidutes from 
+
+Example query:
+```
+SELECT *
+  FROM  ls_dr10.tractor
+ WHERE  q3c_radial_query(ra, dec, 292.96258, -26.44994, 0.1)
+```
