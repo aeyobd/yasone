@@ -4,19 +4,21 @@ from astropy.table import Table, join
 import numpy as np
 
 
-from phot_utils import to_mag
 from pathlib import Path
 
 import sys
-import re
 
+from phot_utils import to_mag
 
 
 def load_all_catalogues(objname, filtname, suffix=""):
     cats = []
     imgnames = []
     for path in Path(f"./{objname}/").glob(f"img_{filtname}_*"):
-        cat = Table.read(path / f"forced_ap_phot{suffix}.fits")
+        catname = path / f"forced_psf_phot{suffix}.fits"
+        if not catname.is_file():
+            continue
+        cat = Table.read(catname)
         cats.append(cat)
         imgnames.append(path.stem)
 
@@ -42,11 +44,6 @@ def combine_all_catalogues(cat_ref, cats, catnames):
     return cat_combined
 
 
-def get_ap_colnames(cat):
-    ap_colnames = [col for col in cat.colnames if col.startswith("aperture")]
-    return ap_colnames
-
-
 def main(objname, filtname, suffix=""):
 
     cats, catnames = load_all_catalogues(objname, filtname, suffix)
@@ -55,39 +52,32 @@ def main(objname, filtname, suffix=""):
 
     cat_all = combine_all_catalogues(cat_ref, cats, catnames)
 
-    ap_colnames = get_ap_colnames(cats[0])
-    cat_reduced = reduce_cat(cat_ref, cat_all, catnames, ap_colnames)
+    colnames = get_safe_columns(cats[0])
+    cat_reduced = reduce_cat(cat_ref, cat_all, catnames, colnames)
     add_mag_columns(cat_reduced)
 
     return cat_reduced
 
 
 def add_mag_columns(cat_reduced):
-    for name in cat_reduced.colnames:
-        match = re.search(r'aperture_sum_.*\d+', name)
-        if match is None:
-            continue
-        i = match.group(0)[-1]
+    for name in ["flux_fit", "flux_fit_ana"]:
+        med = cat_reduced[f"{name}_median"]
+        err =  cat_reduced[f"{name}_err"]
+        N =  cat_reduced[f"{name}_count"]
 
-        if name == f"aperture_sum_{i}_median":
-            med = cat_reduced[f"aperture_sum_{i}_median"]
-            err =  cat_reduced[f"aperture_sum_{i}_err"]
-            N =  cat_reduced[f"aperture_sum_{i}_count"]
+        mag, magerr = to_mag(med, err)
 
-            mag, magerr = to_mag(med, err)
-            cat_reduced[f"MED_MAG_APER_{i}"] = mag
-            cat_reduced[f"MED_MAG_APER_{i}_ERR"] = magerr
-
-        elif name == f"aperture_sum_lb_{i}_median":
-            med = cat_reduced[f"aperture_sum_lb_{i}_median"]
-            err =  cat_reduced[f"aperture_sum_lb_{i}_err"]
-            N =  cat_reduced[f"aperture_sum_lb_{i}_count"]
-
-            mag, magerr = to_mag(med, err)
-            cat_reduced[f"MED_MAG_APER_LB_{i}"] = mag
-            cat_reduced[f"MED_MAG_APER_LB_{i}_ERR"] = magerr
+        if "ana" in name:
+            cat_reduced[f"MED_MAG_PSF_ANA"] = mag
+            cat_reduced[f"MED_MAG_PSF_ANA_ERR"] = magerr
+        else:
+            cat_reduced[f"MED_MAG_PSF"] = mag
+            cat_reduced[f"MED_MAG_PSF_ERR"] = magerr
 
 
+
+def get_safe_columns(cat):
+    return [name for name in cat.colnames if np.issubdtype(cat[name].dtype, np.floating)]
 
 def get_columns(cat_all, catnames, col):
     return cat_all[[col + "_" + name for name in catnames]]
@@ -121,7 +111,7 @@ if __name__ == "__main__":
         cat = main(objname, filtname, suffix)
 
 
-        cat.write(f"./{objname}/forced_{filtname}/aperture{suffix}.cat",
+        cat.write(f"./{objname}/forced_{filtname}/psf{suffix}.cat",
                   format="fits", overwrite=True)
 
 

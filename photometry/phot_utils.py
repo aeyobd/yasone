@@ -52,7 +52,7 @@ def calc_zero_point(flux, mag, atm_extinction):
     zero_point = mag_std + 2.5*np.log10(counts_std / exp_time_std)
 
 
-def to_mag(flux, flux_err, zero_point, atm_extinction):
+def to_mag(flux, flux_err, zero_point=0, atm_extinction=0):
     mag =  zero_point - 2.5*np.log10(flux)  - atm_extinction
     magerr = 2.5 / np.log(10) * flux_err / flux
     return mag, magerr

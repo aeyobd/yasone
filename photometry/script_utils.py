@@ -8,6 +8,3 @@ def safe_rm(pathname):
         pathname = Path(pathname)
     if pathname.is_file() or pathname.is_symlink():
         os.remove(pathname)
-
-
-

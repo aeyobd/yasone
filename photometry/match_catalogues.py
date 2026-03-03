@@ -1,21 +1,19 @@
 import os
 
 from pathlib import Path
+import tomllib
+import numpy as np
 
 from astropy.table import Table
 import astropy.units as u
+from astropy.stats import sigma_clipped_stats
+from astropy.coordinates import SkyCoord
+from astropy.io import fits
+
 import matplotlib.pyplot as plt
 import arya
-import numpy as np
 
 
-import tomllib
-
-
-from astropy.stats import sigma_clipped_stats
-
-
-from astropy.coordinates import SkyCoord
 import sys
 sys.path.append(".")
 sys.path.append("../imaging")
@@ -23,11 +21,7 @@ sys.path.append("../imaging")
 from phot_utils import outer_join_xmatch, get_atm_extinction, to_mag
 
 
-airmass = 1.2 # calibrated out anyways
-
-
-
-def get_zeropoint(filt, exposure=190, gain=1.9):
+def get_zeropoint(filt, exposure=190, gain=1.9, airmass=None):
     d = None
     with open(f"std1/img_{filt}_11/flat_fielded-astrom-zeropoint.toml", "rb") as f:
         d = tomllib.load(f)
@@ -36,17 +30,30 @@ def get_zeropoint(filt, exposure=190, gain=1.9):
 
 
 
-def get_airmass(file):
-    path = Path(file).parent
-    img = CCDData.read(path / "flat_fielded.fits")
-    return img.header["AIRMASS"]
+def get_airmass(file, hdu=0):
+    airmass = None
+    with fits.open(file) as f:
+        head = f[hdu].header
+        airmass =  head["AIRMASS"]
+
+    return airmass
+
+def get_mean_airmass(objname, filt):
+    airmasses = []
+    for dirname in Path(objname).glob(f"img_{filt}_*"):
+        path = dirname / "flat_fielded.fits"
+        airmasses.append(get_airmass(path))
+
+    return np.mean(airmasses)
 
 
-def calibrate_mag(cat, filt):
+
+
+def calibrate_mag(cat, filt, airmass):
     idx_aper = 3
 
     filt_bad = (cat["MAG_APER_3"] > 50) | (cat["FLAGS"] & 64 + 128 + 32 + 16 > 0) 
-    cat["MAG"] = cat["MAG_APER_3"] + get_zeropoint(filt) 
+    cat["MAG"] = cat["MAG_APER_3"] + get_zeropoint(filt, airmass=airmass) 
     cat["MAG_ERR"] = cat["MAGERR_APER_3"]
 
     cat["MAG"][filt_bad] = np.nan
@@ -88,10 +95,17 @@ def main():
     cat_r = flatten_arrays(cat_r)
     cat_i = flatten_arrays(cat_i)
 
+    airmass_g = get_mean_airmass(objname, "g")
+    airmass_r = get_mean_airmass(objname, "r")
+    airmass_i = get_mean_airmass(objname, "i")
+    print("typical airmass")
+    print("g", airmass_g)
+    print("r", airmass_r)
+    print("i", airmass_i)
 
-    calibrate_mag(cat_g, "g")
-    calibrate_mag(cat_r, "r")
-    calibrate_mag(cat_i, "i")
+    calibrate_mag(cat_g, "g", airmass=airmass_g)
+    calibrate_mag(cat_r, "r", airmass=airmass_r)
+    calibrate_mag(cat_i, "i", airmass=airmass_i)
 
     cat_g.rename_columns(cat_g.colnames, ["G_" + name for name in
                                           cat_g.colnames])

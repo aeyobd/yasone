@@ -28,8 +28,7 @@ def get_panstarrs(objname):
     panstarrs_filt = (panstarrs["qualityFlag"] & 4) > 0
 
     for filt in ["G", "R", "I"]:
-        panstarrs_filt &= panstarrs[f"{filt.lower()}Flags"] & 2 == 0
-        panstarrs_filt &= panstarrs[f"{filt.lower()}Flags"] & 1 == 0
+        panstarrs_filt &= panstarrs[f"{filt.lower()}Flags"] & (1 + 2 + 4) == 0
         panstarrs_filt &= panstarrs[f"{filt.lower()}MeanPSFMag"] > -10
         # panstarrs_filt &= panstarrs[f"{filt}MeanPSFMagNpt"].reshape(-1) > 2
 
@@ -50,10 +49,10 @@ def get_panstarrs(objname):
 
 
 
-    print("median shifts")
-    print("g", np.median(panstarrs["G_MAG"] - panstarrs["gMeanPSFMag"]))
-    print("r", np.median(panstarrs["R_MAG"] - panstarrs["rMeanPSFMag"]))
-    print("i", np.median(panstarrs["I_MAG"] - panstarrs["iMeanPSFMag"]))
+    print("median correction shifts")
+    print("g", np.ma.median(panstarrs["G_MAG"] - panstarrs["gMeanPSFMag"]))
+    print("r", np.ma.median(panstarrs["R_MAG"] - panstarrs["rMeanPSFMag"]))
+    print("i", np.ma.median(panstarrs["I_MAG"] - panstarrs["iMeanPSFMag"]))
     return panstarrs[panstarrs_filt]
 
 
@@ -87,7 +86,7 @@ def determine_zeropoints(cat):
 
 def match_catalogues(cat_gtc, panstarrs):
     xmatch_idx, xmatch_dist, xmatch_filt_panstarrs = xmatch(
-        cat_gtc["R_ALPHA_J2000"], cat_gtc["R_DELTA_J2000"],
+        cat_gtc["ra"], cat_gtc["dec"],
         panstarrs["ra"].reshape(-1), panstarrs["dec"].reshape(-1), 
         1*u.arcsec
     )

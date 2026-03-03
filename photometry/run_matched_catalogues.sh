@@ -8,13 +8,13 @@ suffix=""
 #outname="allcolours_forced.cat"
 #foldername="forced"
 
-#catname="detection.cat"
-#outname="allcolours.cat"
-#foldername="coadd_median"
+catname="detection.cat"
+outname="allcolours"
+foldername="coadd_median"
 
-catname="photometry.cat"
-outname="allcolours_julen_stack.cat"
-foldername="julen_stack"
+#catname="photometry.cat"
+#outname="allcolours_julen_stack.cat"
+#foldername="julen_stack"
 
 
 for obj in "yasone1" "yasone2" "yasone3"; do

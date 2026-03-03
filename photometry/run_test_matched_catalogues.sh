@@ -1,8 +1,18 @@
 
 
+
 foldername="forced"
 suffix=""
-catname="aperture.fits"
+catname="psf.cat"
+outname="allcolours_forced_psf"
+python match_catalogues.py yasone1 $catname $outname $foldername $suffix
+python match_catalogues.py yasone2 $catname $outname $foldername $suffix
+python match_catalogues.py yasone3 $catname $outname $foldername $suffix
+
+exit 
+foldername="forced"
+suffix=""
+catname="aperture.cat"
 outname="allcolours_forced"
 
 python match_catalogues.py yasone1 $catname $outname $foldername $suffix

@@ -1,0 +1,10 @@
+zeropoint = 29.162851251438916
+filter = "Sloan_r"
+zeropoint_err = 0.0124980908967988
+airmass = 1.24980908967988
+atm_ext = 0.08748663627759161
+atm_ext_err = 0.0124980908967988
+standard_star = "SA114-656"
+standard_mag = 12.326
+ap_corr = -0.11042775241805813
+ap_corr_radius = 10

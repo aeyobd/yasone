@@ -1,0 +1,10 @@
+zeropoint = 28.907622454456952
+filter = "Sloan_g"
+zeropoint_err = 0.0235086257458106
+airmass = 1.17543128729053
+atm_ext = 0.17631469309357947
+atm_ext_err = 0.0235086257458106
+standard_star = "PG1528+062B"
+standard_mag = 12.247
+ap_corr = -0.1566211543830427
+ap_corr_radius = 10
