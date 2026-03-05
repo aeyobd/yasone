@@ -1,6 +1,5 @@
-import sys
-sys.path.append("../imaging")
-from convenience_functions import show_image
+from .plotting import show_image
+
 from matplotlib.patches import Ellipse
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,8 +9,11 @@ from astropy.table import Table, join, vstack
 
 plate_scale = 0.254 # arcmin / pixel
 
-# From documentation (OSIRIS/GTC Broad Band Imaging calibration)
-extinction_dict = {
+"""
+The airmass to extinction coefficient wth uncertainty from the OSIRIS/GTC
+Broad Band Imaging calibration documentation.
+"""
+EXTINCTION_DICT = {
     'Sloan_u': [0.45, 0.02],
     'Sloan_g': [0.15, 0.02],
     'Sloan_r': [0.07, 0.01],
@@ -19,16 +21,13 @@ extinction_dict = {
     'Sloan_z': [0.03, 0.01]
 }
 
-# There are also colour corrections
-#u’ – u’0 = -25.807(±0.053) - 0.071 (±0.023) (u’0 – g’0)
-#g’ – g’0 = -28.823 (±0.040) - 0.078 (±0.013) (g’0 – r’0)
-#r’ – r’0 = -29.291 (±0.017) - 0.114 (±0.028) (r’0 – i’0)
-#i’ – i’0 = -28.857 (±0.015) - 0.079 (±0.041) (i’0 – z’0)
-#z’ – z’0 = -28.231(±0.031) - 0.072 (±0.052) (i’0 – z’0)
 
-
-def plot_sources(objects, img, scale=6):
-    show_image(img,)
+def plot_sources(objects, img, scale=1):
+    """
+    Plots the sources from a sep.extract run as red ellipses
+    on the given image, scaled up by the provided scale.
+    """
+    show_image(img)
 
     ax = plt.gca()
     
@@ -42,14 +41,13 @@ def plot_sources(objects, img, scale=6):
         e.set_edgecolor('red')
         ax.add_artist(e)
 
+
 def swap_byteorder(data):
+    """
+    Swaps the byteorder of the data. Necessary to work with sep.
+    """
     data = data.astype(data.dtype.newbyteorder('='))
     return data
-
-
-
-def calc_zero_point(flux, mag, atm_extinction):
-    zero_point = mag_std + 2.5*np.log10(counts_std / exp_time_std)
 
 
 def to_mag(flux, flux_err, zero_point=0, atm_extinction=0):
@@ -57,34 +55,83 @@ def to_mag(flux, flux_err, zero_point=0, atm_extinction=0):
     magerr = 2.5 / np.log(10) * flux_err / flux
     return mag, magerr
 
+
 def get_atm_extinction(airmass, filt):
-    A, A_err = extinction_dict[filt]
+    A, A_err = EXTINCTION_DICT[filt]
     return  A * airmass, A_err * airmass
 
 
 def xmatch(ra1, dec1, ra2, dec2, rmax=1*u.arcsec):
+    """
+    Crossmatch two RA/Dec catalogs and keep only unique matches
+    in catalog2, retaining the closest match.
+    Assumes RA and Dec are in degrees.
+
+    Returns
+    -------
+    idx1 : array
+        Indices in catalog1 of surviving matches
+    idx2 : array
+        Corresponding unique indices in catalog2
+    sep  : Quantity
+        Angular separations of surviving matches
+    """
+
     coord1 = coordinates.SkyCoord(ra1, dec1, unit=u.deg)
     coord2 = coordinates.SkyCoord(ra2, dec2, unit=u.deg)
 
     xmatch_indicies, xmatch_sep, _ = coord1.match_to_catalog_sky(coord2)
 
+    # Initial radius cut
     has_xmatch = xmatch_sep < rmax
-    return xmatch_indicies, xmatch_sep, has_xmatch
+
+    # Work only on valid matches
+    idx1_valid = np.where(has_xmatch)[0]
+    idx2_valid = xmatch_indicies[has_xmatch]
+    sep_valid = xmatch_sep[has_xmatch]
+
+    # Sort valid matches by separation (closest first)
+    order = np.argsort(sep_valid)
+    idx1_sorted = idx1_valid[order]
+    idx2_sorted = idx2_valid[order]
+    sep_sorted = sep_valid[order]
+
+    # Keep only first occurrence of each catalog2 index
+    _, unique_keep = np.unique(idx2_sorted, return_index=True)
+
+    idx1_keep = idx1_sorted[unique_keep]
+
+    # Reset duplicates to "no match"
+    has_xmatch_unique = np.zeros_like(has_xmatch)
+    has_xmatch_unique[idx1_keep] = True
+
+    # For remved duplicates, set separation to large value
+    xmatch_sep_unique = xmatch_sep.copy()
+    xmatch_sep_unique[~has_xmatch_unique] = np.inf * xmatch_sep.unit
+
+    Ndup = np.sum(has_xmatch) - len(has_xmatch_unique)
+    if Ndup > 0:
+        print(f"removing {Ndup} duplicate xmatches")
+
+    return xmatch_indicies, xmatch_sep_unique, has_xmatch_unique
 
 
 
-def outer_join_xmatch(cat1, cat2, ra1="ALPHA_J2000", dec1="DELTA_J2000",
-                      ra2="ALPHA_J2000", dec2="DELTA_J2000",
-                      lprefix="1_", rprefix="2_",
+def outer_join_xmatch(cat1, cat2, ra1="ra", dec1="dec",
+                      ra2="ra", dec2="dec",
                       xmatch_radius = 1 * u.arcsec,
-                      **kwargs
+                      lsuffix="_1",
+                      rsuffix="_2",
+                      **kwargs,
                       ):
     xmatch_idx, xmatch_sep, has_xmatch = xmatch(
             cat1[ra1], cat1[dec1], cat2[ra2], cat2[dec2],
             xmatch_radius)
 
     cat1 = cat1.copy()
+    cat1.rename_columns(cat1.colnames, [name + lsuffix for name in cat1.colnames])
     cat2 = cat2.copy()
+    cat2.rename_columns(cat2.colnames, [name + rsuffix for name in cat2.colnames])
 
     # create indexes to use for xmatch
     cat1["_idx1"] = np.arange(len(cat1))
@@ -119,9 +166,9 @@ def outer_join_xmatch(cat1, cat2, ra1="ALPHA_J2000", dec1="DELTA_J2000",
     print("total right", len(cat2))
 
     assert len(matched_join) + len(unmatched_cat1) == len(cat1)
-    #assert len(matched_join) + len(unmatched_cat2) == len(cat2)
+    assert len(matched_join) + len(unmatched_cat2) == len(cat2)
 
-        # Remove temporary keys
+    # Remove temporary keys
     for t in (matched_join, unmatched_cat1, unmatched_cat2):
         for col in ['_idx1', '_idx2']:
             if col in t.colnames:
@@ -131,6 +178,15 @@ def outer_join_xmatch(cat1, cat2, ra1="ALPHA_J2000", dec1="DELTA_J2000",
     result = vstack([matched_join, unmatched_cat1, unmatched_cat2],
                     join_type='outer')
 
-    #assert len(result) == len(matched_join) + len(unmatched_cat1) + len(unmatched_cat2)
+    for col in result.colnames:
+        if col.endswith(lsuffix):
+            col_new = col[:-len(lsuffix)]
+            if col_new +rsuffix not in result.colnames:
+                result.rename_column(col, col_new)
+        if col.endswith(rsuffix):
+            col_new = col[:-len(rsuffix)]
+            if col_new + lsuffix not in result.colnames:
+                result.rename_column(col, col_new)
+            
     return result
 

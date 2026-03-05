@@ -2,6 +2,8 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
+import sys
+
 import tomli_w
 
 import arya
@@ -11,11 +13,8 @@ from astropy import units as u
 import astropy
 import tomllib
 
-import sys
-sys.path.append(".")
-sys.path.append("../imaging")
 
-from phot_utils import xmatch, get_atm_extinction
+from yasone.photometry import xmatch, get_atm_extinction
 from astropy.nddata import CCDData
 
 
@@ -63,6 +62,7 @@ def determine_zeropoints(cat):
         mag0 = cat[f"{filtname}_MAG"]
         mag_ps = cat[f"{filtname}_MAG_PS1"]
         filt = cat["R_FLAGS"] == 0
+        filt = cat["R_IMAFLAGS_ISO"] == 0
         filt &= ~mag0.mask
         filt &= mag_ps > -10
 

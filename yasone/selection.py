@@ -1,72 +1,129 @@
+from dataclasses import dataclass, asdict
+import pandas as pd
+
 import matplotlib.pyplot as plt
 import numpy as np
-import arya
-import pandas as pd
-import ana_utils
-
-from astropy import units as u
-from dataclasses import dataclass
-from astropy.coordinates import SkyCoord
-
-
-from dustmaps.bayestar import BayestarWebQuery
-from dustmaps.planck import PlanckQuery
-
-from astropy.stats import sigma_clipped_stats
-
-import read_iso
-from dataclasses import asdict
-from astropy.stats import mad_std
-
 from scipy.spatial import cKDTree
 
 from shapely.geometry import Point
 from shapely import Polygon
+
+from astropy import units as u
+from astropy.coordinates import SkyCoord
+from astropy.stats import sigma_clipped_stats, mad_std
+from astropy.table import Table
+
+import arya
+from . import analysis
+from . import read_iso
 
 
 
 isos_fe_h = ["p0.00", "m0.25", "m0.50", "m0.75", "m1.00", "m1.25", "m1.50", "m1.75", "m2.00", "m2.50", "m3.00"]
 
 isonames = [f"../MIST/MIST_v1.2_vvcrit0.4_SDSSugriz/MIST_v1.2_feh_{iso_fe_h}_afe_p0.0_vvcrit0.4_SDSSugriz.iso.cmd" for iso_fe_h in isos_fe_h]
-isochrones = {fe_h: read_iso.ISOCMD(name) for fe_h, name in zip(isos_fe_h, isonames)}
+isochrones = None
+
+
+def load_isochrones():
+    global isochrones 
+    isochrones = {fe_h: read_iso.ISOCMD(name) for fe_h, name in zip(isos_fe_h, isonames)}
 
 
 
 @dataclass
 class filter_params:
-    r_cen: float = 25/60
-    xymax: float = 3
-    flags_max: int = 16
-    flags_weight_max: int = 4
-    detection_sigma: float = 1.5
-    A_V: float = 0
-    dm: float = 0
-    iso_width: float = 0.2
-    iso_fe_h: str = 0
-    iso_log_age: float = 0
-    err_scale: float = 1
-    mode: str = "ri"
-    gcol:str = "G_MAG"
-    rcol: str = "R_MAG"
-    icol: str = "I_MAG"
-    A_i_extra: float = 0
-
-    # star galaxy methods
-    ellipticity_max: float = None
-    r_half_max: float = None
-    fwhm_max: float = None
-    r23_max: float = None
-    r23_max_sigma: float = None
-
+    "the name of the object (yasone1, yasone2, yasone3)"
     objname: str = ""
 
+    """The size of circles to use for selecting central sources """
+    r_cen: float = 25/60
+
+    """The maximum distance from the centre in xi and eta, used for some
+    background/plotting statistics"""
+    xymax: float = 3
+
+    "The maximum value of the `R_FLAGS` column"
+    flags_max: int = 15
+    "The maximum value of the `R_FLAGS_WEIGHT` column"
+    flags_weight_max: int = 3
+    """The maximum value of the `R_IMAFLAGS_ISO` column. By default, 
+    filters out bad pixels (flag 16), and saturated regions (flags 8 and 4)"""
+    flags_iso_max: int = 3
+    "The maximum value of the `R_FLAGS_WEIGHT` column"
+    detection_sigma: float = 1.5
+
+    """The E(B-V) extinction for the isochrone selection. 
+    Note that catalogues are usually already extinction corrected"""
+    E_BV: float = 0
+
+    "Extra reddining in the i band?"
+    A_i_extra: float = 0
+
+    """The distance modulus for the isochrone selection"""
+    dm: float = 0
+
+    """The intrinsic width of the isochrone selection"""
+    iso_width: float = 0.2
+
+    """The metallicity of the isochrone. Should be one of `isos_fe_h`"""
+    iso_fe_h: str = 0
+
+    """The log10 of the isochrone age in years"""
+    iso_log_age: float = 0
+
+    """Scale the colour uncertainties for the isochrone selection""" 
+    err_scale: float = 1
+
+    """The mode to filter stars on
+    - "n": no magnitude based filtering
+    - "r": exists in r-band
+    - "gr": exists in g & r-band, passes gr-isochrone
+    - "ri": exists in r & i-band, passes ri-isochrone
+    - "gri": exists all three bands and passes gr and ri-isochrones.
+    """ 
+    mode: str = "ri"
+
+    """The column of the catalogue to use for g-mag. 
+    The column+_ERR must also exist"""
+    gcol:str = "G_MAG"
+
+    """The column of the catalogue to use for r-mag. 
+    The column+_ERR must also exist"""
+    rcol: str = "R_MAG"
+
+    """The column of the catalogue to use for i-mag. 
+    The column+_ERR must also exist"""
+    icol: str = "I_MAG"
+
+
+    # star galaxy methods
+    "The maximum ellipticity (R_ELLIPTICITY) of selected members"
+    ellipticity_max: float = None
+
+    "The maximum half-light radius (R_FLUX_RADIUS) of selected members"
+    r_half_max: float = None
+
+    "The maximum FWHM (R_FWHM_IMAGE) of selected members"
+    fwhm_max: float = None
+
+    "The maximum MAG_23 parameter (i.e. 5px - 3px magnitudes) in R-band"
+    r23_max: float = None
+
+    "Set r23_max to be this sigma above the median for well-measured stars "
+    r23_max_sigma: float = None
 
 
 
-def calibrate_mag_col(cat, col):
+
+
+def calibrate_mag_col(cat, col, mag_min = 19, mag_max=22):
+    """
+    TODO: use function for filtering by flags / mask
+    """
     for filt in ["G", "R", "I"]:
-        filt_good = cat[f"{filt}_MAG"] > 19
-        filt_good &= cat[f"{filt}_MAG"] < 22
+        filt_good = cat[f"{filt}_MAG"] > mag_min
+        filt_good &= cat[f"{filt}_MAG"] < mag_max
         filt_good &= ~cat[f"{filt}_MAG"].mask
         filt_good &= cat[f"{filt}_FLAGS"] == 0
         if hasattr(cat[f"{filt}_{col}"], "mask"):
@@ -99,8 +156,9 @@ def filt_finite(col):
     filt = np.isfinite(col)
     if hasattr(col, "mask"):
         filt &= ~col.mask
+        filt.mask &= ~col.mask
 
-    return col[filt]
+    return filt
 
 
 
@@ -119,7 +177,7 @@ def to_polygon(flat_coords, coord0):
     ra = flat_coords[::2]
     dec = flat_coords[1::2]
     coords = SkyCoord(ra, dec, unit=u.degree)
-    xi, eta = ana_utils.to_tangent(coords, coord0)
+    xi, eta = analysis.to_tangent(coords, coord0)
 
     points = [p for p in zip(xi*60, eta*60)]
     return Polygon(points)
@@ -232,7 +290,7 @@ def select_gr(cat, params):
     A_g, A_r, A_i = get_extinction(params)
     x_poly_gr, y_poly_gr = make_polygon(iso, gr_err, params.dm, A_b=A_g, A_r=A_r, r="SDSS_r", b="SDSS_g", iso_width=params.iso_width, err_scale=params.err_scale)
 
-    cmd_filt_gr = ana_utils.is_in_poly(cat[params.gcol].data -
+    cmd_filt_gr = analysis.is_in_poly(cat[params.gcol].data -
                                        cat[params.rcol].data, cat[params.gcol].data, x_poly_gr, y_poly_gr)
 
     return cmd_filt_gr
@@ -247,7 +305,7 @@ def select_ri(cat, params):
     x_poly_gr, y_poly_gr = make_polygon(iso, ri_err, params.dm, 
                                         A_b=A_r, A_r=A_i, r="SDSS_i", b="SDSS_r", iso_width=params.iso_width, err_scale=params.err_scale)
 
-    cmd_filt = ana_utils.is_in_poly(cat[params.rcol].data - cat[params.icol].data, cat[params.rcol].data, x_poly_gr, y_poly_gr)
+    cmd_filt = analysis.is_in_poly(cat[params.rcol].data - cat[params.icol].data, cat[params.rcol].data, x_poly_gr, y_poly_gr)
 
     return cmd_filt
 
@@ -264,7 +322,7 @@ def filter_nans(col):
 
 
 def get_extinction(params):
-    A_g, A_r, A_i = ana_utils.get_extinction(params.A_V)
+    A_g, A_r, A_i = analysis.get_extinction(params.E_BV)
     return A_g, A_r, A_i + params.A_i_extra
 
 
@@ -275,6 +333,8 @@ def get_flags_filter(cat, params):
         filt &= cat["R_FLAGS"] <= params.flags_max
     if params.flags_weight_max is not None:
         filt &= cat["R_FLAGS_WEIGHT"] <= params.flags_weight_max
+    if params.flags_iso_max is not None:
+        filt &= cat["R_IMAFLAGS_ISO"] <= params.flags_iso_max
 
     if params.mode == "gr":
         filt &= filter_nans(cat[params.gcol])
@@ -434,7 +494,7 @@ def plot_2d_counts(cat, radius, xymax=5, N=100, vmin=None, vmax=None, thresh=Non
 
 
 def get_coord0(objname):
-    props = ana_utils.get_obs_props(objname)
+    props = analysis.get_obs_props(objname)
     return SkyCoord(props["ra"], props["dec"], unit=u.deg)
 
 
@@ -480,7 +540,7 @@ def get_gr_err(cat, params):
     x = cat[params.gcol]
     xerr = np.sqrt(cat[params.gcol + "_ERR"]**2 + cat[params.rcol + "_ERR"]**2)
 
-    return ana_utils.fit_err(x, xerr)
+    return analysis.fit_err(x, xerr)
 
 
 
@@ -488,11 +548,11 @@ def get_ri_err(cat, params):
     x = cat[params.rcol]
     xerr = np.sqrt(cat[params.rcol + "_ERR"]**2 + cat[params.icol + "_ERR"]**2)
 
-    return ana_utils.fit_err(x, xerr)
+    return analysis.fit_err(x, xerr)
 
 
 def select_subsets(cat, params, xi, eta):
-    obs_props = ana_utils.get_obs_props(params.objname)
+    obs_props = analysis.get_obs_props(params.objname)
     ra0 = obs_props["ra"]
     dec0 = obs_props["dec"]
 
@@ -503,11 +563,11 @@ def select_subsets(cat, params, xi, eta):
 
     ri_err = get_ri_err(cat, params)
     gr_err = get_gr_err(cat, params)
-    df_cen_all = ana_utils.select_centre(cat, coord0, params.r_cen * u.arcmin)
-    df_cen = ana_utils.select_centre(cat_filtered, coord0, params.r_cen * u.arcmin)
+    df_cen_all = analysis.select_centre(cat, coord0, params.r_cen * u.arcmin)
+    df_cen = analysis.select_centre(cat_filtered, coord0, params.r_cen * u.arcmin)
 
-    df_bkg = ana_utils.select_centre(cat_filtered, coord1, params.r_cen * u.arcmin)
-    df_bkg_all = ana_utils.select_centre(cat, coord1, params.r_cen * u.arcmin)
+    df_bkg = analysis.select_centre(cat_filtered, coord1, params.r_cen * u.arcmin)
+    df_bkg_all = analysis.select_centre(cat, coord1, params.r_cen * u.arcmin)
 
 
     filt_no = ~np.isin(cat["INDEX"], cat_filtered["INDEX"])
