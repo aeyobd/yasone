@@ -794,21 +794,22 @@ def gr_axis():
     plt.gca().set_box_aspect(1)
 
 
-def plot_iso(iso, dm, A_b, A_r, mag_err, phase_max=3, b="SDSS_g", r="SDSS_r", iso_width=0):
+def plot_iso(iso, dm, A_b, A_r, mag_err=None, phase_max=3, b="SDSS_g", r="SDSS_r", iso_width=0):
     filt = iso["phase"] < phase_max
     plt.plot(iso[b][filt] - iso[r][filt] + A_b-A_r, iso[b][filt] + dm+A_b, color="grey", zorder=-1)
 
-    x_poly, y_poly = make_polygon(iso, mag_err, dm=dm, A_b=A_b, A_r=A_r, b=b, r=r, iso_width=iso_width)
-    plt.plot(x_poly, y_poly, color="grey", alpha=0.5, zorder=-1)
+    if mag_err is not None:
+        x_poly, y_poly = make_polygon(iso, mag_err, dm=dm, A_b=A_b, A_r=A_r, b=b, r=r, iso_width=iso_width)
+        plt.plot(x_poly, y_poly, color="grey", alpha=0.5, zorder=-1)
 
 
-def plot_iso_gr(params, gr_err):
+def plot_iso_gr(params, gr_err=None):
     A_g, A_r, A_i = get_extinction(params)
     iso = isochrones[params.iso_fe_h][params.iso_log_age]
     plot_iso(iso, dm=params.dm, A_b=A_g, A_r=A_r, mag_err=gr_err, iso_width=params.iso_width)
 
 
-def plot_iso_ri(params, ri_err):
+def plot_iso_ri(params, ri_err=None):
     A_g, A_r, A_i = get_extinction(params)
     iso = isochrones[params.iso_fe_h][params.iso_log_age]
 

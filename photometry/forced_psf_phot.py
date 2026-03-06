@@ -24,6 +24,7 @@ def main(objname, filtname, params, suffix=""):
         params.outdir = imgpath
         imgname = imgpath.stem[-2:]
         phot_result = derive_psf_phot(objname, filtname, imgname, params)
+        break
 
 
 ################ Analysis 
@@ -256,7 +257,8 @@ def savefig(figstem, params):
 
 
 if __name__ == "__main__":
-    objname, filtname = sys.argv[1:]
+    objname = sys.argv[1]
 
     params = PhotometryParams()
-    main(objname, filtname, params)
+    for filtname in ["g", "r", "i"]:
+        main(objname, filtname, params)

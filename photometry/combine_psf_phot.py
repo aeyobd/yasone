@@ -8,7 +8,7 @@ from pathlib import Path
 
 import sys
 
-from phot_utils import to_mag
+from yasone.photometry import to_mag
 
 
 def load_all_catalogues(objname, filtname, suffix=""):
