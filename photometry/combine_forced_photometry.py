@@ -4,7 +4,7 @@ from astropy.table import Table, join
 import numpy as np
 
 
-from phot_utils import to_mag
+from yasone.photometry import to_mag
 from pathlib import Path
 
 import sys

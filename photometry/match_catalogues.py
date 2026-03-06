@@ -1,4 +1,5 @@
 import os
+import sys
 
 from pathlib import Path
 import tomllib
@@ -14,11 +15,7 @@ import matplotlib.pyplot as plt
 import arya
 
 
-import sys
-sys.path.append(".")
-sys.path.append("../imaging")
-
-from phot_utils import outer_join_xmatch, get_atm_extinction, to_mag
+from yasone.photometry import outer_join_xmatch, get_atm_extinction, to_mag
 
 
 def get_zeropoint(filt, exposure=190, gain=1.9, airmass=None):

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import ccdproc
 from ccdproc import ImageFileCollection
-from convenience_functions import combine_images, combine_images_err
+from yasone.script_utils import combine_images, combine_images_err, safe_rm
 
 def get_biases(foldername):
     imgfiles = ImageFileCollection(foldername, glob_include="bias*.fits")
@@ -16,9 +16,7 @@ def main():
     # clean old files
     for folder in foldernames:
         outname = Path(folder, "bias_stacked.fits")
-
-        if outname.is_file():
-            os.remove(outname)
+        safe_rm(outname)
 
     for folder in foldernames:
         print(f"reading bias images in {folder}")

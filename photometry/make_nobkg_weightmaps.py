@@ -2,7 +2,7 @@ from pathlib import Path
 import os
 import sys
 import subprocess
-from script_utils import safe_rm
+from yasone.script_utils import safe_rm
 import numpy as np
 from astropy.nddata import CCDData 
 

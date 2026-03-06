@@ -14,11 +14,19 @@ from astropy.visualization import simple_norm
 
 import sys
 sys.path.append(".")
-sys.path.append("./../imaging/")
-from phot_utils import show_image
 from forced_photometry import PhotometryParams, load_image, load_ref_cat_coords, subtract_background, to_image_coords
+from yasone.plotting import show_image
 
 
+
+def main(objname, filtname, params, suffix=""):
+    for imgpath in Path(f"{objname}").glob(f"img_{filtname}_*"):
+        params.outdir = imgpath
+        imgname = imgpath.stem[-2:]
+        phot_result = derive_psf_phot(objname, filtname, imgname, params)
+
+
+################ Analysis 
 def get_inbounds_filter(cat, img, params):
     psf_size = params.psf_size
     
@@ -60,6 +68,7 @@ def get_bright_stars(cat_frame, img,  params):
     good_stars_tbl["y"] = y[filt_good]
     return good_stars_tbl
 
+
 def fit_ana_psf(epsf, params):
 
     psf_model = psf.MoffatPSF()
@@ -82,6 +91,7 @@ def fit_ana_psf(epsf, params):
                                   result["alpha_fit"][0]/params.psf_oversample, beta=result["beta_fit"][0])
     return psf_model_fit
     
+
 def build_psf_model(img_nobkg, cat_frame, params):
     good_stars_tbl = get_bright_stars(cat_frame, img_nobkg, params)
     stars = psf.extract_stars(img_nobkg, good_stars_tbl, size=params.psf_size)
@@ -96,6 +106,7 @@ def build_psf_model(img_nobkg, cat_frame, params):
     psf_model_ana.fixed["beta"] = True
 
     return epsf, stars
+
 
 
 def derive_psf_phot(obj, filt, imgname, params):
@@ -167,6 +178,7 @@ def derive_psf_phot(obj, filt, imgname, params):
 
 
 
+################ Plotting 
 def plot_cutouts(cutouts, params):
     nrows = 10
     ncols = 5
@@ -180,8 +192,7 @@ def plot_cutouts(cutouts, params):
 
     savefig("cutouts", params)
 
-def savefig(figstem, params):
-    plt.savefig(params.outdir / "figures" / f"{figstem}.jpg")
+
 
 def plot_results(all_results, params):
 
@@ -240,11 +251,8 @@ def plot_results(all_results, params):
     savefig("psf_centroid_shifts", params)
  
 
-def main(objname, filtname, params, suffix=""):
-    for imgpath in Path(f"{objname}").glob(f"img_{filtname}_*"):
-        params.outdir = imgpath
-        imgname = imgpath.stem[-2:]
-        phot_result = derive_psf_phot(objname, filtname, imgname, params)
+def savefig(figstem, params):
+    plt.savefig(params.outdir / "figures" / f"{figstem}.jpg")
 
 
 if __name__ == "__main__":

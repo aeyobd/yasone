@@ -1,19 +1,13 @@
-# This script trims all of the raw images in `./raw/` and puts trimmed
-# images (assuming ADU)_ into the `trimmed` directory in the calibration folders 
-# 20230708, 20230709, 20230723, and 20230816
-# and the object folders yasone1, yasone2, yasone3a and yasone3b
-
 import os
 import tomllib
 from pathlib import Path
 from glob import glob
 
-
 import ccdproc
 from ccdproc import ImageFileCollection
 from astropy.nddata import CCDData
 
-from script_utils import calibration_folder, read_img_keys
+from yasone.script_utils import calibration_folder, read_img_keys
 
 
 def get_flat(foldername, filt):
@@ -30,11 +24,12 @@ def clean(img_keys):
             if oldpath.is_file():
                 os.remove(oldpath)
 
-"""
-Trims images in the `raw` folder based on 
-the keys in `file_keys` placing new images in `newdir`
-"""
 def process_folder(file_keys, foldername):
+    """
+    Trims images in the `raw` folder based on 
+    the keys in `file_keys` placing new images in `newdir`
+    """
+
     for name in file_keys.keys():
         if name.startswith("bias"):
             continue

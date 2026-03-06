@@ -25,6 +25,9 @@ isonames = [f"../MIST/MIST_v1.2_vvcrit0.4_SDSSugriz/MIST_v1.2_feh_{iso_fe_h}_afe
 isochrones = None
 
 
+BKG_KWARGS = dict(s=3, lw=0, color="k", label="all")
+SELECTED_KWARGS = dict(s=9, lw=0, color="C3", label="selected")
+
 def load_isochrones():
     global isochrones 
     isochrones = {fe_h: read_iso.ISOCMD(name) for fe_h, name in zip(isos_fe_h, isonames)}
@@ -113,8 +116,15 @@ class filter_params:
     "Set r23_max to be this sigma above the median for well-measured stars "
     r23_max_sigma: float = None
 
+    
+    "the position of a background circle in arcminutes"
+    xi_bkg: float = 1
 
+    "the position of a background circle in arcminutes"
+    eta_bkg: float = -1
 
+    gr_err = None
+    ri_err = None
 
 
 def calibrate_mag_col(cat, col, mag_min = 19, mag_max=22):
@@ -326,30 +336,39 @@ def get_extinction(params):
     return A_g, A_r, A_i + params.A_i_extra
 
 
-def get_flags_filter(cat, params):
+def get_flags_filter_band(cat, params, band):
     filt = np.full(len(cat), True, )
 
     if params.flags_max is not None:
-        filt &= cat["R_FLAGS"] <= params.flags_max
+        filt &= cat[f"{band}_FLAGS"] <= params.flags_max
     if params.flags_weight_max is not None:
-        filt &= cat["R_FLAGS_WEIGHT"] <= params.flags_weight_max
+        filt &= cat[f"{band}_FLAGS_WEIGHT"] <= params.flags_weight_max
     if params.flags_iso_max is not None:
-        filt &= cat["R_IMAFLAGS_ISO"] <= params.flags_iso_max
+        filt &= cat[f"{band}_IMAFLAGS_ISO"] <= params.flags_iso_max
+
+    if band == "G":
+        filt &= filter_nans(cat[params.gcol])
+    elif band == "R":
+        filt &= filter_nans(cat[params.rcol])
+    elif band == "I":
+        filt &= filter_nans(cat[params.icol])
+
+    return filt
+
+def get_flags_filter(cat, params):
+    filt = get_flags_filter_band(cat, params, "R")
 
     if params.mode == "gr":
-        filt &= filter_nans(cat[params.gcol])
-        filt &= filter_nans(cat[params.rcol])
+        filt &= get_flags_filter_band(cat, params, "G")
     elif params.mode == "ri":
-        filt &= filter_nans(cat[params.icol])
-        filt &= filter_nans(cat[params.rcol])
+        filt &= get_flags_filter_band(cat, params, "I")
+        filt &= get_flags_filter_band(cat, params, "G")
     elif params.mode == "gri":
-        filt &= filter_nans(cat[params.gcol])
-        filt &= filter_nans(cat[params.rcol])
-        filt &= filter_nans(cat[params.icol])
+        filt &= get_flags_filter_band(cat, params, "I")
     elif params.mode == "n":
-        pass
+        filt = np.full(len(cat), True, )
     elif params.mode == "r":
-        filt &= filter_nans(cat[params.rcol])
+        pass
     else:
         raise Exception(f"mode not known {params.mode}")
         return None
@@ -537,6 +556,8 @@ def plot_with_hist(cat, params, vmax=None, vmin=None, **kwargs):
 
 
 def get_gr_err(cat, params):
+    if params.gr_err is not None:
+        return params.gr_err
     x = cat[params.gcol]
     xerr = np.sqrt(cat[params.gcol + "_ERR"]**2 + cat[params.rcol + "_ERR"]**2)
 
@@ -545,30 +566,35 @@ def get_gr_err(cat, params):
 
 
 def get_ri_err(cat, params):
+    if params.ri_err is not None:
+        return params.ri_err
+
     x = cat[params.rcol]
     xerr = np.sqrt(cat[params.rcol + "_ERR"]**2 + cat[params.icol + "_ERR"]**2)
 
     return analysis.fit_err(x, xerr)
 
 
-def select_subsets(cat, params, xi, eta):
+def select_subsets(cat, params):
     obs_props = analysis.get_obs_props(params.objname)
     ra0 = obs_props["ra"]
     dec0 = obs_props["dec"]
 
     coord0 = SkyCoord(ra=ra0, dec=dec0, unit=u.deg)
-    coord1 = SkyCoord(ra=ra0 + xi/np.cos(np.deg2rad(dec0)), dec=dec0 + eta, unit=u.deg)
+    coord1 = SkyCoord(ra=ra0 + params.xi / 60/np.cos(np.deg2rad(dec0)), dec=dec0 + params.eta / 60, unit=u.deg)
+
 
     cat_filtered = filter_catalog(cat, params)
+    cat_okay = cat[get_flags_filter(cat, params)]
 
-    ri_err = get_ri_err(cat, params)
-    gr_err = get_gr_err(cat, params)
-    df_cen_all = analysis.select_centre(cat, coord0, params.r_cen * u.arcmin)
+    ri_err = get_ri_err(cat_okay, params)
+    gr_err = get_gr_err(cat_okay, params)
+
+    df_cen_all = analysis.select_centre(cat_okay, coord0, params.r_cen * u.arcmin)
     df_cen = analysis.select_centre(cat_filtered, coord0, params.r_cen * u.arcmin)
 
     df_bkg = analysis.select_centre(cat_filtered, coord1, params.r_cen * u.arcmin)
-    df_bkg_all = analysis.select_centre(cat, coord1, params.r_cen * u.arcmin)
-
+    df_bkg_all = analysis.select_centre(cat_okay, coord1, params.r_cen * u.arcmin)
 
     filt_no = ~np.isin(cat["INDEX"], cat_filtered["INDEX"])
     return {
@@ -580,24 +606,24 @@ def select_subsets(cat, params, xi, eta):
         "background_selected": df_bkg,
         "selected": cat_filtered,
         "unselected": cat[filt_no],
-        "all": cat,
+        "not_flagged": cat_okay,
     }
 
+def plot_circle(x, y, r, **kwargs):
+    circ = plt.Circle((x, y), r, **kwargs)
+    plt.gca().add_patch(circ)
 
 
-def plot_unselected_points(subsets, params, xi, eta):
-    cat_filtered = subsets["unselected"]
-    plot_tangent(cat_filtered, s=1, lw=0, color="C1")
+def plot_unselected_points(subsets, params):
+    cat_filtered = subsets["not_flagged"]
+    plot_tangent(cat_filtered, **BKG_KWARGS)
 
-    circ = plt.Circle((0, 0), params.r_cen, color="C0", lw=0.3, fill=False,
+    plot_circle(0, 0, params.r_cen, color="C0", lw=0.3, fill=False,
                       zorder=-1, alpha=1)
-    plt.gca().add_patch(circ)
-    circ = plt.Circle((xi*60, eta*60), params.r_cen, color="C1", lw=0.3,
+    plot_circle(params.xi, params.eta, params.r_cen, color="C1", lw=0.3,
                       fill=False, zorder=-1, alpha=1)
-    plt.gca().add_patch(circ)
 
-
-    plt.title("unselected")
+    plt.title("not flagged")
 
 
 
@@ -606,17 +632,16 @@ def plot_tangent(cat, **kwargs):
     plt.scatter(cat["xi"], cat["eta"], **kwargs)
 
 
-def plot_selected_points(subsets, params, xi, eta):
+def plot_selected_points(subsets, params):
 
     cat_filtered = subsets["selected"]
 
-    plot_tangent(cat_filtered, s=3, lw=0, color="C3")
-    circ = plt.Circle((0, 0), params.r_cen, color="C0", lw=0.3, fill=False,
+    plot_tangent(cat_filtered, **SELECTED_KWARGS)
+
+    plot_circle(0, 0, params.r_cen, color="C0", lw=0.3, fill=False,
                       zorder=-1, alpha=1)
-    plt.gca().add_patch(circ)
-    circ = plt.Circle((xi*60, eta*60), params.r_cen, color="C1", lw=0.3,
+    plot_circle(params.xi, params.eta, params.r_cen, color="C1", lw=0.3,
                       fill=False, zorder=-1, alpha=1)
-    plt.gca().add_patch(circ)
 
     plt.title("selected")
 
@@ -633,11 +658,11 @@ def plot_gr_background(subsets, params):
 
     x = df_bkg_all[params.gcol] - df_bkg_all[params.rcol]
     y = df_bkg_all[params.gcol]
-    plt.scatter(x, y, lw=0, s=1, color="k")
+    plt.scatter(x, y, **BKG_KWARGS)
 
     x = df_bkg[params.gcol] - df_bkg[params.rcol]
     y = df_bkg[params.gcol]
-    plt.scatter(x, y, lw=0, s=5, color="C3")
+    plt.scatter(x, y, **SELECTED_KWARGS)
     plt.title("background")
 
 
@@ -652,11 +677,11 @@ def plot_gr_centre(subsets, params):
 
     x = df_cen_all[params.gcol] - df_cen_all[params.rcol]
     y = df_cen_all[params.gcol]
-    plt.scatter(x, y, lw=0, s=1, color="k", label="all")
+    plt.scatter(x, y, **BKG_KWARGS)
 
     x = df_cen[params.gcol] - df_cen[params.rcol]
     y = df_cen[params.gcol]
-    plt.scatter(x, y, lw=0, s=5, color="C3", label="selected")
+    plt.scatter(x, y, **SELECTED_KWARGS)
 
     plt.title("centre")
 
@@ -670,11 +695,11 @@ def plot_ri_background(subsets, params):
     plot_iso_ri(params, ri_err)
     x = df_bkg_all[params.rcol] - df_bkg_all[params.icol]
     y = df_bkg_all[params.rcol]
-    plt.scatter(x, y, lw=0, s=1, color="k")
+    plt.scatter(x, y, **BKG_KWARGS)
 
     x = df_bkg[params.rcol] - df_bkg[params.icol]
     y = df_bkg[params.rcol]
-    plt.scatter(x, y, lw=0, s=5, color="C3")
+    plt.scatter(x, y, **SELECTED_KWARGS)
     plt.title("background")
 
 
@@ -689,27 +714,27 @@ def plot_ri_centre(subsets, params):
 
     x = df_cen_all[params.rcol] - df_cen_all[params.icol]
     y = df_cen_all[params.rcol]
-    plt.scatter(x, y, lw=0, s=1, color="k")
+    plt.scatter(x, y, **BKG_KWARGS)
 
     x = df_cen[params.rcol] - df_cen[params.icol]
     y = df_cen[params.rcol]
-    plt.scatter(x, y, lw=0, s=5, color="C3")
+    plt.scatter(x, y, **SELECTED_KWARGS)
 
     plt.title("centre")
 
 
-def plot_detection(cat, params, xi=-1.5/60, eta=-1.5/60, results=None, fig=None, axs=None):
+def plot_detection(cat, params,  results=None, fig=None, axs=None):
 
-    subsets = select_subsets(cat, params, xi=xi, eta=eta)
+    subsets = select_subsets(cat, params)
 
     if fig is None:
         fig, axs = plt.subplots(2, 3, figsize=(6, 4))
 
     plt.sca(axs[0][0])
-    plot_unselected_points(subsets, params, xi=xi, eta=eta)
+    plot_unselected_points(subsets, params)
 
     plt.sca(axs[1][0])
-    plot_selected_points(subsets, params, xi=xi, eta=eta)
+    plot_selected_points(subsets, params)
 
     plt.sca(axs[1][1])
     plot_gr_background(subsets, params)

@@ -29,10 +29,15 @@ def safe_mkdir(pathname):
     if pathname.is_dir():
         return
     
-    pathname.mkdir()
+    pathname.mkdir(parents=True)
+
 
 def read_img_keys():
-    with open("image_keys.toml", "rb") as f:
+    """
+    Returns the image keys directory, which corresponds the
+    raw data file structure to mine.
+    """
+    with open(Path(__file__).parent / "image_keys.toml", "rb") as f:
         img_keys = tomllib.load(f)
 
     return img_keys
@@ -57,17 +62,23 @@ def calibration_folder(foldername):
 
 
 def combine_images_err(imgfiles):
+    """
+        combine_images(filenames, **kwargs)
+
+    Combines images using ccdproc. Expects CCDData and uses
+   the MAD of the images.
+   """
     err = mad_std(np.stack([x for x in imgfiles.data()]), axis=0)
     return CCDData(err, unit="adu")
 
 
-"""
-    combine_images(filenames, **kwargs)
-
-Combines images using ccdproc. Expects CCDData and uses
-median combination with median
-"""
 def combine_images(filenames, method="median", **kwargs):
+    """
+        combine_images(filenames, **kwargs)
+
+    Combines images using ccdproc. Expects CCDData and uses
+    median combination with median
+    """
     return ccdproc.combine(filenames, 
        method=method,
        sigma_clip=False, 
@@ -76,13 +87,13 @@ def combine_images(filenames, method="median", **kwargs):
         )
 
 
-"""
-    combine_images_average(filenames, **kwargs)
+def _combine_images_average(filenames, method="average", **kwargs):
+    """
+        combine_images_average(filenames, **kwargs)
 
-Combines images using ccdproc. Expects CCDData and uses
-median combination with MAD_STD sigma clipping at 5 sigma.
-"""
-def combine_images_average(filenames, method="average", **kwargs):
+    Combines images using ccdproc. Expects CCDData and uses
+    median combination with MAD_STD sigma clipping at 5 sigma.
+    """
     return ccdproc.combine(filenames, 
        method=method,
        sigma_clip=True, sigma_clip_low_thresh=5, sigma_clip_high_thresh=5, 

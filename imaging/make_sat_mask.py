@@ -3,12 +3,13 @@ from scipy import ndimage
 from astropy.nddata import CCDData
 import numpy as np
 
-from script_utils import calibration_folder, read_img_keys
+from yasone.script_utils import calibration_folder, read_img_keys
 from pathlib import Path
 import tomllib
 import os
 
 from trim_images import trim_image
+
 FLAG_SAT = 4
 FLAG_BRIGHTSAT = 8
 FLAG_BADPIXEL = 16

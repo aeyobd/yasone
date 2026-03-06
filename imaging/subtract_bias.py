@@ -13,7 +13,7 @@ import ccdproc
 from ccdproc import ImageFileCollection
 from astropy.nddata import CCDData
 
-from script_utils import calibration_folder, read_img_keys
+from yasone.script_utils import calibration_folder, read_img_keys
 
 
 def get_bias(foldername):

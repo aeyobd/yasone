@@ -1,6 +1,6 @@
 import shapely
 import numpy as np
-import pathlib
+from pathlib import Path
 
 from astropy.coordinates import SkyCoord
 from astropy import units as u
@@ -94,7 +94,7 @@ def get_obs_props(objname):
     """
     obs_props = {}
 
-    pwd = pathlib.Path(__file__).parent.resolve()
+    pwd = Path(__file__).parent.resolve()
 
     with open(pwd / "object_properties.toml", "rb") as f:
         obs_props = tomllib.load(f)[objname]
@@ -137,7 +137,7 @@ def to_tangent(coord, coord0):
 
 
 
-def get_mag_shift(objname, catname, shiftname):
+def get_mag_shift(objname, catname=None, shiftname=None):
     """
     Retrieve the magnitude shifts correcting the zeropoint of a catalogue as a
     dictionary,
@@ -149,9 +149,9 @@ def get_mag_shift(objname, catname, shiftname):
     """
     shifts = {}
     if shiftname is None:
-        path = "../photometry/" + objname + f"/{catname}_panstarrs_shift.toml"
+        path = Path(__file__).parent / "../photometry/" / objname / f"{catname}_panstarrs_shift.toml"
     else:
-        path = "../photometry/" + objname + f"/{shiftname}.toml"
+        path = Path(__file__).parent / "../photometry/" / objname / f"{shiftname}.toml"
 
     with open(path, "rb") as f:
         shifts = tomllib.load(f)

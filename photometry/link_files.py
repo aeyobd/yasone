@@ -2,11 +2,25 @@ import os
 from pathlib import Path
 
 
+bad_images = {
+        "std1": [],
+        "std1": [],
+        "std2": [],
+        "std3": ["img_g_01", "img_g_02", "img_g_03", "img_g_04",
+                     "img_r_01", "img_r_02"],
+        "yasone1": [],
+        "yasone2": ["img_i_13"],
+        "yasone3": ["img_r_15"],
+        }
+
 def get_newdir(file, destname, increment):
     s = file.stem.replace("_err", "").replace(".mask", "")
     prefix, filt, num = s.split("_")
     num = int(num) + increment
     newname = f"img_{filt}_{num:02d}"
+    
+    if newname in bad_images[destname]:
+        newname = "bad_" + newname
     return Path(destname) / newname
 
 

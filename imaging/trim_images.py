@@ -12,24 +12,18 @@ from glob import glob
 import ccdproc
 from ccdproc import ImageFileCollection
 from astropy.nddata import CCDData
+from yasone.script_utils import read_img_keys, safe_mkdir, safe_rm
+
 
 # taken from the CCD/fits header, also used by sausero.
+# Note that this is FITS coordinates, not python
 IMG_SELECTION = "[28:2030,230:2026]" 
-
-def read_img_keys():
-    with open("image_keys.toml", "rb") as f:
-        img_keys = tomllib.load(f)
-
-    return img_keys
 
 
 def clean_old_files(img_keys):
     for folder, file_keys in img_keys.items():
         newdir = Path(folder + "/trimmed")
-
-        if not newdir.is_dir():
-            newdir.mkdir()
-
+        safe_mkdir(newdir)
         for f in glob(str(newdir / "*.fits")):
             os.remove(f)
 

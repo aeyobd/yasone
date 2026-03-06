@@ -149,7 +149,7 @@ def subtract_background(img, params):
     bkg_estimator = background.SExtractorBackground()
     bkg = background.Background2D(img, (params.back_size, params.back_size), 
         filter_size=(params.back_filter_size, params.back_filter_size),
-        bkg_estimator=bkg_estimator)
+        bkg_estimator=bkg_estimator, mask=img.mask,)
 
     img_nobkg = CCDData(img-bkg.background, unit="adu")
     tot_err = np.sqrt(bkg.background_rms**2 + img.uncertainty.array**2 * u.adu**2)

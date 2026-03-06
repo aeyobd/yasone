@@ -6,17 +6,10 @@ import numpy as np
 
 import ccdproc
 from ccdproc import ImageFileCollection
-from convenience_functions import combine_images, mad_std
-
-def get_flats(foldername, filt):
-    imgfiles = ImageFileCollection(foldername, glob_include=f"flat_{filt}_*.fits")
-    return imgfiles
+from yasone.script_utils import combine_images, mad_std
 
 
-def combine_images_err(imgfiles):
-    err = mad_std(np.stack([x / np.median(x) for x in imgfiles.data()]), axis=0)
-    return CCDData(err, unit="adu")
-
+# not actually used since we median combine...
 bad_flats = {
     "20230708": ["flat_i_05.fits"],
     "20230709": ["flat_g_06.fits", "flat_g_07.fits", "flat_i_01.fits",
@@ -24,6 +17,16 @@ bad_flats = {
     "20230723": ["flat_r_04.fits", "flat_i_04.fits"],
     "20230816": []
 }
+
+
+def get_flats(foldername, filt):
+    imgfiles = ImageFileCollection(foldername, glob_include=f"flat_{filt}_*.fits")
+    return imgfiles
+
+
+def combine_images_err(imgfiles):
+    err = mad_std(np.stack([x * flat_scale(x) for x in imgfiles.data()]), axis=0)
+    return CCDData(err, unit="adu")
 
 
 
