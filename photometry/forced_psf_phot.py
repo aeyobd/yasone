@@ -24,7 +24,6 @@ def main(objname, filtname, params, suffix=""):
         params.outdir = imgpath
         imgname = imgpath.stem[-2:]
         phot_result = derive_psf_phot(objname, filtname, imgname, params)
-        break
 
 
 ################ Analysis 
